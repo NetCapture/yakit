@@ -4,6 +4,7 @@ import {InputItem, SelectOne, SwitchItem} from "../utils/inputUtil"
 import {QuestionCircleOutlined} from "@ant-design/icons"
 import {YakEditor} from "../utils/editors"
 import {YakLogoBanner} from "../utils/logo"
+import TelecomBanner from "../assets/img/telecom_logo.jpg"
 import {YakLocalProcess, yakProcess} from "./YakLocalProcess"
 import {saveAuthInfo, YakRemoteAuth} from "./YakRemoteAuth"
 import {showModal} from "../utils/showModal"
@@ -11,6 +12,7 @@ import {YakUpgrade} from "../components/YakUpgrade"
 import {UserProtocol} from "../App"
 import {YakitUpgrade} from "../components/YakitUpgrade"
 import {ENTERPRISE_STATUS, getJuageEnvFile} from "@/utils/envfile"
+
 const {Text, Title, Paragraph} = Typography
 
 export interface YakEnvironmentProp {
@@ -120,7 +122,7 @@ const YakEnvironment: React.FC<YakEnvironmentProp> = (props) => {
                         marginRight: 150
                     }}
                 >
-                    <Image src={YakLogoBanner} style={{marginTop: 120, marginBottom: 40}} preview={false} width={400} />
+                    <Image src={TelecomBanner} style={{marginTop: 120, marginBottom: 40}} preview={false} width={400} />
                     <br />
                     <Text style={{color: "#999"}}>
                         {isEnterprise ? "企业版" : "社区专业版"}：{version}
