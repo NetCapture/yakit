@@ -1246,17 +1246,6 @@ const Main: React.FC<MainProp> = forwardRef((props) => {
                                 <Divider type={"vertical"} />
                                 {/* <YakVersion/>
                                 <YakitVersion/> */}
-                                {!hideMenu && (
-                                    <Button
-                                        style={{marginLeft: 4, color: "#207ee8"}}
-                                        type={"ghost"}
-                                        ghost={true}
-                                        onClick={(e) => {
-                                            setCollapsed(!collapsed)
-                                        }}
-                                        icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-                                    />
-                                )}
                                 <Button
                                     style={{marginLeft: 4, color: "#207ee8"}}
                                     type={"ghost"}
