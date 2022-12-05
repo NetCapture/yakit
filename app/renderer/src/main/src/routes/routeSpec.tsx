@@ -415,7 +415,7 @@ export const DefaultRouteMenuData: MenuDataProps[] = [
             {
                 id: "1-1",
                 key: Route.HTTPHacker,
-                label: "MITM 交互式劫持",
+                label: "MITM",
                 icon: <MenuMITMInteractiveHijackingIcon />,
                 describe: "安装 SSL/TLS 证书，劫持浏览器所有流量请求、响应数据包，提供手动劫持与被动扫描两种模式"
             },
@@ -442,12 +442,19 @@ export const DefaultRouteMenuData: MenuDataProps[] = [
         key: Route.GeneralModule,
         subMenuData: [
             {
+                id: "2-4",
+                key: Route.Mod_ScanPort,
+                label: "扫描端口/指纹",
+                icon: <MenuPortScanningIcon />,
+                describe: "对 IP、IP段、域名等端口进行 SYN、指纹检测、可编写插件进行检测、满足更个性化等需求"
+            },
+            {
                 id: "2-1",
                 key: Route.Mod_Brute,
-                label: "爆破与未授权检测",
+                label: "爆破与未授权",
                 icon: <MenuBlastingAndUnauthorizedTestingIcon />,
                 describe: "对目标的登录账号、密码等进行爆破，在爆破前会进行未授权检测"
-            },
+            }
             // {
             //     id: "2-2",
             //     key: undefined,
@@ -461,13 +468,7 @@ export const DefaultRouteMenuData: MenuDataProps[] = [
             //     label: "空间引擎: Hunter",
             //     icon: <MenuSpaceEngineHunterIcon />
             // },
-            {
-                id: "2-4",
-                key: Route.Mod_ScanPort,
-                label: "端口/指纹扫描",
-                icon: <MenuPortScanningIcon />,
-                describe: "对 IP、IP段、域名等端口进行 SYN、指纹检测、可编写插件进行检测、满足更个性化等需求"
-            }
+
             // {
             //     id: "2-5",
             //     key: undefined,
@@ -503,12 +504,12 @@ export const DefaultRouteMenuData: MenuDataProps[] = [
         id: "7",
         label: "反连",
         subMenuData: [
-            {id: "7-1", key: Route.ShellReceiver, label: "端口监听器", icon: <MenuPortListenerIcon />},
             {id: "7-2", key: Route.ReverseServer_New, label: "反连服务器", icon: <MenuReverseConnectionServerIcon />},
+            {id: "7-6", key: Route.PayloadGenerater_New, label: "Yso-Java Hack", icon: <MenuYsoJavaHackIcon />},
+            {id: "7-1", key: Route.ShellReceiver, label: "端口监听器", icon: <MenuPortListenerIcon />},
             {id: "7-3", key: Route.DNSLog, label: "DNSLog", icon: <MenuDNSLogIcon />},
             {id: "7-4", key: Route.ICMPSizeLog, label: "ICMP-SizeLog", icon: <MenuICMPSizeLogIcon />},
-            {id: "7-5", key: Route.TCPPortLog, label: "TCP-PortLog", icon: <MenuTCPPortLogIcon />},
-            {id: "7-6", key: Route.PayloadGenerater_New, label: "Yso-Java Hack", icon: <MenuYsoJavaHackIcon />}
+            {id: "7-5", key: Route.TCPPortLog, label: "TCP-PortLog", icon: <MenuTCPPortLogIcon />}
         ]
     },
     {
@@ -523,12 +524,12 @@ export const DefaultRouteMenuData: MenuDataProps[] = [
         id: "9",
         label: "数据库",
         subMenuData: [
-            {id: "9-1", key: Route.DB_Report, label: "报告(Beta*)", icon: <MenuReportIcon />},
-            {id: "9-2", key: Route.DB_ExecResults, label: "插件执行结果", icon: <MenuPlugExecutionResultsIcon />},
+            {id: "9-6", key: Route.DB_HTTPHistory, label: "HTTP History", icon: <MenuHTTPHistoryIcon />},
             {id: "9-3", key: Route.DB_Ports, label: "端口资产", icon: <MenuPortAssetsIcon />},
-            {id: "9-4", key: Route.DB_Risk, label: "漏洞与风险", icon: <MenuVulnerabilityRiskIcon />},
             {id: "9-5", key: Route.DB_Domain, label: "域名资产", icon: <MenuDomainAssetsIcon />},
-            {id: "9-6", key: Route.DB_HTTPHistory, label: "HTTP History", icon: <MenuHTTPHistoryIcon />}
+            {id: "9-2", key: Route.DB_ExecResults, label: "插件执行结果", icon: <MenuPlugExecutionResultsIcon />},
+            {id: "9-4", key: Route.DB_Risk, label: "漏洞与风险", icon: <MenuVulnerabilityRiskIcon />},
+            {id: "9-1", key: Route.DB_Report, label: "报告(Beta*)", icon: <MenuReportIcon />}
         ]
     },
     {
