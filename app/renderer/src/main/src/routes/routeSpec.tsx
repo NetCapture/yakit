@@ -84,7 +84,8 @@ import {
     MenuSpaceEngineHunterIcon,
     MenuSubDomainCollectionIcon,
     MenuVulnerabilityRiskIcon,
-    MenuWebsocketFuzzerIcon
+    MenuWebsocketFuzzerIcon,
+    MenuYakRunnerIcon
 } from "@/pages/customizeMenu/icon/menuIcon"
 
 const HTTPHacker = React.lazy(() => import("../pages/hacker/httpHacker"))
@@ -409,9 +410,46 @@ export const ContentByRoute = (r: Route | string, yakScriptId?: number, params?:
 
 export const DefaultRouteMenuData: MenuDataProps[] = [
     {
-        id: "1",
-        label: "手工渗测",
+        id: "2",
+        label: "信息收集",
+        key: Route.GeneralModule,
         subMenuData: [
+            {
+                id: "2-4",
+                key: Route.Mod_ScanPort,
+                label: "端口扫描",
+                icon: <MenuPortScanningIcon />,
+                describe: "对 IP、IP段、域名等端口进行 SYN、指纹检测、可编写插件进行检测、满足更个性化等需求"
+            }
+        ]
+    },
+    {
+        id: "3",
+        label: "Web安全",
+        subMenuData: [
+            {id: "3-1", key: Route.PoC, label: "专项漏洞检测", icon: <MenuSpecialVulnerabilityDetectionIcon />},
+            {
+                id: "3-2",
+                key: Route.Mod_Brute,
+                label: "爆破与未授权",
+                icon: <MenuBlastingAndUnauthorizedTestingIcon />,
+                describe: "对目标的登录账号、密码等进行爆破，在爆破前会进行未授权检测"
+            }
+        ]
+    },
+    {
+        id: "4",
+        label: "自动化漏洞检测模块",
+        subMenuData: [
+            //
+            {id: "4-2", key: Route.BatchExecutorPage, label: "插件批量执行", icon: <MenuPluginBatchExecutionIcon />}
+        ]
+    },
+    {
+        id: "1",
+        label: "专家模式",
+        subMenuData: [
+            {id: "1-5", key: Route.ModManager, label: "插件仓库", icon: <MenuPluginWarehouseIcon />},
             {
                 id: "1-1",
                 key: Route.HTTPHacker,
@@ -426,89 +464,28 @@ export const DefaultRouteMenuData: MenuDataProps[] = [
                 icon: <MenuWebFuzzerIcon />,
                 describe: "通过核心模糊测试标签语法，实现了对 Burpsuite 的 Repeater 和 Intruder 的完美整合"
             },
-            {id: "1-3", key: Route.WebsocketFuzzer, label: "Websocket Fuzzer", icon: <MenuWebsocketFuzzerIcon />},
-            {
-                id: "1-4",
-                key: Route.PayloadGenerater_New,
-                label: "Yso-Java Hack",
-                icon: <MenuYsoJavaHackIcon />,
-                describe: "配置序列化 Payload 或恶意类"
-            }
-        ]
-    },
-    {
-        id: "2",
-        label: "基础工具",
-        key: Route.GeneralModule,
-        subMenuData: [
-            {
-                id: "2-4",
-                key: Route.Mod_ScanPort,
-                label: "扫描端口/指纹",
-                icon: <MenuPortScanningIcon />,
-                describe: "对 IP、IP段、域名等端口进行 SYN、指纹检测、可编写插件进行检测、满足更个性化等需求"
-            },
-            {
-                id: "2-1",
-                key: Route.Mod_Brute,
-                label: "爆破与未授权",
-                icon: <MenuBlastingAndUnauthorizedTestingIcon />,
-                describe: "对目标的登录账号、密码等进行爆破，在爆破前会进行未授权检测"
-            }
+            // {id: "1-6", key: Route.YakScript, label: "Yak Runner", icon: <MenuYakRunnerIcon />}
+            // {id: "1-3", key: Route.WebsocketFuzzer, label: "Websocket Fuzzer", icon: <MenuWebsocketFuzzerIcon />},
             // {
-            //     id: "2-2",
-            //     key: undefined,
-            //     label: "基础爬虫",
-            //     icon: <MenuBasicCrawlerIcon />,
-            //     describe: "通过爬虫可快速了解网站的整体架构"
-            // },
-            // {
-            //     id: "2-3",
-            //     key: undefined,
-            //     label: "空间引擎: Hunter",
-            //     icon: <MenuSpaceEngineHunterIcon />
-            // },
-
-            // {
-            //     id: "2-5",
-            //     key: undefined,
-            //     label: "子域名收集",
-            //     icon: <MenuSubDomainCollectionIcon />
-            // },
-            // {
-            //     id: "2-6",
-            //     key: undefined,
-            //     label: "综合目录扫描与爆破",
-            //     icon: <MenuComprehensiveCatalogScanningAndBlastingIcon />
+            //     id: "1-4",
+            //     key: Route.PayloadGenerater_New,
+            //     label: "Yso-Java Hack",
+            //     icon: <MenuYsoJavaHackIcon />,
+            //     describe: "配置序列化 Payload 或恶意类"
             // }
-        ]
-    },
-    {
-        id: "3",
-        label: "专项漏洞检测",
-        subMenuData: [
-            {id: "3-1", key: Route.PoC, label: "专项漏洞检测", icon: <MenuSpecialVulnerabilityDetectionIcon />}
-        ]
-    },
-    {
-        id: "4",
-        label: "插件",
-        subMenuData: [
-            {id: "4-1", key: Route.ModManager, label: "插件仓库", icon: <MenuPluginWarehouseIcon />},
-            {id: "4-2", key: Route.BatchExecutorPage, label: "插件批量执行", icon: <MenuPluginBatchExecutionIcon />}
         ]
     },
     {id: "5", key: Route.PayloadManager, label: "Payload 管理", icon: <AuditOutlined />},
     {id: "6", key: Route.YakScript, label: "Yak Runner", icon: <CodeOutlined />},
     {
         id: "7",
-        label: "反连",
+        label: "反连管理",
         subMenuData: [
-            {id: "7-2", key: Route.ReverseServer_New, label: "反连服务器", icon: <MenuReverseConnectionServerIcon />},
-            {id: "7-6", key: Route.PayloadGenerater_New, label: "Yso-Java Hack", icon: <MenuYsoJavaHackIcon />},
             {id: "7-1", key: Route.ShellReceiver, label: "端口监听器", icon: <MenuPortListenerIcon />},
+            {id: "7-2", key: Route.ReverseServer_New, label: "反连服务器", icon: <MenuReverseConnectionServerIcon />},
             {id: "7-3", key: Route.DNSLog, label: "DNSLog", icon: <MenuDNSLogIcon />},
             {id: "7-4", key: Route.ICMPSizeLog, label: "ICMP-SizeLog", icon: <MenuICMPSizeLogIcon />},
+            // {id: "7-6", key: Route.PayloadGenerater_New, label: "Yso-Java Hack", icon: <MenuYsoJavaHackIcon />},
             {id: "7-5", key: Route.TCPPortLog, label: "TCP-PortLog", icon: <MenuTCPPortLogIcon />}
         ]
     },
@@ -516,20 +493,20 @@ export const DefaultRouteMenuData: MenuDataProps[] = [
         id: "8",
         label: "数据处理",
         subMenuData: [
-            {id: "8-1", key: Route.Codec, label: "Codec", icon: <MenuCodecIcon />},
-            {id: "8-2", key: Route.DataCompare, label: "数据对比", icon: <MenuDataComparisonIcon />}
+            {id: "8-2", key: Route.DataCompare, label: "数据对比", icon: <MenuDataComparisonIcon />},
+            {id: "8-1", key: Route.Codec, label: "Codec", icon: <MenuCodecIcon />}
         ]
     },
     {
         id: "9",
         label: "数据库",
         subMenuData: [
-            {id: "9-6", key: Route.DB_HTTPHistory, label: "HTTP History", icon: <MenuHTTPHistoryIcon />},
+            {id: "9-1", key: Route.DB_Report, label: "报告(Beta*)", icon: <MenuReportIcon />},
             {id: "9-3", key: Route.DB_Ports, label: "端口资产", icon: <MenuPortAssetsIcon />},
-            {id: "9-5", key: Route.DB_Domain, label: "域名资产", icon: <MenuDomainAssetsIcon />},
             {id: "9-2", key: Route.DB_ExecResults, label: "插件执行结果", icon: <MenuPlugExecutionResultsIcon />},
             {id: "9-4", key: Route.DB_Risk, label: "漏洞与风险", icon: <MenuVulnerabilityRiskIcon />},
-            {id: "9-1", key: Route.DB_Report, label: "报告(Beta*)", icon: <MenuReportIcon />}
+            {id: "9-5", key: Route.DB_Domain, label: "域名资产", icon: <MenuDomainAssetsIcon />},
+            {id: "9-6", key: Route.DB_HTTPHistory, label: "HTTP History", icon: <MenuHTTPHistoryIcon />}
         ]
     },
     {
