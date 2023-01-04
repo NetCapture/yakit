@@ -124,6 +124,8 @@ const singletonRoute: Route[] = [
     Route.PlugInAdminPage,
     // 获取引擎输出
     Route.AttachEngineCombinedOutput,
+    // 首页
+    Route.NewHome
 ]
 /** 不需要首页组件安全边距的页面 */
 const noPaddingPage = [
@@ -134,7 +136,8 @@ const noPaddingPage = [
     Route.ModManager,
     Route.ICMPSizeLog,
     Route.TCPPortLog,
-    Route.DNSLog
+    Route.DNSLog,
+    Route.NewHome
 ]
 
 export const defaultUserInfo: UserInfoProps = {
