@@ -49,6 +49,7 @@ import PlugInAdminPage from "@/pages/loginOperationMenu/PlugInAdminPage"
 import {TrustListPage} from "@/pages/loginOperationMenu/TrustListPage"
 import NewHome from "@/pages/newHome/NewHome";
 
+
 import {
     MenuDomainAssetsIcon,
     MenuHTTPHistoryIcon,
@@ -158,10 +159,8 @@ export enum Route {
     PlugInAdminPage = "plug-in-admin-page", // 插件权限管理
     // 获取标准输出流
     AttachEngineCombinedOutput = "attach-engine-combined-output",
-
-    // 首页
-    NewHome = "new-home"
 }
+
 
 export function RouteNameToVerboseName(r: string) {
     switch (r) {

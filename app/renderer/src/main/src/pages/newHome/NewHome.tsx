@@ -1,10 +1,9 @@
 import React, {ReactNode, useEffect, useRef, useState} from "react"
 import {Row, Col} from "antd"
-import {} from "@ant-design/icons"
+import {ArrowRightOutlined} from "@ant-design/icons"
 import style from "./newHome.module.scss"
 import classNames from "classnames"
-import cloneDeep from "lodash/cloneDeep"
-import {Route, DefaultRouteMenuData, MenuDataProps} from "@/routes/routeSpec"
+import {Route,ContentByRoute} from "@/routes/routeSpec"
 import {AuditOutlined, CodeOutlined} from "@ant-design/icons"
 import {
     MenuComprehensiveCatalogScanningAndBlastingDeepIcon,
@@ -24,8 +23,7 @@ import {
     MenuDNSLogDeepIcon,
     MenuICMPSizeLogDeepIcon,
     MenuTCPPortLogDeepIcon,
-    MenuYsoJavaHackDeepIcon,
-
+    MenuYsoJavaHackDeepIcon
 } from "@/pages/customizeMenu/icon/homeIcon"
 const {ipcRenderer} = window.require("electron")
 
@@ -40,18 +38,30 @@ const RouteTitle: React.FC<RouteTitleProp> = (props) => {
 
 interface RouteItemProp {
     dataSource: DataItem
+    setOpenPage:(v:any)=>void
 }
 
 const RouteItem: React.FC<RouteItemProp> = (props) => {
-    const {dataSource} = props
+    const {dataSource,setOpenPage} = props
+    const goRoute = () => {
+        console.log("点击跳转",dataSource)
+        setOpenPage(
+             {
+            verbose: dataSource.label,
+            route: dataSource.key,
+            singleNode: ContentByRoute(Route.HTTPHacker),
+            multipleNode: []
+        }
+        )
+    }
     return (
-        <div>
-            <div className={classNames(style["icon-box"])}>
-                <div>{dataSource.icon}</div>
-                <div>2</div>
+        <div className={style["route-item"]} onClick={goRoute}>
+            <div className={style["icon-box"]}>
+                <div className={style["menu-icon"]}>{dataSource.icon}</div>
+                <ArrowRightOutlined className={style["right-arrow"]}/>
             </div>
-            <div></div>
-            <div></div>
+            <div className={style["item-label"]}>{dataSource.label}</div>
+            <div className={style["item-describe"]}>{dataSource.describe}</div>
         </div>
     )
 }
@@ -72,18 +82,20 @@ interface newHomeListData {
 interface RouteListProp {
     colLimit?: 1 | 2 | 3
     data: newHomeListData
+    setOpenPage:(v:any)=>void
 }
 
 const RouteList: React.FC<RouteListProp> = (props) => {
-    const {colLimit = 1, data} = props
+    const {colLimit = 1, data,setOpenPage} = props
     const [span, setSpan] = useState(24 / colLimit)
+    const rowCount = Math.ceil(data.subMenuData.length/colLimit)
     return (
-        <div>
+        <div style={{height:"100%"}} className={style["list-box"]}>
             <RouteTitle title={data.label} />
-            <Row>
+            <Row className={style["list-content"]}>
                 {data.subMenuData.map((item) => (
-                    <Col span={span} key={item.id}>
-                        <RouteItem dataSource={item} />
+                    <Col span={span} key={item.id} flex={1} className={classNames(style[`list-content-col${rowCount}`])}>
+                        <RouteItem dataSource={item} setOpenPage={setOpenPage}/>
                     </Col>
                 ))}
             </Row>
@@ -91,14 +103,14 @@ const RouteList: React.FC<RouteListProp> = (props) => {
     )
 }
 
-const newHomeList: newHomeListData[] = [
+export const newHomeList: newHomeListData[] =[
     {
         id: "1",
         label: "资产搜集",
         subMenuData: [
             {
                 id: "1-1",
-                key: Route.Mod_ScanPort,
+                key: Route.Mod_ScanPort, 
                 label: "端口/指纹扫描",
                 icon: <MenuPortScanningDeepIcon />,
                 describe: "对 IP、IP段、域名等端口进行 SYN、指纹检测、可编写插件进行检测、满足更个性化等需求"
@@ -257,36 +269,35 @@ const newHomeList: newHomeListData[] = [
     }
 ]
 
-export interface NewHomeProp {}
+export interface NewHomeProp {
+    setOpenPage:(v:any)=>void
+}
 const NewHome: React.FC<NewHomeProp> = (props) => {
-    useEffect(() => {
-        console.log("tabList", newHomeList)
-    }, [])
-
+    const {setOpenPage} = props
     return (
         <div className={style["new-home-page"]}>
             <div className={classNames(style["home-top-block"], style["border-bottom-box"])}>
                 <div className={classNames(style["top-small-block"], style["border-right-box"])}>
-                    <RouteList data={newHomeList[0]} />
+                    <RouteList data={newHomeList[0]} setOpenPage={setOpenPage}/>
                 </div>
                 <div className={classNames(style["top-big-block"], style["border-right-box"])}>
                     <div className={classNames(style["top-in"], style["border-bottom-box"])}>
-                        <RouteList data={newHomeList[1]} colLimit={2} />
+                        <RouteList data={newHomeList[1]} colLimit={2} setOpenPage={setOpenPage} />
                     </div>
                     <div className={style["bottom-in"]}>
-                        <RouteList data={newHomeList[2]} colLimit={2} />
+                        <RouteList data={newHomeList[2]} colLimit={2} setOpenPage={setOpenPage} />
                     </div>
                 </div>
                 <div className={classNames(style["top-small-block"], style["border-right-box"])}>
-                    <RouteList data={newHomeList[3]} />
+                    <RouteList data={newHomeList[3]} setOpenPage={setOpenPage} />
                 </div>
                 <div className={style["top-small-block"]}>
-                    <RouteList data={newHomeList[4]} />
+                    <RouteList data={newHomeList[4]} setOpenPage={setOpenPage} />
                 </div>
             </div>
             <div className={style["home-bottom-block"]}>
                 <div className={classNames(style["bottom-big-block"], style["border-right-box"])}>
-                    <RouteList data={newHomeList[5]} />
+                    <RouteList data={newHomeList[5]} colLimit={3} setOpenPage={setOpenPage}/>
                 </div>
                 <div className={style["bottom-small-block"]}>
                     <RouteTitle title='插件商店' />
