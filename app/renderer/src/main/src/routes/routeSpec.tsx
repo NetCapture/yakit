@@ -47,7 +47,6 @@ import RoleAdminPage from "@/pages/loginOperationMenu/RoleAdminPage"
 import LicenseAdminPage from "@/pages/loginOperationMenu/LicenseAdminPage"
 import PlugInAdminPage from "@/pages/loginOperationMenu/PlugInAdminPage"
 import {TrustListPage} from "@/pages/loginOperationMenu/TrustListPage"
-import NewHome from "@/pages/newHome/NewHome";
 
 
 import {
@@ -377,8 +376,6 @@ export const ContentByRoute = (r: Route | string, yakScriptId?: number, params?:
             return <TrustListPage />
         case Route.PlugInAdminPage:
             return <PlugInAdminPage />
-        case Route.NewHome:
-            return <NewHome />
         case Route.AttachEngineCombinedOutput:
             return <EngineConsole/>
         default:
@@ -551,13 +548,6 @@ export const DefaultRouteMenuData: MenuDataProps[] = [
         key: Route.PlugInAdminPage,
         label: "插件权限",
         disabled: true,
-        hidden: true
-    },
-    {
-        id:"15",
-        key: Route.NewHome,
-        label:"首页",
-        disabled:true,
         hidden: true
     }
 ]
