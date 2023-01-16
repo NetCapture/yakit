@@ -382,11 +382,13 @@ service Yak {
   // Yaklang Shell
   // 创建一个交互式 Shell
   rpc CreateYaklangShell(stream YaklangShellRequest) returns (stream YaklangShellResponse);
+
+  // 接入标准输出和标准错误流
   rpc AttachCombinedOutput(AttachCombinedOutputRequest) returns (stream ExecResult);
 }
 
 message AttachCombinedOutputRequest {
-  
+
 }
 
 message YaklangShellRequest {
@@ -651,6 +653,7 @@ message DownloadOnlinePluginByTokenRequest {
   string Tags = 7;
   string UserName = 8;
   int64  UserId = 9;
+  string TimeSearch = 10;
 }
 
 message DownloadOnlinePluginByIdRequest {
