@@ -76,6 +76,7 @@ import {EDITION_STATUS, ENTERPRISE_STATUS, getJuageEnvFile} from "@/utils/envfil
 import HeardMenu, {getScriptIcon} from "./layout/HeardMenu/HeardMenu"
 import {invalidCacheAndUserData} from "@/utils/InvalidCacheAndUserData";
 import {LocalGV} from "@/yakitGV"
+import { BaseConsole } from "../components/BaseConsole/BaseConsole";
 
 const IsEnterprise: boolean = ENTERPRISE_STATUS.IS_ENTERPRISE_STATUS === getJuageEnvFile()
 
@@ -363,6 +364,24 @@ const Main: React.FC<MainProp> = React.memo((props) => {
 
     // 系统类型
     const [system, setSystem] = useState<string>("")
+
+    // 是否展示console
+    const [isShowBaseConsole,setIsShowBaseConsole] = useState<boolean>(false)
+    // 展示console方向
+    const [directionBaseConsole,setDirectionBaseConsole] = useState<"left" | "bottom" | "right">("left")
+    // 监听console方向打开
+    useEffect(() => {
+        ipcRenderer.on("callback-direction-console-log", (e, res: any) => {
+            if(res?.direction){
+                setDirectionBaseConsole(res.direction)
+                setIsShowBaseConsole(true)
+            }
+        })
+        return () => {
+            ipcRenderer.removeAllListeners("callback-direction-console-log")
+        }
+    }, [])
+
     useEffect(() => {
         ipcRenderer.invoke("fetch-system-name").then((res) => setSystem(res))
     }, [])
@@ -1537,7 +1556,8 @@ const Main: React.FC<MainProp> = React.memo((props) => {
                                     overflow: "hidden",
                                     flex: "1",
                                     display: "flex",
-                                    flexFlow: "column"
+                                    flexFlow: "column",
+                                    position:"relative"
                                 }}
                             >
                                 {pageCache.length > 0 ? (
@@ -1652,6 +1672,8 @@ const Main: React.FC<MainProp> = React.memo((props) => {
                                 ) : (
                                     <></>
                                 )}
+
+                                {isShowBaseConsole&&<BaseConsole setIsShowBaseConsole={setIsShowBaseConsole} directionBaseConsole={directionBaseConsole}/>}
                             </div>
                         </Content>
                     </Layout>
