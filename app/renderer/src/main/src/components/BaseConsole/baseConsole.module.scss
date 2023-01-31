@@ -22,7 +22,7 @@
     .yaklang-engine-console-wrapper {
         height: 100%;
         width: 100%;
-        padding: 32px 0px 0px 2px;
+        padding: calc(32px + 12px) 0px 0px 12px;
         display: flex;
         // gap: 16px;
         position: relative;
