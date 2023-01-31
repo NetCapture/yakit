@@ -68,6 +68,9 @@ function NewApp() {
     const [readingSeconds, setReadingSeconds, getReadingSeconds] = useGetState<number>(3)
     const agrTimeRef = useRef<any>(null)
 
+    // 是否展示Main中Console
+    const [isShowBaseConsole,setIsShowBaseConsole] = useState<boolean>(false)
+
     /** 是否展示用户协议 */
     useEffect(() => {
         setLoading(true)
@@ -276,12 +279,12 @@ function NewApp() {
     }
 
     return (
-        <UILayout linkSuccess={linkSuccess}>
+        <UILayout linkSuccess={linkSuccess} isShowBaseConsole={isShowBaseConsole}>
             <Suspense fallback={<div>Loading Main</div>}>
                 {isJudgeLicense ? (
                     <EnterpriseJudgeLogin setJudgeLicense={setJudgeLicense} setJudgeLogin={(v: boolean) => {}} />
                 ) : (
-                    <Main onErrorConfirmed={() => {}} />
+                    <Main onErrorConfirmed={() => {}} isShowBaseConsole={isShowBaseConsole} setIsShowBaseConsole={setIsShowBaseConsole}/>
                 )}
             </Suspense>
         </UILayout>

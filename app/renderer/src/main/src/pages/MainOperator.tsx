@@ -159,6 +159,8 @@ export interface MainProp {
     tlsGRPC?: boolean
     addr?: string
     onErrorConfirmed?: () => any
+    isShowBaseConsole?:boolean
+    setIsShowBaseConsole?:(v:boolean)=>void
 }
 
 export interface MenuItem {
@@ -339,7 +341,7 @@ export const SetUserInfo: React.FC<SetUserInfoProp> = React.memo((props) => {
 })
 
 const Main: React.FC<MainProp> = React.memo((props) => {
-
+    const {isShowBaseConsole,setIsShowBaseConsole} = props
     const [loading, setLoading] = useState(false)
     const [menuItems, setMenuItems] = useState<MenuItemGroup[]>([])
     const [routeMenuData, setRouteMenuData] = useState<MenuDataProps[]>(DefaultRouteMenuData)
@@ -365,8 +367,6 @@ const Main: React.FC<MainProp> = React.memo((props) => {
     // 系统类型
     const [system, setSystem] = useState<string>("")
 
-    // 是否展示console
-    const [isShowBaseConsole,setIsShowBaseConsole] = useState<boolean>(false)
     // 展示console方向
     const [directionBaseConsole,setDirectionBaseConsole] = useState<"left" | "bottom" | "right">("left")
     // 监听console方向打开
@@ -374,7 +374,7 @@ const Main: React.FC<MainProp> = React.memo((props) => {
         ipcRenderer.on("callback-direction-console-log", (e, res: any) => {
             if(res?.direction){
                 setDirectionBaseConsole(res.direction)
-                setIsShowBaseConsole(true)
+                setIsShowBaseConsole&&setIsShowBaseConsole(true)
             }
         })
         return () => {
@@ -1673,7 +1673,7 @@ const Main: React.FC<MainProp> = React.memo((props) => {
                                     <></>
                                 )}
 
-                                {isShowBaseConsole&&<BaseConsole setIsShowBaseConsole={setIsShowBaseConsole} directionBaseConsole={directionBaseConsole}/>}
+                                {isShowBaseConsole&&<BaseConsole setIsShowBaseConsole={(v:boolean)=>setIsShowBaseConsole&&setIsShowBaseConsole(v)} directionBaseConsole={directionBaseConsole}/>}
                             </div>
                         </Content>
                     </Layout>

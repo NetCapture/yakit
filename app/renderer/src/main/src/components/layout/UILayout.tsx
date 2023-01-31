@@ -44,9 +44,11 @@ const {ipcRenderer} = window.require("electron")
 export interface UILayoutProp {
     children?: React.ReactNode
     linkSuccess?: () => any
+    isShowBaseConsole: boolean
 }
 
 const UILayout: React.FC<UILayoutProp> = (props) => {
+    const { isShowBaseConsole } = props
     const [system, setSystem] = useState<YakitSystem>("Darwin")
     const [__isYakInstalled, setIsYakInstalled, getIsYakInstalled] = useGetState<boolean>(false)
 
@@ -459,7 +461,7 @@ const UILayout: React.FC<UILayoutProp> = (props) => {
                                     {engineLink && <div
                                         className={styles["ui-op-btn-wrapper"]}
                                         onClick={() =>{
-                                            setYakitConsole(true)
+                                            !isShowBaseConsole&&setYakitConsole(true)
                                         }}
                                     >
                                         <Tooltip placement='bottom' title='引擎Console'>
@@ -545,7 +547,7 @@ const UILayout: React.FC<UILayoutProp> = (props) => {
                                     {engineLink && <div
                                         className={styles["ui-op-btn-wrapper"]}
                                         onClick={() =>{
-                                            setYakitConsole(true)
+                                            !isShowBaseConsole&&setYakitConsole(true)
                                         }}
                                     >
                                         <Tooltip placement='bottom' title='引擎Console'>
