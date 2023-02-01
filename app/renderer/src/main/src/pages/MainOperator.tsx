@@ -162,6 +162,7 @@ export interface MainProp {
     selectItemPage?:Route
     setSelectItemPage?: (v:any)=> void
     isShowHome?:boolean
+    setJudgeLicense?: (v:boolean)=> void
 }
 
 export interface MenuItem {
@@ -342,7 +343,7 @@ export const SetUserInfo: React.FC<SetUserInfoProp> = React.memo((props) => {
 })
 
 const Main: React.FC<MainProp> = React.memo((props) => {
-    const {selectItemPage,setSelectItemPage,isShowHome} = props
+    const {selectItemPage,setSelectItemPage,isShowHome,setJudgeLicense} = props
     const [loading, setLoading] = useState(false)
     const [menuItems, setMenuItems] = useState<MenuItemGroup[]>([])
     const [routeMenuData, setRouteMenuData] = useState<MenuDataProps[]>(DefaultRouteMenuData)
@@ -713,6 +714,7 @@ const Main: React.FC<MainProp> = React.memo((props) => {
         ipcRenderer.on("login-out", (e) => {
             setStoreUserInfo(defaultUserInfo)
             if (IsEnterprise) {
+                setJudgeLicense&&setJudgeLicense(true)
                 removePage(Route.AccountAdminPage, false)
                 removePage(Route.RoleAdminPage, false)
             } else {
