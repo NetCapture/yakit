@@ -801,10 +801,28 @@ const UILayout: React.FC<UILayoutProp> = (props) => {
                                                 })}
                                                 onClick={() => changeYakitMode("soft")}
                                             >
+<<<<<<< HEAD
                                                 <HomeSvgIcon
                                                     className={yakitMode === "soft" ? styles["mode-icon-selected"] : ""}
                                                 />
                                             </div>}
+=======
+                                                {/* {yakitMode === "soft" ? (
+                                                    <YakitThemeSvgIcon style={{fontSize: 20}} />
+                                                ) : (
+                                                    <YakitGraySvgIcon style={{fontSize: 20}} />
+                                                )} */}
+                                                {yakitMode === "soft" ? (
+                                                    <img src={TelecomSmallLogo} alt='logo' style={{width: 20}} />
+                                                ) : (
+                                                    <img
+                                                        src={TelecomSmallLogo}
+                                                        alt='logo'
+                                                        style={{width: 20, opacity: 0.2}}
+                                                    />
+                                                )}
+                                            </div>
+>>>>>>> 4dec07b7 (更换logo)
 
                                             {/* <div
                                         className={classnames(styles["yakit-mode-icon"], {
@@ -884,10 +902,30 @@ const UILayout: React.FC<UILayoutProp> = (props) => {
                                                 })}
                                                 onClick={() => changeYakitMode("soft")}
                                             >
+<<<<<<< HEAD
                                                 <HomeSvgIcon
                                                     className={yakitMode === "soft" ? styles["mode-icon-selected"] : ""}
                                                 />
                                             </div>}
+=======
+                                                {/* yakit */}
+                                                {/* {yakitMode === "soft" ? (
+                                                    <YakitThemeSvgIcon style={{fontSize: 20}} />
+                                                ) : (
+                                                    <YakitGraySvgIcon style={{fontSize: 20}} />
+                                                )} */}
+                                                {/* 电信 */}
+                                                {yakitMode === "soft" ? (
+                                                    <img src={TelecomSmallLogo} alt='logo' style={{width: 20}} />
+                                                ) : (
+                                                    <img
+                                                        src={TelecomSmallLogo}
+                                                        alt='logo'
+                                                        style={{width: 20, opacity: 0.2}}
+                                                    />
+                                                )}
+                                            </div>
+>>>>>>> 4dec07b7 (更换logo)
 
                                             {/* <div
                                     className={classnames(styles["yakit-mode-icon"], {
@@ -954,21 +992,22 @@ const UILayout: React.FC<UILayoutProp> = (props) => {
 
                     <div className={styles["ui-layout-body"]}>
                         {engineLink &&
+                            !linkDatabase &&
                             (isJudgeLicense ? (
                                 <EnterpriseJudgeLogin
                                     setJudgeLicense={setJudgeLicense}
                                     setJudgeLogin={(v: boolean) => {}}
                                 />
-                            ) : linkDatabase ? (
-                                <SoftwareSettings
-                                    engineMode={engineMode || "local"}
-                                    onEngineModeChange={changeEngineMode}
-                                    onFinish={softwareSettingFinish}
-                                />
                             ) : (
                                 props.children
                             ))}
-
+                        {engineLink && linkDatabase && (
+                            <SoftwareSettings
+                                engineMode={engineMode || "local"}
+                                onEngineModeChange={changeEngineMode}
+                                onFinish={softwareSettingFinish}
+                            />
+                        )}
                         {!engineLink && !isRemoteEngine && (
                             <YakitLoading
                                 yakitStatus={yakitStatus}
