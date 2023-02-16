@@ -1357,7 +1357,6 @@ const Main: React.FC<MainProp> = React.memo((props) => {
                                     marginLeft: 0
                                 }}
                             >
-<<<<<<< HEAD
                                 <div
                                     style={{
                                         padding: 0,
@@ -1387,67 +1386,6 @@ const Main: React.FC<MainProp> = React.memo((props) => {
                                                     const unmountResult = ReactDOM.unmountComponentAtNode(div)
                                                     if (unmountResult && div.parentNode) {
                                                         div.parentNode.removeChild(div)
-=======
-                                {pageCache.length > 0 ? (
-                                    <Tabs
-                                        style={{display: "flex", flex: "1"}}
-                                        // tabBarStyle={{marginBottom: 8}}
-                                        className='main-content-tabs yakit-layout-tabs'
-                                        activeKey={currentTabKey}
-                                        onChange={setCurrentTabKey}
-                                        size={"small"}
-                                        type={"editable-card"}
-                                        renderTabBar={(props, TabBarDefault) => {
-                                            return bars(props, TabBarDefault)
-                                        }}
-                                        // hideAdd={true}
-                                        onTabClick={(key, e) => {
-                                            const divExisted = document.getElementById("yakit-cursor-menu")
-                                            if (divExisted) {
-                                                const div: HTMLDivElement = divExisted as HTMLDivElement
-                                                const unmountResult = ReactDOM.unmountComponentAtNode(div)
-                                                if (unmountResult && div.parentNode) {
-                                                    div.parentNode.removeChild(div)
-                                                }
-                                            }
-                                        }}
-                                    >
-                                        {pageCache.map((i) => {
-                                            return (
-                                                <Tabs.TabPane
-                                                    forceRender={true}
-                                                    key={i.route}
-                                                    tab={i.verbose}
-                                                    closeIcon={
-                                                        <Space>
-                                                            {/* <Popover
-                                                                trigger={"click"}
-                                                                title={"修改名称"}
-                                                                content={
-                                                                    <>
-                                                                        <Input
-                                                                            size={"small"}
-                                                                            defaultValue={i.verbose}
-                                                                            onBlur={(e) =>
-                                                                                updateCacheVerbose(
-                                                                                    `${i.route}`,
-                                                                                    e.target.value
-                                                                                )
-                                                                            }
-                                                                        />
-                                                                    </>
-                                                                }
-                                                            >
-                                                                <EditOutlined className='main-container-cion' />
-                                                            </Popover> */}
-                                                            {i.verbose !== "首页" && (
-                                                                <CloseOutlined
-                                                                    className='main-container-cion'
-                                                                    onClick={() => removePage(`${i.route}`)}
-                                                                />
-                                                            )}
-                                                        </Space>
->>>>>>> 4dec07b7 (更换logo)
                                                     }
                                                 }
                                             }}
