@@ -369,26 +369,33 @@ const HeardMenu: React.FC<HeardMenuProps> = React.memo((props) => {
      * @description: 保存最新的菜单数据
      */
     const onAddMenus = useMemoizedFn((data: MenuDataProps[], menuMode: string, callBack?: () => void) => {
-        const menuLists = getMenuListBySort(data, menuMode)
-        ipcRenderer
-            .invoke("AddMenus", { Data: menuLists })
-            .then((rsp) => {
-                setRouteMenu(data)
-                if (!menuId && data.length > 0) {
-                    setSubMenuData(data[0].subMenuData || [])
-                    setMenuId(data[0].id)
-                }
-                onRemoveEmpty()
-                if (callBack) callBack()
-            })
-            .catch((err) => {
-                failed("保存菜单失败：" + err)
-            })
-            .finally(() => {
-                setTimeout(() => {
-                    setLoading(false)
-                }, 300)
-            })
+        // 电信版本暂不支持自定义菜单，所以注释下方保存自定义菜单的逻辑
+        setRouteMenu(data)
+        if (!menuId && data.length > 0) {
+            setSubMenuData(data[0].subMenuData || [])
+            setMenuId(data[0].id)
+        }
+        if (callBack) callBack()
+        // const menuLists = getMenuListBySort(data, menuMode)
+        // ipcRenderer
+        //     .invoke("AddMenus", {Data: menuLists})
+        //     .then((rsp) => {
+        //         setRouteMenu(data)
+        //         if (!menuId && data.length > 0) {
+        //             setSubMenuData(data[0].subMenuData || [])
+        //             setMenuId(data[0].id)
+        //         }
+        //         onRemoveEmpty()
+        //         if (callBack) callBack()
+        //     })
+        //     .catch((err) => {
+        //         failed("保存菜单失败：" + err)
+        //     })
+        //     .finally(() => {
+        //         setTimeout(() => {
+        //             setLoading(false)
+        //         }, 300)
+        //     })
     })
 
     useEffect(() => {
