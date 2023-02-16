@@ -1098,6 +1098,23 @@ export const YakModule: React.FC<YakModuleProp> = (props) => {
             ipcRenderer.removeAllListeners("ref-local-script-list")
         }
     }, [])
+    /**
+     * @description: 删除菜单
+     */
+    const onRemoveMenu = useMemoizedFn(() => {
+        getRemoteValue("PatternMenu").then((patternMenu) => {
+            const menuMode = patternMenu || "expert"
+            ipcRenderer
+                .invoke("DeleteAllMenu", {Mode: menuMode})
+                .then(() => {
+                    // 更新菜单
+                    ipcRenderer.invoke("change-main-menu")
+                })
+                .catch((e: any) => {
+                    failed(`删除菜单失败:${e}`)
+                })
+        })
+    })
     const onRemoveLocalPlugin = useMemoizedFn(() => {
         const length = selectedRowKeysRecordLocal.length
         if (length === 0 || isSelectAllLocal) {
@@ -1116,7 +1133,9 @@ export const YakModule: React.FC<YakModuleProp> = (props) => {
                     setScript(undefined)
                     onSelectAllLocal(false)
                     getYakScriptTagsAndType()
-                    ipcRenderer.invoke("change-main-menu")
+                    // ipcRenderer.invoke("change-main-menu")
+                    // 电信 暂时不支持自定义菜单，当本地插件全部删除时，清空添加的插件菜单数据
+                    onRemoveMenu()
                     success("全部删除成功")
                 })
                 .catch((e) => {

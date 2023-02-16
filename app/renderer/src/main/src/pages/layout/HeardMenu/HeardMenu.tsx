@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react"
+import React, { useEffect, useRef, useState } from "react"
 import {
     HeardMenuProps,
     RouteMenuDataItemProps,
@@ -8,7 +8,7 @@ import {
     DownloadOnlinePluginByScriptNamesResponse
 } from "./HeardMenuType"
 import style from "./HeardMenu.module.scss"
-import {DefaultRouteMenuData, HiddenMenuData, MenuDataProps, Route,SimpleDataBaseMenu} from "@/routes/routeSpec"
+import { DefaultRouteMenuData, HiddenMenuData, MenuDataProps, Route, SimpleDataBaseMenu } from "@/routes/routeSpec"
 import classNames from "classnames"
 import {
     AcademicCapIcon,
@@ -26,9 +26,9 @@ import {
     UserIcon
 } from "@/assets/newIcon"
 import ReactResizeDetector from "react-resize-detector"
-import {useGetState, useMemoizedFn, useUpdateEffect} from "ahooks"
-import {onImportShare} from "@/pages/fuzzer/components/ShareImport"
-import {Divider, Dropdown, Tabs, Tooltip, Form, Upload, Modal, Spin} from "antd"
+import { useGetState, useMemoizedFn, useUpdateEffect } from "ahooks"
+import { onImportShare } from "@/pages/fuzzer/components/ShareImport"
+import { Divider, Dropdown, Tabs, Tooltip, Form, Upload, Modal, Spin } from "antd"
 import {
     MenuBasicCrawlerIcon,
     MenuComprehensiveCatalogScanningAndBlastingIcon,
@@ -38,17 +38,17 @@ import {
     MenuPayloadIcon,
     MenuYakRunnerIcon
 } from "@/pages/customizeMenu/icon/menuIcon"
-import {YakitMenu, YakitMenuItemProps} from "@/components/yakitUI/YakitMenu/YakitMenu"
-import {YakitPopover} from "@/components/yakitUI/YakitPopover/YakitPopover"
-import {YakitButton} from "@/components/yakitUI/YakitButton/YakitButton"
-import {getRemoteValue, setRemoteValue} from "@/utils/kv"
-import {YakitModal} from "@/components/yakitUI/YakitModal/YakitModal"
-import {YakCodeEditor} from "@/utils/editors"
-import {StringToUint8Array, Uint8ArrayToString} from "@/utils/str"
-import {getMenuListBySort, getMenuListToLocal} from "@/pages/customizeMenu/CustomizeMenu"
-import {InputFileNameItem} from "@/utils/inputUtil"
-import {YakitInput} from "@/components/yakitUI/YakitInput/YakitInput"
-import {YakitFormDragger} from "@/components/yakitUI/YakitForm/YakitForm"
+import { YakitMenu, YakitMenuItemProps } from "@/components/yakitUI/YakitMenu/YakitMenu"
+import { YakitPopover } from "@/components/yakitUI/YakitPopover/YakitPopover"
+import { YakitButton } from "@/components/yakitUI/YakitButton/YakitButton"
+import { getRemoteValue, setRemoteValue } from "@/utils/kv"
+import { YakitModal } from "@/components/yakitUI/YakitModal/YakitModal"
+import { YakCodeEditor } from "@/utils/editors"
+import { StringToUint8Array, Uint8ArrayToString } from "@/utils/str"
+import { getMenuListBySort, getMenuListToLocal } from "@/pages/customizeMenu/CustomizeMenu"
+import { InputFileNameItem } from "@/utils/inputUtil"
+import { YakitInput } from "@/components/yakitUI/YakitInput/YakitInput"
+import { YakitFormDragger } from "@/components/yakitUI/YakitForm/YakitForm"
 import {
     MenuSolidBasicCrawlerIcon,
     MenuSolidComprehensiveCatalogScanningAndBlastingIcon,
@@ -56,16 +56,16 @@ import {
     MenuSolidSpaceEngineHunterIcon,
     MenuSolidSubDomainCollectionIcon
 } from "@/pages/customizeMenu/icon/solidMenuIcon"
-import {ExclamationCircleOutlined, LoadingOutlined} from "@ant-design/icons"
-import {YakitModalConfirm} from "@/components/yakitUI/YakitModal/YakitModalConfirm"
-import {MenuItem, MenuItemGroup} from "@/pages/MainOperator"
-import {failed} from "@/utils/notification"
-import {YakScript} from "@/pages/invoker/schema"
-import {YakitSpin} from "@/components/yakitUI/YakitSpin/YakitSpin"
-import {useStore} from "@/store"
-import {isSimpleEnterprise} from "@/utils/envfile"
+import { ExclamationCircleOutlined, LoadingOutlined } from "@ant-design/icons"
+import { YakitModalConfirm } from "@/components/yakitUI/YakitModal/YakitModalConfirm"
+import { MenuItem, MenuItemGroup } from "@/pages/MainOperator"
+import { failed } from "@/utils/notification"
+import { YakScript } from "@/pages/invoker/schema"
+import { YakitSpin } from "@/components/yakitUI/YakitSpin/YakitSpin"
+import { useStore } from "@/store"
+import { isSimpleEnterprise } from "@/utils/envfile"
 
-const {ipcRenderer} = window.require("electron")
+const { ipcRenderer } = window.require("electron")
 
 export const getScriptIcon = (name: string) => {
     switch (name) {
@@ -104,7 +104,7 @@ export const getScriptHoverIcon = (name: string) => {
  * @param {} onRouteMenuSelect 系统菜单选择事件
  */
 const HeardMenu: React.FC<HeardMenuProps> = React.memo((props) => {
-    const {onRouteMenuSelect, setRouteKeyToLabel} = props
+    const { onRouteMenuSelect, setRouteKeyToLabel } = props
     /**
      * @description: 融合系统菜单和自定义菜单
      */
@@ -135,40 +135,40 @@ const HeardMenu: React.FC<HeardMenuProps> = React.memo((props) => {
     const menuLeftInnerRef = useRef<any>()
 
     const routeKeyToLabel = useRef<Map<string, string>>(new Map<string, string>())
-    
+
     /** 登录用户信息 */
-    const {userInfo} = useStore()
+    const { userInfo } = useStore()
     useEffect(() => {
         // 当为企业简易版
-        if(isSimpleEnterprise){
+        if (isSimpleEnterprise) {
             let currentMenuList: MenuDataProps[] = [...SimpleDataBaseMenu]
-            if(userInfo.role!=="admin"){
+            if (userInfo.role !== "admin") {
                 // 简易企业版非管理员 无需插件权限
-                currentMenuList = currentMenuList.filter((item)=>item.id!=="4")
+                currentMenuList = currentMenuList.filter((item) => item.id !== "4")
             }
             setRouteMenu(currentMenuList)
-            setSubMenuData(currentMenuList[0].subMenuData||[])
+            setSubMenuData(currentMenuList[0].subMenuData || [])
             setMenuId(currentMenuList[0].id)
         }
-        else{
+        else {
             getRemoteValue("PatternMenu").then((patternMenu) => {
-            const menuMode = patternMenu || "expert"
-            setRemoteValue("PatternMenu", menuMode)
-            setPatternMenu(menuMode)
-            init(menuMode)
-        })
+                const menuMode = patternMenu || "expert"
+                setRemoteValue("PatternMenu", menuMode)
+                setPatternMenu(menuMode)
+                init(menuMode)
+            })
         }
-        
+
     }, [])
     useEffect(() => {
-        if(!isSimpleEnterprise){
+        if (!isSimpleEnterprise) {
             ipcRenderer.on("fetch-new-main-menu", (e) => {
                 init(getPatternMenu(), true)
             })
         }
-        
+
         return () => {
-            if(!isSimpleEnterprise){
+            if (!isSimpleEnterprise) {
                 ipcRenderer.removeAllListeners("fetch-new-main-menu")
             }
         }
@@ -181,7 +181,7 @@ const HeardMenu: React.FC<HeardMenuProps> = React.memo((props) => {
      */
     const getRouteKeyToLabel = useMemoizedFn(() => {
         routeMenu.forEach((k) => {
-            ;(k.subMenuData || []).forEach((subKey) => {
+            ; (k.subMenuData || []).forEach((subKey) => {
                 routeKeyToLabel.current.set(`${subKey.key}`, subKey.label)
             })
             routeKeyToLabel.current.set(`${k.key}`, k.label)
@@ -199,12 +199,12 @@ const HeardMenu: React.FC<HeardMenuProps> = React.memo((props) => {
         setLoading(true)
         // 获取老版的菜单数据，兼容
         ipcRenderer
-            .invoke("QueryAllMenuItem", {Mode: ""})
-            .then((data: {Groups: MenuItemGroup[]}) => {
+            .invoke("QueryAllMenuItem", { Mode: "" })
+            .then((data: { Groups: MenuItemGroup[] }) => {
                 oldMenuData = data.Groups
                 //获取模式菜单 如果获取的菜单数据为空，则新增默认菜单数据
                 ipcRenderer
-                    .invoke("QueryAllMenuItem", {Mode: menuMode})
+                    .invoke("QueryAllMenuItem", { Mode: menuMode })
                     .then((rsp: MenuByGroupProps) => {
                         if (rsp.Groups.length === 0) {
                             // 获取的数据为空，先使用默认数据覆盖，然后再通过名字下载，然后保存菜单数据
@@ -250,9 +250,9 @@ const HeardMenu: React.FC<HeardMenuProps> = React.memo((props) => {
                             }
                             setRouteMenu(routerList)
                             if ((updateSubMenu || !menuId) && routerList.length > 0) {
-                                let firstMenu: MenuDataProps = routerList[0] || {id: "", label: ""}
+                                let firstMenu: MenuDataProps = routerList[0] || { id: "", label: "" }
                                 if (menuId) {
-                                    firstMenu = routerList.find((i) => i.id === menuId) || {id: "", label: ""}
+                                    firstMenu = routerList.find((i) => i.id === menuId) || { id: "", label: "" }
                                 }
                                 setSubMenuData(firstMenu.subMenuData || [])
                                 setMenuId(firstMenu.id)
@@ -275,7 +275,7 @@ const HeardMenu: React.FC<HeardMenuProps> = React.memo((props) => {
         let menuList: MenuDataProps[] = [...DefaultRouteMenuData]
         if (oldMenuData.length > 0) {
             menuList = [...oldMenuDataLocal, ...menuList].map((item, index) => {
-                item.subMenuData?.map((subItem, subIndex) => ({...subItem, id: `${index + 1}-${subIndex + 1}`}))
+                item.subMenuData?.map((subItem, subIndex) => ({ ...subItem, id: `${index + 1}-${subIndex + 1}` }))
                 item.id = `${index + 1}`
                 return item
             })
@@ -336,7 +336,7 @@ const HeardMenu: React.FC<HeardMenuProps> = React.memo((props) => {
                                     firstMenuList.push(subItem)
                                 })
                             }
-                            newMenuData.push({...item, subMenuData: firstMenuList})
+                            newMenuData.push({ ...item, subMenuData: firstMenuList })
                         })
                         onAddMenus(newMenuData, menuMode, callBack)
                     } else {
@@ -356,7 +356,7 @@ const HeardMenu: React.FC<HeardMenuProps> = React.memo((props) => {
      */
     const onRemoveEmpty = useMemoizedFn(() => {
         ipcRenderer
-            .invoke("DeleteAllMenu", {Mode: ""})
+            .invoke("DeleteAllMenu", { Mode: "" })
             .then(() => {
                 // 更新菜单
                 // ipcRenderer.invoke("change-main-menu")
@@ -371,7 +371,7 @@ const HeardMenu: React.FC<HeardMenuProps> = React.memo((props) => {
     const onAddMenus = useMemoizedFn((data: MenuDataProps[], menuMode: string, callBack?: () => void) => {
         const menuLists = getMenuListBySort(data, menuMode)
         ipcRenderer
-            .invoke("AddMenus", {Data: menuLists})
+            .invoke("AddMenus", { Data: menuLists })
             .then((rsp) => {
                 setRouteMenu(data)
                 if (!menuId && data.length > 0) {
@@ -462,7 +462,7 @@ const HeardMenu: React.FC<HeardMenuProps> = React.memo((props) => {
     const onCheckPlugin = useMemoizedFn((name: string, newKey: string) => {
         // 先验证菜单的插件id和本地最新的插件id是不是一致的
         ipcRenderer
-            .invoke("GetYakScriptByName", {Name: name})
+            .invoke("GetYakScriptByName", { Name: name })
             .then((i: YakScript) => {
                 const lastPluginID = `plugin:${i.Id}`
                 onRouteMenuSelect(`${lastPluginID}` as Route)
@@ -529,7 +529,7 @@ const HeardMenu: React.FC<HeardMenuProps> = React.memo((props) => {
      */
     const onRestoreMenu = useMemoizedFn(() => {
         ipcRenderer
-            .invoke("DeleteAllMenu", {Mode: patternMenu})
+            .invoke("DeleteAllMenu", { Mode: patternMenu })
             .then(() => {
                 // 更新菜单
                 ipcRenderer.invoke("change-main-menu")
@@ -561,13 +561,13 @@ const HeardMenu: React.FC<HeardMenuProps> = React.memo((props) => {
             return
         }
         try {
-            const menuLists: MenuItemGroup = JSON.parse(menuDataString).map((ele) => ({...ele, Mode: patternMenu}))
+            const menuLists: MenuItemGroup = JSON.parse(menuDataString).map((ele) => ({ ...ele, Mode: patternMenu }))
             setImportLoading(true)
             ipcRenderer
-                .invoke("DeleteAllMenu", {Mode: patternMenu})
+                .invoke("DeleteAllMenu", { Mode: patternMenu })
                 .then(() => {
                     ipcRenderer
-                        .invoke("AddMenus", {Data: menuLists})
+                        .invoke("AddMenus", { Data: menuLists })
                         .then(() => {
                             setVisibleImport(false)
                             ipcRenderer.invoke("change-main-menu")
@@ -680,97 +680,97 @@ const HeardMenu: React.FC<HeardMenuProps> = React.memo((props) => {
                     )}
                 </div>
                 <div className={classNames(style["heard-menu-right"])}>
-                    {!isSimpleEnterprise&&<>
+                    {!isSimpleEnterprise && <>
                         <YakitButton
-                        type='text'
-                        className={style["heard-menu-theme"]}
-                        onClick={() => onImportShare()}
-                        icon={<SaveIcon />}
-                    >
-                        导入协作资源
-                    </YakitButton>
-                    <YakitButton
-                        type='secondary2'
-                        className={style["heard-menu-grey"]}
-                        onClick={() => onRouteMenuSelect(Route.PayloadManager)}
-                        icon={<MenuPayloadIcon />}
-                    >
-                        Payload
-                    </YakitButton>
-                    <YakitButton
-                        type='secondary2'
-                        className={classNames(style["heard-menu-grey"], style["heard-menu-yak-run"])}
-                        onClick={() => onRouteMenuSelect(Route.YakScript)}
-                        icon={<MenuYakRunnerIcon />}
-                    >
-                        Yak Runner
-                    </YakitButton>
-                    <Dropdown
-                        overlayClassName={style["customize-drop-menu"]}
-                        overlay={
-                            <>
-                                {CustomizeMenuData.map((item) => (
-                                    <div
-                                        key={item.key}
-                                        className={classNames(style["customize-item"], {
-                                            [style["customize-item-select"]]: patternMenu === item.key
-                                        })}
-                                        onClick={() => onCustomizeMenuClick(item.key)}
-                                    >
-                                        <div className={style["customize-item-left"]}>
-                                            {item.itemIcon}
-                                            <span className={style["customize-item-label"]}>{item.label}</span>
-                                        </div>
-                                        {patternMenu === item.key && <CheckIcon />}
-                                    </div>
-                                ))}
-                                <Divider style={{margin: "6px 0"}} />
-                                <YakitSpin spinning={loading} tip='Loading...' size='small'>
-                                    <div
-                                        className={classNames(style["customize-item"])}
-                                        onClick={() =>
-                                            CustomizeMenuData.find((ele) => patternMenu === ele.key)?.onRestoreMenu()
-                                        }
-                                    >
-                                        {CustomizeMenuData.find((ele) => patternMenu === ele.key)?.tip}
-                                    </div>
-                                    <div
-                                        className={classNames(style["customize-item"])}
-                                        onClick={() => onGoCustomize()}
-                                    >
-                                        编辑菜单
-                                    </div>
-                                    <div
-                                        className={classNames(style["customize-item"])}
-                                        onClick={() => {
-                                            setVisibleImport(true)
-                                            setMenuDataString("")
-                                            setFileName("")
-                                            setRefreshTrigger(!refreshTrigger)
-                                        }}
-                                    >
-                                        导入 JSON 配置
-                                    </div>
-                                </YakitSpin>
-                            </>
-                        }
-                        onVisibleChange={(e) => {
-                            setCustomizeVisible(e)
-                        }}
-                    >
+                            type='text'
+                            className={style["heard-menu-theme"]}
+                            onClick={() => onImportShare()}
+                            icon={<SaveIcon />}
+                        >
+                            导入协作资源
+                        </YakitButton>
                         <YakitButton
                             type='secondary2'
-                            className={classNames(style["heard-menu-customize"], {
-                                [style["margin-right-0"]]: isExpand,
-                                [style["heard-menu-customize-menu"]]: customizeVisible
-                            })}
-                            icon={<CursorClickIcon style={{color: "var(--yakit-body-text-color)"}} />}
+                            className={style["heard-menu-grey"]}
+                            onClick={() => onRouteMenuSelect(Route.PayloadManager)}
+                            icon={<MenuPayloadIcon />}
                         >
-                            <div className={style["heard-menu-customize-content"]}>
-                                自定义{(customizeVisible && <ChevronUpIcon />) || <ChevronDownIcon />}
-                            </div>
+                            Payload
                         </YakitButton>
-                    </Dropdown>
+                        <YakitButton
+                            type='secondary2'
+                            className={classNames(style["heard-menu-grey"], style["heard-menu-yak-run"])}
+                            onClick={() => onRouteMenuSelect(Route.YakScript)}
+                            icon={<MenuYakRunnerIcon />}
+                        >
+                            Yak Runner
+                        </YakitButton>
+                        <Dropdown
+                            overlayClassName={style["customize-drop-menu"]}
+                            overlay={
+                                <>
+                                    {CustomizeMenuData.map((item) => (
+                                        <div
+                                            key={item.key}
+                                            className={classNames(style["customize-item"], {
+                                                [style["customize-item-select"]]: patternMenu === item.key
+                                            })}
+                                            onClick={() => onCustomizeMenuClick(item.key)}
+                                        >
+                                            <div className={style["customize-item-left"]}>
+                                                {item.itemIcon}
+                                                <span className={style["customize-item-label"]}>{item.label}</span>
+                                            </div>
+                                            {patternMenu === item.key && <CheckIcon />}
+                                        </div>
+                                    ))}
+                                    <Divider style={{ margin: "6px 0" }} />
+                                    <YakitSpin spinning={loading} tip='Loading...' size='small'>
+                                        <div
+                                            className={classNames(style["customize-item"])}
+                                            onClick={() =>
+                                                CustomizeMenuData.find((ele) => patternMenu === ele.key)?.onRestoreMenu()
+                                            }
+                                        >
+                                            {CustomizeMenuData.find((ele) => patternMenu === ele.key)?.tip}
+                                        </div>
+                                        <div
+                                            className={classNames(style["customize-item"])}
+                                            onClick={() => onGoCustomize()}
+                                        >
+                                            编辑菜单
+                                        </div>
+                                        <div
+                                            className={classNames(style["customize-item"])}
+                                            onClick={() => {
+                                                setVisibleImport(true)
+                                                setMenuDataString("")
+                                                setFileName("")
+                                                setRefreshTrigger(!refreshTrigger)
+                                            }}
+                                        >
+                                            导入 JSON 配置
+                                        </div>
+                                    </YakitSpin>
+                                </>
+                            }
+                            onVisibleChange={(e) => {
+                                setCustomizeVisible(e)
+                            }}
+                        >
+                            <YakitButton
+                                type='secondary2'
+                                className={classNames(style["heard-menu-customize"], {
+                                    [style["margin-right-0"]]: isExpand,
+                                    [style["heard-menu-customize-menu"]]: customizeVisible
+                                })}
+                                icon={<CursorClickIcon style={{ color: "var(--yakit-body-text-color)" }} />}
+                            >
+                                <div className={style["heard-menu-customize-content"]}>
+                                    自定义{(customizeVisible && <ChevronUpIcon />) || <ChevronDownIcon />}
+                                </div>
+                            </YakitButton>
+                        </Dropdown>
                     </>}
                     {!isExpand && (
                         <div className={style["heard-menu-sort"]} onClick={() => onExpand()}>
@@ -810,7 +810,7 @@ const HeardMenu: React.FC<HeardMenuProps> = React.memo((props) => {
                                             {(!isDisable && (
                                                 <div
                                                     className={style["sub-menu-expand-item"]}
-                                                    style={{paddingLeft: index === 0 ? 0 : ""}}
+                                                    style={{ paddingLeft: index === 0 ? 0 : "" }}
                                                 >
                                                     <div className={style["sub-menu-expand-item-icon"]}>
                                                         <span className={style["item-icon"]}>{item.icon}</span>
@@ -830,29 +830,29 @@ const HeardMenu: React.FC<HeardMenuProps> = React.memo((props) => {
                                                     </Tooltip>
                                                 </div>
                                             )) || (
-                                                <div
-                                                    className={classNames(style["sub-menu-expand-item"], {
-                                                        [style["sub-menu-expand-item-disable"]]: isDisable
-                                                    })}
-                                                    style={{paddingLeft: index === 0 ? 0 : ""}}
-                                                    onClick={(e) => {
-                                                        e.stopPropagation()
-                                                        if (loading) return
-                                                        onOpenDownModal(item)
-                                                    }}
-                                                >
-                                                    <div className={style["sub-menu-expand-item-icon"]}>
-                                                        <span className={style["item-icon"]}>
-                                                            {(loading && <LoadingOutlined />) || item.icon}
-                                                        </span>
+                                                    <div
+                                                        className={classNames(style["sub-menu-expand-item"], {
+                                                            [style["sub-menu-expand-item-disable"]]: isDisable
+                                                        })}
+                                                        style={{ paddingLeft: index === 0 ? 0 : "" }}
+                                                        onClick={(e) => {
+                                                            e.stopPropagation()
+                                                            if (loading) return
+                                                            onOpenDownModal(item)
+                                                        }}
+                                                    >
+                                                        <div className={style["sub-menu-expand-item-icon"]}>
+                                                            <span className={style["item-icon"]}>
+                                                                {(loading && <LoadingOutlined />) || item.icon}
+                                                            </span>
+                                                        </div>
+                                                        {(loading && nodeLabel) || (
+                                                            <Tooltip title='插件丢失，点击下载' placement='bottom'>
+                                                                {nodeLabel}
+                                                            </Tooltip>
+                                                        )}
                                                     </div>
-                                                    {(loading && nodeLabel) || (
-                                                        <Tooltip title='插件丢失，点击下载' placement='bottom'>
-                                                            {nodeLabel}
-                                                        </Tooltip>
-                                                    )}
-                                                </div>
-                                            )}
+                                                )}
                                             {index !== subMenuData.length - 1 && (
                                                 <div className={style["sub-menu-expand-item-line"]} />
                                             )}
@@ -888,7 +888,7 @@ const HeardMenu: React.FC<HeardMenuProps> = React.memo((props) => {
                         fileName={fileName}
                     />
                     <Form.Item label='配置 JSON'>
-                        <div style={{height: 400}}>
+                        <div style={{ height: 400 }}>
                             <YakCodeEditor
                                 refreshTrigger={refreshTrigger}
                                 originValue={StringToUint8Array(menuDataString, "utf8")}
@@ -906,7 +906,7 @@ const HeardMenu: React.FC<HeardMenuProps> = React.memo((props) => {
 export default HeardMenu
 
 const RouteMenuDataItem: React.FC<RouteMenuDataItemProps> = React.memo((props) => {
-    const {menuItem, isShow, onSelect, isExpand, setSubMenuData, activeMenuId, onOpenDownModal} = props
+    const { menuItem, isShow, onSelect, isExpand, setSubMenuData, activeMenuId, onOpenDownModal } = props
     const [visible, setVisible] = useState<boolean>(false)
     const onOpenSecondMenu = useMemoizedFn(() => {
         if (!isExpand) return
@@ -942,7 +942,7 @@ const RouteMenuDataItem: React.FC<RouteMenuDataItemProps> = React.memo((props) =
                     [style["popover-content"]]: menuItem.subMenuData && menuItem.subMenuData.length <= 1
                 })}
                 onVisibleChange={setVisible}
-                // visible={menuItem.id === "2"}
+            // visible={menuItem.id === "2"}
             >
                 {popoverContent}
             </YakitPopover>
@@ -951,7 +951,7 @@ const RouteMenuDataItem: React.FC<RouteMenuDataItemProps> = React.memo((props) =
 })
 
 const SubMenu: React.FC<SubMenuProps> = (props) => {
-    const {subMenuData, onSelect, onOpenDownModal} = props
+    const { subMenuData, onSelect, onOpenDownModal } = props
     return (
         <div className={style["heard-sub-menu"]}>
             {subMenuData.map((subMenuItem) => (
@@ -977,12 +977,12 @@ const SubMenu: React.FC<SubMenuProps> = (props) => {
                             {subMenuItem.label === "UserDefined" ? "社区插件" : subMenuItem.label}
                         </div>
                     )) || (
-                        <Tooltip title='插件丢失，点击下载' placement='bottom' zIndex={9999}>
-                            <div className={style["heard-sub-menu-label"]}>
-                                {subMenuItem.label === "UserDefined" ? "社区插件" : subMenuItem.label}
-                            </div>
-                        </Tooltip>
-                    )}
+                            <Tooltip title='插件丢失，点击下载' placement='bottom' zIndex={9999}>
+                                <div className={style["heard-sub-menu-label"]}>
+                                    {subMenuItem.label === "UserDefined" ? "社区插件" : subMenuItem.label}
+                                </div>
+                            </Tooltip>
+                        )}
                 </div>
             ))}
         </div>
@@ -990,7 +990,7 @@ const SubMenu: React.FC<SubMenuProps> = (props) => {
 }
 
 const CollapseMenu: React.FC<CollapseMenuProp> = React.memo((props) => {
-    const {menuData, moreLeft, isExpand, onMenuSelect} = props
+    const { menuData, moreLeft, isExpand, onMenuSelect } = props
 
     const [show, setShow] = useState<boolean>(false)
 
@@ -1011,12 +1011,12 @@ const CollapseMenu: React.FC<CollapseMenuProp> = React.memo((props) => {
             isHint={true}
             data={newMenuData}
             width={136}
-            onSelect={({key}) => onMenuSelect(key)}
+            onSelect={({ key }) => onMenuSelect(key)}
         ></YakitMenu>
     )
 
     return (
-        <div className={style["heard-menu-more"]} style={{left: moreLeft}}>
+        <div className={style["heard-menu-more"]} style={{ left: moreLeft }}>
             <YakitPopover
                 placement={"bottomLeft"}
                 arrowPointAtCenter={true}

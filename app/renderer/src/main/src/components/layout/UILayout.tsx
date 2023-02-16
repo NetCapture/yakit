@@ -54,6 +54,7 @@ import {
 } from "@/pages/softwareSettings/ProjectManage"
 import {isSimpleEnterprise} from "@/utils/envfile"
 
+import TelecomSmallLogo from "@/assets/img/telecom_logo_small.png"
 import classnames from "classnames"
 import styles from "./uiLayout.module.scss"
 
