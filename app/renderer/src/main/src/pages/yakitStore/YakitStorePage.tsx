@@ -1014,8 +1014,6 @@ export const YakModule: React.FC<YakModuleProp> = (props) => {
     const [refresh, setRefresh] = useState(false)
     const [isSelectAllLocal, setIsSelectAllLocal] = useState<boolean>(false)
     const [selectedRowKeysRecordLocal, setSelectedRowKeysRecordLocal] = useState<YakScript[]>([])
-    const [selectedUploadRowKeysRecordLocal, setSelectedUploadRowKeysRecordLocal, getSelectedUploadRowKeysRecordLocal] =
-        useGetState<YakScript[]>([])
     const [visibleQuery, setVisibleQuery] = useState<boolean>(false)
     const [isFilter, setIsFilter] = useState<boolean>(false)
     const [isShowYAMLPOC, setIsShowYAMLPOC] = useState<boolean>(false)
@@ -1231,7 +1229,7 @@ export const YakModule: React.FC<YakModuleProp> = (props) => {
                         UserId
                     } as QueryYakScriptLocalAndUserRequest)
                     .then((newSrcipt: {Data: YakScript[]}) => {
-                        setSelectedUploadRowKeysRecordLocal(newSrcipt.Data)
+                        SelectedUploadRowKeysRecordLocal.current = newSrcipt.Data
                         JudgeIsShowVisible(newSrcipt.Data)
                     })
                     .catch((e) => {
@@ -1241,7 +1239,7 @@ export const YakModule: React.FC<YakModuleProp> = (props) => {
                     .finally(() => {})
             })
         } else {
-            setSelectedUploadRowKeysRecordLocal(selectedRowKeysRecordLocal)
+            SelectedUploadRowKeysRecordLocal.current = selectedRowKeysRecordLocal
             JudgeIsShowVisible(selectedRowKeysRecordLocal)
         }
     })
