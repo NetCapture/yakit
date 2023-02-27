@@ -88,7 +88,14 @@ module.exports = (win, getClient) => {
     })
 
     /** 刷新tabs颜色展示 */
-    ipcMain.handle("refresh-tabs-color", async (e,params) => {
-        win.webContents.send("fetch-new-tabs-color",params)
+    ipcMain.handle("refresh-tabs-color", async (e, params) => {
+        win.webContents.send("fetch-new-tabs-color", params)
+    })
+    /** License验证通信 */
+    ipcMain.handle("send-down-by-scriptNames", (e, params) => {
+        win.webContents.send("fetch-down-by-scriptNames", params)
+    })
+    ipcMain.handle("send-new-home-refsh", (e, params) => {
+        win.webContents.send("fetch-new-home-refsh", params)
     })
 }
