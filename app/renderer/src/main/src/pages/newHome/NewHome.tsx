@@ -78,7 +78,7 @@ interface RouteItemProps {
     dataSource: DataItem
     setOpenPage: (v: any) => void
     load: boolean
-    getCustomizeMenus?: (s: string[]) => void
+    getCustomizeMenus?: () => void
 }
 
 const RouteItem: React.FC<RouteItemProps> = (props) => {
@@ -1062,8 +1062,7 @@ const NewHome: React.FC<NewHomeProps> = (props) => {
     const getCustomizeMenus = () => {
         ipcRenderer
             .invoke("QueryYakScript", {
-                // Pagination: genDefaultPagination(1000),
-                IncludedScriptNames:['基础爬虫','综合目录扫描与爆破'],
+                IncludedScriptNames: ["基础爬虫", "综合目录扫描与爆破"],
                 IsGeneralModule: true,
                 Type: "yak"
             } as QueryYakScriptRequest)
