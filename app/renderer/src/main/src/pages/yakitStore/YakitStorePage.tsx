@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef, memo, ReactNode, useLayoutEffect} from "react"
+import React, { useEffect, useState, useRef, memo, ReactNode, useLayoutEffect } from "react"
 import {
     Alert,
     Button,
@@ -47,18 +47,18 @@ import {
     DownOutlined,
     CloudUploadOutlined
 } from "@ant-design/icons"
-import {showDrawer, showModal} from "../../utils/showModal"
-import {startExecYakCode} from "../../utils/basic"
-import {genDefaultPagination, QueryYakScriptRequest, QueryYakScriptsResponse, YakScript} from "../invoker/schema"
-import {failed, success, warn, info} from "../../utils/notification"
-import {CopyableField, InputItem, ManySelectOne, SelectOne} from "../../utils/inputUtil"
-import {formatDate} from "../../utils/timeUtil"
-import {PluginOperator} from "./PluginOperator"
-import {YakitTag} from "@/components/yakitUI/YakitTag/YakitTag"
-import {AutoCard} from "../../components/AutoCard"
-import {UserInfoProps, useStore, YakitStoreParams} from "@/store"
+import { showDrawer, showModal } from "../../utils/showModal"
+import { startExecYakCode } from "../../utils/basic"
+import { genDefaultPagination, QueryYakScriptRequest, QueryYakScriptsResponse, YakScript } from "../invoker/schema"
+import { failed, success, warn, info } from "../../utils/notification"
+import { CopyableField, InputItem, ManySelectOne, SelectOne } from "../../utils/inputUtil"
+import { formatDate } from "../../utils/timeUtil"
+import { PluginOperator } from "./PluginOperator"
+import { YakitTag } from "@/components/yakitUI/YakitTag/YakitTag"
+import { AutoCard } from "../../components/AutoCard"
+import { UserInfoProps, useStore, YakitStoreParams } from "@/store"
 import "./YakitStorePage.scss"
-import {getLocalValue, setLocalValue} from "../../utils/kv"
+import { getLocalValue, setLocalValue } from "../../utils/kv"
 import {
     useCreation,
     useDebounceFn,
@@ -70,10 +70,10 @@ import {
     useDebounce,
     useSize
 } from "ahooks"
-import {NetWorkApi} from "@/services/fetch"
-import {API} from "@/services/swagger/resposeType"
-import {DownloadOnlinePluginProps} from "./YakitPluginInfoOnline/YakitPluginInfoOnline"
-import {randomString} from "@/utils/randomUtil"
+import { NetWorkApi } from "@/services/fetch"
+import { API } from "@/services/swagger/resposeType"
+import { DownloadOnlinePluginProps } from "./YakitPluginInfoOnline/YakitPluginInfoOnline"
+import { randomString } from "@/utils/randomUtil"
 import {
     OfficialYakitLogoIcon,
     SelectIcon,
@@ -82,34 +82,34 @@ import {
     ShareIcon,
     RecycleIcon
 } from "../../assets/icons"
-import {findDOMNode} from "react-dom"
-import {YakExecutorParam} from "../invoker/YakExecutorParams"
-import {RollingLoadList} from "@/components/RollingLoadList/RollingLoadList"
-import {setTimeout} from "timers"
+import { findDOMNode } from "react-dom"
+import { YakExecutorParam } from "../invoker/YakExecutorParams"
+import { RollingLoadList } from "@/components/RollingLoadList/RollingLoadList"
+import { setTimeout } from "timers"
 import {
     ModalSyncSelect,
     onLocalScriptToOnlinePlugin,
     SyncCloudButton
 } from "@/components/SyncCloudButton/SyncCloudButton"
-import {ENTERPRISE_STATUS, getJuageEnvFile} from "@/utils/envfile"
-import {fullscreen} from "@uiw/react-md-editor"
-import {getRemoteValue, setRemoteValue} from "@/utils/kv"
-import {ItemSelects} from "@/components/baseTemplate/FormItemUtil"
-import {ChevronDownIcon} from "@/assets/newIcon"
+import { ENTERPRISE_STATUS, getJuageEnvFile } from "@/utils/envfile"
+import { fullscreen } from "@uiw/react-md-editor"
+import { getRemoteValue, setRemoteValue } from "@/utils/kv"
+import { ItemSelects } from "@/components/baseTemplate/FormItemUtil"
+import { ChevronDownIcon } from "@/assets/newIcon"
 import style from "@/components/HTTPFlowTable/HTTPFlowTable.module.scss"
-import {OutputPluginForm} from "./PluginOperator"
-import {YakFilterRemoteObj} from "../mitm/MITMServerHijacking/MITMPluginLocalList"
-import {isSimpleEnterprise} from "@/utils/envfile"
+import { OutputPluginForm } from "./PluginOperator"
+import { YakFilterRemoteObj } from "../mitm/MITMServerHijacking/MITMPluginLocalList"
+import { isSimpleEnterprise } from "@/utils/envfile"
 const IsEnterprise: boolean = ENTERPRISE_STATUS.IS_ENTERPRISE_STATUS === getJuageEnvFile()
 
-const {Search} = Input
-const {Option} = Select
-const {Paragraph} = Typography
-const {ipcRenderer} = window.require("electron")
+const { Search } = Input
+const { Option } = Select
+const { Paragraph } = Typography
+const { ipcRenderer } = window.require("electron")
 
 const userInitUse = "user-init-use"
 
-export interface YakitStorePageProp {}
+export interface YakitStorePageProp { }
 
 export interface GetYakScriptByOnlineIDRequest {
     OnlineID?: number
@@ -162,7 +162,7 @@ export const defQueryOnline: SearchPluginOnlineRequest = {
 const defQueryLocal: QueryYakScriptRequest = {
     Type: "yak,mitm,codec,packet-hack,port-scan",
     Keyword: "",
-    Pagination: {Limit: 20, Order: "desc", Page: 1, OrderBy: "updated_at"},
+    Pagination: { Limit: 20, Order: "desc", Page: 1, OrderBy: "updated_at" },
     UserId: 0,
     IgnoreGeneralModuleOrder: true
 }
@@ -204,9 +204,9 @@ export const YakitStorePage: React.FC<YakitStorePageProp> = (props) => {
     // 监听是否点击编辑插件 用于控制插件仓库是否刷新
     const [isEdit, setMonitorEdit] = useState<boolean>(false)
     // 全局登录状态
-    const {userInfo} = useStore()
+    const { userInfo } = useStore()
     // 插件仓库参数及页面状态
-    const {storeParams, setYakitStoreParams} = YakitStoreParams()
+    const { storeParams, setYakitStoreParams } = YakitStoreParams()
 
     const [publicKeyword, setPublicKeyword, getPublicKeyword] = useGetState<string>(storeParams.keywords)
 
@@ -279,10 +279,10 @@ export const YakitStorePage: React.FC<YakitStorePageProp> = (props) => {
                         ipcRenderer.invoke("set-local-cache", userInitUse, true)
                     }
                 })
-                .catch(() => {})
-                .finally(() => {})
+                .catch(() => { })
+                .finally(() => { })
         }
-        setYakitStoreParams({...storeParams, isShowYakitStorePage: true})
+        setYakitStoreParams({ ...storeParams, isShowYakitStorePage: true })
         ipcRenderer.on("get-yakit-store-params", (e, res) => {
             paramsParamsOperation(res)
         })
@@ -330,7 +330,7 @@ export const YakitStorePage: React.FC<YakitStorePageProp> = (props) => {
             onResetPluginDelecteAndUpdate()
             onResetNumber()
         },
-        {wait: 200}
+        { wait: 200 }
     ).run
     const onResetNumber = useMemoizedFn(() => {
         setNumberLocal(0)
@@ -426,7 +426,7 @@ export const YakitStorePage: React.FC<YakitStorePageProp> = (props) => {
     useEffect(() => {
         setIsFull(!(script || userPlugin || plugin))
     }, [script, userPlugin, plugin])
-    const {width} = useSize(document.querySelector("body")) || {width: 0, height: 0}
+    const { width } = useSize(document.querySelector("body")) || { width: 0, height: 0 }
 
     useEffect(() => {
         if (plugSource === "user" && !userInfo.isLogin) {
@@ -643,7 +643,7 @@ export const YakitStorePage: React.FC<YakitStorePageProp> = (props) => {
         <>
             <div className='plugin-store'>
                 <Card
-                    bodyStyle={{padding: 0, height: isFull ? "calc(100% - 62px)" : "calc(100% - 42px)"}}
+                    bodyStyle={{ padding: 0, height: isFull ? "calc(100% - 62px)" : "calc(100% - 42px)" }}
                     bordered={false}
                     style={{
                         height: "100%",
@@ -663,7 +663,7 @@ export const YakitStorePage: React.FC<YakitStorePageProp> = (props) => {
                                     <Radio.Button value='local'>本地</Radio.Button>
                                 </Radio.Group>
                                 <Button size={isFull ? "middle" : "small"} type={"link"} onClick={onRefList}>
-                                    <ReloadOutlined style={{fontSize: isFull ? 16 : 14}} />
+                                    <ReloadOutlined style={{ fontSize: isFull ? 16 : 14 }} />
                                 </Button>
                             </Col>
                             <Col span={12}>
@@ -782,9 +782,9 @@ export const YakitStorePage: React.FC<YakitStorePageProp> = (props) => {
                                         <Button
                                             icon={
                                                 fullScreen ? (
-                                                    <FullscreenExitOutlined style={{fontSize: 15}} />
+                                                    <FullscreenExitOutlined style={{ fontSize: 15 }} />
                                                 ) : (
-                                                    <FullscreenOutlined style={{fontSize: 15}} />
+                                                    <FullscreenOutlined style={{ fontSize: 15 }} />
                                                 )
                                             }
                                             type={"link"}
@@ -793,7 +793,7 @@ export const YakitStorePage: React.FC<YakitStorePageProp> = (props) => {
                                         />
                                     </>
                                 }
-                                bodyStyle={{height: "calc(100% - 69px)"}}
+                                bodyStyle={{ height: "calc(100% - 69px)" }}
                             >
                                 <PluginOperator
                                     setMonitorEdit={setMonitorEdit}
@@ -802,7 +802,7 @@ export const YakitStorePage: React.FC<YakitStorePageProp> = (props) => {
                                     yakScriptId={(script && script.Id) || 0}
                                     yakScriptIdOnlineId={scriptIdOnlineId}
                                     yakScriptUUIdOnlineUUId={scriptUUIdOnlineUUId}
-                                    setTrigger={() => {}}
+                                    setTrigger={() => { }}
                                     setScript={(s) => {
                                         setScript(s)
                                         setUpdatePluginRecordLocal(s)
@@ -827,7 +827,7 @@ export const YakitStorePage: React.FC<YakitStorePageProp> = (props) => {
                                 />
                             </AutoCard>
                         ) : (
-                            <Empty style={{marginTop: 100}}>在左侧所选模块查看详情</Empty>
+                            <Empty style={{ marginTop: 100 }}>在左侧所选模块查看详情</Empty>
                         )}
                     </div>
                 )}
@@ -838,17 +838,15 @@ export const YakitStorePage: React.FC<YakitStorePageProp> = (props) => {
                                 <div className='opt-list'>
                                     <div className='opt-header'>排序顺序</div>
                                     <div
-                                        className={`opt-list-item ${
-                                            statisticsQueryOnline.order_by === "created_at" && "opt-list-item-selected"
-                                        }`}
+                                        className={`opt-list-item ${statisticsQueryOnline.order_by === "created_at" && "opt-list-item-selected"
+                                            }`}
                                         onClick={() => onSearch("order_by", "created_at")}
                                     >
                                         <span className='item-name content-ellipsis'>按时间</span>
                                     </div>
                                     <div
-                                        className={`opt-list-item ${
-                                            statisticsQueryOnline.order_by === "stars" && "opt-list-item-selected"
-                                        }`}
+                                        className={`opt-list-item ${statisticsQueryOnline.order_by === "stars" && "opt-list-item-selected"
+                                            }`}
                                         onClick={() => onSearch("order_by", "stars")}
                                     >
                                         <span className='item-name content-ellipsis'>按热度</span>
@@ -859,17 +857,15 @@ export const YakitStorePage: React.FC<YakitStorePageProp> = (props) => {
                                 <div className='opt-list'>
                                     <div className='opt-header'>私密/公开</div>
                                     <div
-                                        className={`opt-list-item ${
-                                            statisticsQueryUser.is_private === "true" && "opt-list-item-selected"
-                                        }`}
+                                        className={`opt-list-item ${statisticsQueryUser.is_private === "true" && "opt-list-item-selected"
+                                            }`}
                                         onClick={() => onSearch("is_private", "true")}
                                     >
                                         <span className='item-name content-ellipsis'>私密</span>
                                     </div>
                                     <div
-                                        className={`opt-list-item ${
-                                            statisticsQueryUser.is_private === "false" && "opt-list-item-selected"
-                                        }`}
+                                        className={`opt-list-item ${statisticsQueryUser.is_private === "false" && "opt-list-item-selected"
+                                            }`}
                                         onClick={() => onSearch("is_private", "false")}
                                     >
                                         <span className='item-name content-ellipsis'>公开</span>
@@ -884,12 +880,12 @@ export const YakitStorePage: React.FC<YakitStorePageProp> = (props) => {
                                             : statisticsDataOnlineOrUser || {}
                                     ).map((item) => {
                                         const queryName = item[0]
-                                        if(!isSimpleEnterprise && queryName==="group"){
+                                        if (!isSimpleEnterprise && queryName === "group") {
                                             return <></>
                                         }
-                                        
-                                        const statisticsList = queryName==="group"&&Array.isArray(item[1])?
-                                        item[1].map((item)=> ({...item,value:item.value.replaceAll('"','')})):item[1]
+
+                                        const statisticsList = queryName === "group" && Array.isArray(item[1]) ?
+                                            item[1].map((item) => ({ ...item, value: item.value.replaceAll('"', '') })) : item[1]
 
                                         const title = queryTitle[queryName]
                                         let current: string | string[] = ""
@@ -931,13 +927,12 @@ export const YakitStorePage: React.FC<YakitStorePageProp> = (props) => {
                                                     {statisticsList.map((ele) => (
                                                         <div
                                                             key={`${ele.value || ele.Value}-${plugSource}`}
-                                                            className={`opt-list-item ${
-                                                                Array.isArray(current) &&
+                                                            className={`opt-list-item ${Array.isArray(current) &&
                                                                 current.findIndex(
                                                                     (c) => c === (ele.value || ele.Value)
                                                                 ) !== -1 &&
                                                                 "opt-list-item-selected"
-                                                            }`}
+                                                                }`}
                                                             onClick={() => onSearch(queryName, ele.value || ele.Value)}
                                                         >
                                                             <span className='item-name content-ellipsis'>
@@ -1103,7 +1098,7 @@ export const YakModule: React.FC<YakModuleProp> = (props) => {
         getRemoteValue("PatternMenu").then((patternMenu) => {
             const menuMode = patternMenu || "expert"
             ipcRenderer
-                .invoke("DeleteAllMenu", {Mode: menuMode})
+                .invoke("DeleteAllMenu", { Mode: menuMode })
                 .then(() => {
                     // 更新菜单
                     ipcRenderer.invoke("change-main-menu")
@@ -1196,7 +1191,7 @@ export const YakModule: React.FC<YakModuleProp> = (props) => {
             title: "导入插件方式",
             content: (
                 <>
-                    <div style={{width: 800}}>
+                    <div style={{ width: 800 }}>
                         <LoadYakitPluginForm
                             onFinished={() => {
                                 ipcRenderer.invoke("change-main-menu")
@@ -1228,7 +1223,7 @@ export const YakModule: React.FC<YakModuleProp> = (props) => {
                         OnlineBaseUrl,
                         UserId
                     } as QueryYakScriptLocalAndUserRequest)
-                    .then((newSrcipt: {Data: YakScript[]}) => {
+                    .then((newSrcipt: { Data: YakScript[] }) => {
                         SelectedUploadRowKeysRecordLocal.current = newSrcipt.Data
                         JudgeIsShowVisible(newSrcipt.Data)
                     })
@@ -1236,7 +1231,7 @@ export const YakModule: React.FC<YakModuleProp> = (props) => {
                         failed(`查询所有插件错误:${e}`)
                         setUpLoading(false)
                     })
-                    .finally(() => {})
+                    .finally(() => { })
             })
         } else {
             SelectedUploadRowKeysRecordLocal.current = selectedRowKeysRecordLocal
@@ -1272,7 +1267,7 @@ export const YakModule: React.FC<YakModuleProp> = (props) => {
         const length = realSelectedRowKeysRecordLocal.length
         const errList: any[] = []
         for (let index = 0; index < length; index++) {
-            if(!StopUpload.current){
+            if (!StopUpload.current) {
                 const element = realSelectedRowKeysRecordLocal[index]
                 const res = await upOnline(element, "yakit/plugin", type)
                 if (res) {
@@ -1289,7 +1284,7 @@ export const YakModule: React.FC<YakModuleProp> = (props) => {
                 })
             failed("“" + errString.join(";") + `${(errList.length > 0 && "...") || ""}` + "”上传失败")
         } else {
-            StopUpload.current?success("取消上传成功"):success("批量上传成功")
+            StopUpload.current ? success("取消上传成功") : success("批量上传成功")
         }
         setUpLoading(false)
         setVisibleSyncSelect(false)
@@ -1300,10 +1295,10 @@ export const YakModule: React.FC<YakModuleProp> = (props) => {
 
     const upOnline = useMemoizedFn(async (params: YakScript, url: string, type: number) => {
         const onlineParams: API.SaveYakitPlugin = onLocalScriptToOnlinePlugin(params, type)
-        if(IsEnterprise&&userInfo.role==="admin"&&params.OnlineBaseUrl===baseUrl){
+        if (IsEnterprise && userInfo.role === "admin" && params.OnlineBaseUrl === baseUrl) {
             onlineParams.id = parseInt(`${params.OnlineId}`)
         }
-        if(!IsEnterprise&&params.OnlineId){
+        if (!IsEnterprise && params.OnlineId) {
             onlineParams.id = parseInt(`${params.OnlineId}`)
         }
         return new Promise((resolve) => {
@@ -1323,7 +1318,7 @@ export const YakModule: React.FC<YakModuleProp> = (props) => {
                         .then((res) => {
                             ipcRenderer
                                 .invoke("delete-yak-script", params.Id)
-                                .then(() => {})
+                                .then(() => { })
                                 .catch((err) => {
                                     failed("删除本地【" + params.ScriptName + "】失败:" + err)
                                 })
@@ -1483,15 +1478,15 @@ export const YakModule: React.FC<YakModuleProp> = (props) => {
                             </Tooltip>
                         </>
                     )) || (
-                        <>
-                            <Button size='small' type='primary' onClick={onAdd}>
-                                新建
-                            </Button>
-                            <Button size='small' type='primary' onClick={onImport}>
-                                导入
-                            </Button>
-                        </>
-                    )}
+                            <>
+                                <Button size='small' type='primary' onClick={onAdd}>
+                                    新建
+                                </Button>
+                                <Button size='small' type='primary' onClick={onImport}>
+                                    导入
+                                </Button>
+                            </>
+                        )}
 
                     {(selectedRowKeysRecordLocal.length === 0 && (
                         <>
@@ -1506,48 +1501,48 @@ export const YakModule: React.FC<YakModuleProp> = (props) => {
                                     }}
                                 >
                                     批量操作
-                                    <ChevronDownIcon style={{color: "#85899E"}} />
+                                    <ChevronDownIcon style={{ color: "#85899E" }} />
                                 </Button>
                             )}
                         </>
                     )) || (
-                        <Popover
-                            overlayClassName={style["http-history-table-drop-down-popover"]}
-                            content={
-                                <Menu className={style["http-history-table-drop-down-batch"]}>
-                                    {menuData.map((m) => {
-                                        return (
-                                            <Menu.Item
-                                                onClick={() => {
-                                                    m.onClickBatch()
-                                                }}
-                                                key={m.title}
-                                            >
-                                                {m.title}
-                                            </Menu.Item>
-                                        )
-                                    })}
-                                </Menu>
-                            }
-                            trigger='click'
-                            placement='bottomLeft'
-                        >
-                            {size === "small" ? (
-                                <SettingOutlined className='operation-icon' />
-                            ) : (
-                                <Button
-                                    size='small'
-                                    disabled={selectedRowKeysRecordLocal.length === 0}
-                                    onClick={(e) => {
-                                        e.stopPropagation()
-                                    }}
-                                >
-                                    批量操作
-                                    <ChevronDownIcon style={{color: "#85899E"}} />
-                                </Button>
-                            )}
-                        </Popover>
-                    )}
+                            <Popover
+                                overlayClassName={style["http-history-table-drop-down-popover"]}
+                                content={
+                                    <Menu className={style["http-history-table-drop-down-batch"]}>
+                                        {menuData.map((m) => {
+                                            return (
+                                                <Menu.Item
+                                                    onClick={() => {
+                                                        m.onClickBatch()
+                                                    }}
+                                                    key={m.title}
+                                                >
+                                                    {m.title}
+                                                </Menu.Item>
+                                            )
+                                        })}
+                                    </Menu>
+                                }
+                                trigger='click'
+                                placement='bottomLeft'
+                            >
+                                {size === "small" ? (
+                                    <SettingOutlined className='operation-icon' />
+                                ) : (
+                                    <Button
+                                        size='small'
+                                        disabled={selectedRowKeysRecordLocal.length === 0}
+                                        onClick={(e) => {
+                                            e.stopPropagation()
+                                        }}
+                                    >
+                                        批量操作
+                                        <ChevronDownIcon style={{ color: "#85899E" }} />
+                                    </Button>
+                                )}
+                            </Popover>
+                        )}
                 </Col>
             </Row>
 
@@ -1556,13 +1551,13 @@ export const YakModule: React.FC<YakModuleProp> = (props) => {
                 handleOk={onSyncSelect}
                 handleCancel={() => {
                     if (upLoading) {
-                       StopUpload.current = true 
+                        StopUpload.current = true
                         //     warn("请等待插件上传完成后再关闭该modal框")
                         //     return
                     }
-                    else{
-                       setVisibleSyncSelect(false)
-                       onResetList()   
+                    else {
+                        setVisibleSyncSelect(false)
+                        onResetList()
                     }
                 }}
                 loading={upLoading}
@@ -1631,7 +1626,7 @@ export const YakModuleList: React.FC<YakModuleListProp> = (props) => {
             Tag: [],
             Type: "mitm,port-scan",
             Keyword: "",
-            Pagination: {Limit: 20, Order: "desc", Page: 1, OrderBy: "updated_at"}
+            Pagination: { Limit: 20, Order: "desc", Page: 1, OrderBy: "updated_at" }
         }
     }, [])
     const {
@@ -1652,7 +1647,7 @@ export const YakModuleList: React.FC<YakModuleListProp> = (props) => {
     } = props
 
     // 全局登录状态
-    const {userInfo} = useStore()
+    const { userInfo } = useStore()
     const [params, setParams] = useState<QueryYakScriptRequest>({
         ...queryLocal
     })
@@ -1692,7 +1687,7 @@ export const YakModuleList: React.FC<YakModuleListProp> = (props) => {
         // 所有以本地ScriptName进行查找 ,ScriptName在本地和线上都是唯一的
         let index = response.Data.findIndex((ele) => ele.ScriptName === updatePluginRecordLocal.ScriptName)
         if (index === -1) return
-        response.Data[index] = {...updatePluginRecordLocal}
+        response.Data[index] = { ...updatePluginRecordLocal }
         setResponse({
             ...response,
             Data: [...response.Data]
@@ -1837,7 +1832,7 @@ export interface TagValue {
 }
 // 封装动态select筛选组件
 export const YakFilterModuleSelect: React.FC<YakFilterModuleSelectProps> = (props) => {
-    const {selectedTags, setSelectedTags} = props
+    const { selectedTags, setSelectedTags } = props
     const [allTag, setAllTag] = useState<TagValue[]>([])
     // 下拉框选中tag值
     const selectRef = useRef(null)
@@ -1863,10 +1858,10 @@ export const YakFilterModuleSelect: React.FC<YakFilterModuleSelectProps> = (prop
         ipcRenderer
             .invoke("GetYakScriptTags", {})
             .then((res) => {
-                setAllTag(res.Tag.map((item) => ({Name: item.Value, Total: item.Total})))
+                setAllTag(res.Tag.map((item) => ({ Name: item.Value, Total: item.Total })))
             })
             .catch((e) => console.info(e))
-            .finally(() => {})
+            .finally(() => { })
     }, [])
 
     useEffect(() => {
@@ -1887,11 +1882,11 @@ export const YakFilterModuleSelect: React.FC<YakFilterModuleSelectProps> = (prop
         setTopTags([...showTags])
     }, [
         allTag,
-        useDebounce(minTagWeight, {wait: 500}),
-        useDebounce(maxTagWeight, {wait: 500}),
-        useDebounce(searchTag, {wait: 500}),
-        useDebounce(selectedTags, {wait: 500}),
-        useDebounce(topN, {wait: 500}),
+        useDebounce(minTagWeight, { wait: 500 }),
+        useDebounce(maxTagWeight, { wait: 500 }),
+        useDebounce(searchTag, { wait: 500 }),
+        useDebounce(selectedTags, { wait: 500 }),
+        useDebounce(topN, { wait: 500 }),
         updateTagsSelectorTrigger
     ])
 
@@ -1918,7 +1913,7 @@ export const YakFilterModuleSelect: React.FC<YakFilterModuleSelectProps> = (prop
                 optionLabelProp: "Name",
                 renderOpt: (info: TagValue) => {
                     return (
-                        <div style={{display: "flex", justifyContent: "space-between"}}>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
                             <span>{info.Name}</span>
                             <span>{info.Total}</span>
                         </div>
@@ -1941,7 +1936,7 @@ export const YakFilterModuleSelect: React.FC<YakFilterModuleSelectProps> = (prop
                     }
                 },
                 onPopupScroll: (e) => {
-                    const {target} = e
+                    const { target } = e
                     const ref: HTMLDivElement = target as unknown as HTMLDivElement
                     if (ref.scrollTop + ref.offsetHeight + 20 >= ref.scrollHeight) {
                         setSelectLoading(true)
@@ -2023,12 +2018,12 @@ export const YakFilterModuleList: React.FC<YakFilterModuleList> = (props) => {
     const FILTER_CACHE_LIST_DATA = `FILTER_CACHE_LIST_COMMON_DATA`
     const [form] = Form.useForm()
     const layout = {
-        labelCol: {span: 5},
-        wrapperCol: {span: 19}
+        labelCol: { span: 5 },
+        wrapperCol: { span: 19 }
     }
     const itemLayout = {
-        labelCol: {span: 5},
-        wrapperCol: {span: 16}
+        labelCol: { span: 5 },
+        wrapperCol: { span: 16 }
     }
     const [menuList, setMenuList] = useState<YakFilterRemoteObj[]>([])
     const nowData = useRef<YakFilterRemoteObj[]>([])
@@ -2068,20 +2063,20 @@ export const YakFilterModuleList: React.FC<YakFilterModuleList> = (props) => {
 
     const plugInMenu = () => {
         return menuList.map((item: YakFilterRemoteObj) => (
-            <div key={item.name} style={{display: "flex"}} onClick={() => menuClick(item.value)}>
-                <div className='content-ellipsis' style={{width: 100}}>
+            <div key={item.name} style={{ display: "flex" }} onClick={() => menuClick(item.value)}>
+                <div className='content-ellipsis' style={{ width: 100 }}>
                     {item.name}
                 </div>
-                <div style={{width: 10, margin: "0px 10px"}}>{item.value.length}</div>
+                <div style={{ width: 10, margin: "0px 10px" }}>{item.value.length}</div>
                 <DeleteOutlined
-                    style={{position: "relative", top: 5, marginLeft: 4}}
+                    style={{ position: "relative", top: 5, marginLeft: 4 }}
                     onClick={(e) => deletePlugIn(e, item.name)}
                 />
             </div>
         ))
     }
     const AddPlugIn = (props) => {
-        const {onClose} = props
+        const { onClose } = props
         const onFinish = useMemoizedFn((value) => {
             getRemoteValue(FILTER_CACHE_LIST_DATA)
                 .then((data: string) => {
@@ -2121,10 +2116,10 @@ export const YakFilterModuleList: React.FC<YakFilterModuleList> = (props) => {
                         {...itemLayout}
                         name='name'
                         label='名称'
-                        rules={[{required: true, message: "该项为必填"}]}
+                        rules={[{ required: true, message: "该项为必填" }]}
                     >
                         <AutoComplete
-                            options={menuList.map((item) => ({value: item.name}))}
+                            options={menuList.map((item) => ({ value: item.name }))}
                             placeholder='请输入插件组名'
                             filterOption={(inputValue, option) =>
                                 option!.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
@@ -2132,15 +2127,15 @@ export const YakFilterModuleList: React.FC<YakFilterModuleList> = (props) => {
                         />
                     </Form.Item>
                     <Form.Item {...itemLayout} label='插件'>
-                        <div style={{maxHeight: 460, overflow: "auto"}}>
+                        <div style={{ maxHeight: 460, overflow: "auto" }}>
                             {checkList.map((item) => (
-                                <span style={{paddingRight: 12}} key={item}>
+                                <span style={{ paddingRight: 12 }} key={item}>
                                     {item};
                                 </span>
                             ))}
                         </div>
                     </Form.Item>
-                    <div style={{textAlign: "right"}}>
+                    <div style={{ textAlign: "right" }}>
                         <Space>
                             <Button onClick={() => onClose()}>取消</Button>
                             <Button type='primary' htmlType='submit'>
@@ -2153,10 +2148,10 @@ export const YakFilterModuleList: React.FC<YakFilterModuleList> = (props) => {
         )
     }
     return (
-        <div style={{minHeight: 47}}>
+        <div style={{ minHeight: 47 }}>
             <Input.Group compact>
                 <Select
-                    style={{width: "27%"}}
+                    style={{ width: "27%" }}
                     value={searchType}
                     size='small'
                     onSelect={(v) => {
@@ -2198,7 +2193,7 @@ export const YakFilterModuleList: React.FC<YakFilterModuleList> = (props) => {
                                     setTag(e as string[])
                                 }}
                                 placeholder='选择Tag'
-                                style={{width: "73%"}}
+                                style={{ width: "73%" }}
                                 loading={tagsLoading}
                                 onBlur={() => {
                                     setRefresh(!refresh)
@@ -2220,16 +2215,16 @@ export const YakFilterModuleList: React.FC<YakFilterModuleList> = (props) => {
                         )}
                     </>
                 )) || (
-                    <Input.Search
-                        onSearch={() => {
-                            setRefresh(!refresh)
-                        }}
-                        placeholder='搜索插件'
-                        onChange={(e) => setSearchKeyword(e.target.value)}
-                        size='small'
-                        style={{width: "73%"}}
-                    />
-                )}
+                        <Input.Search
+                            onSearch={() => {
+                                setRefresh(!refresh)
+                            }}
+                            placeholder='搜索插件'
+                            onChange={(e) => setSearchKeyword(e.target.value)}
+                            size='small'
+                            style={{ width: "73%" }}
+                        />
+                    )}
             </Input.Group>
             <div className='plug-in-menu-box'>
                 <div className='check-box'>
@@ -2237,7 +2232,7 @@ export const YakFilterModuleList: React.FC<YakFilterModuleList> = (props) => {
                         全选
                     </Checkbox>
                 </div>
-                <div style={{marginLeft: 12}}>
+                <div style={{ marginLeft: 12 }}>
                     <Dropdown overlay={<Space direction={"vertical"}>{plugInMenu()}</Space>} disabled={checkAll}>
                         <a
                             onClick={(e) => {
@@ -2271,14 +2266,14 @@ export const YakFilterModuleList: React.FC<YakFilterModuleList> = (props) => {
                 >
                     <PlusOutlined />
                 </div>
-                <div style={{marginLeft: 12}}>{settingRender && settingRender()}</div>
+                <div style={{ marginLeft: 12 }}>{settingRender && settingRender()}</div>
             </div>
-            <div style={{whiteSpace: "initial"}}>
+            <div style={{ whiteSpace: "initial" }}>
                 {tag.map((i) => {
                     return (
                         <Tag
                             key={i}
-                            style={{marginBottom: 2}}
+                            style={{ marginBottom: 2 }}
                             color={"blue"}
                             onClose={() => {
                                 let arr = tag.filter((element) => i !== element)
@@ -2325,7 +2320,7 @@ export const PluginListLocalItem: React.FC<PluginListLocalProps> = (props) => {
         onSetUser,
         onlineProfile
     } = props
-    const {userInfo, maxWidth, onClicked} = props
+    const { userInfo, maxWidth, onClicked } = props
     const [uploadLoading, setUploadLoading] = useState(false)
     const updateListItem = useMemoizedFn((updatePlugin: YakScript) => {
         setUpdatePluginRecordLocal(updatePlugin)
@@ -2383,9 +2378,8 @@ export const PluginListLocalItem: React.FC<PluginListLocalProps> = (props) => {
                 </div>
                 <SelectIcon
                     //  @ts-ignore
-                    className={`icon-select  ${
-                        selectedRowKeysRecord.findIndex((ele) => ele.Id === plugin.Id) !== -1 && "icon-select-active"
-                    }`}
+                    className={`icon-select  ${selectedRowKeysRecord.findIndex((ele) => ele.Id === plugin.Id) !== -1 && "icon-select-active"
+                        }`}
                     onClick={(e) => {
                         e.stopPropagation()
                         onSelect(plugin)
@@ -2579,7 +2573,7 @@ const YAKIT_DEFAULT_LOAD_GIT_PROXY = "YAKIT_DEFAULT_LOAD_GIT_PROXY"
 const YAKIT_DEFAULT_LOAD_LOCAL_PATH = "YAKIT_DEFAULT_LOAD_LOCAL_PATH"
 const YAKIT_DEFAULT_LOAD_LOCAL_NUCLEI_POC_PATH = "YAKIT_DEFAULT_LOAD_LOCAL_NUCLEI_POC_PATH"
 
-export const LoadYakitPluginForm = React.memo((p: {onFinished: () => any}) => {
+export const LoadYakitPluginForm = React.memo((p: { onFinished: () => any }) => {
     const [gitUrl, setGitUrl] = useState("https://github.com/yaklang/yakit-store")
     const [nucleiGitUrl, setNucleiGitUrl] = useState("https://github.com/projectdiscovery/nuclei-templates")
     const [proxy, setProxy] = useState("")
@@ -2625,8 +2619,8 @@ export const LoadYakitPluginForm = React.memo((p: {onFinished: () => any}) => {
 
     return (
         <Form
-            labelCol={{span: 5}}
-            wrapperCol={{span: 16}}
+            labelCol={{ span: 5 }}
+            wrapperCol={{ span: 16 }}
             onSubmitCapture={(e) => {
                 e.preventDefault()
                 if (proxy !== "") {
@@ -2642,11 +2636,11 @@ export const LoadYakitPluginForm = React.memo((p: {onFinished: () => any}) => {
                 }
                 if (["official", "giturl"].includes(loadMode)) {
                     const params: YakExecutorParam[] = [
-                        {Key: "giturl", Value: ""},
-                        {Key: "nuclei-templates-giturl", Value: nucleiGitUrl}
+                        { Key: "giturl", Value: "" },
+                        { Key: "nuclei-templates-giturl", Value: nucleiGitUrl }
                     ]
                     if (proxy.trim() !== "") {
-                        params.push({Value: proxy.trim(), Key: "proxy"})
+                        params.push({ Value: proxy.trim(), Key: "proxy" })
                     }
                     startExecYakCode("导入 Yak 插件", {
                         Script: loadYakitPluginCode,
@@ -2656,14 +2650,14 @@ export const LoadYakitPluginForm = React.memo((p: {onFinished: () => any}) => {
                 if (loadMode === "local") {
                     startExecYakCode("导入 Yak 插件（本地）", {
                         Script: loadLocalYakitPluginCode,
-                        Params: [{Key: "local-path", Value: localPath}]
+                        Params: [{ Key: "local-path", Value: localPath }]
                     })
                 }
 
                 if (loadMode === "local-nuclei") {
                     startExecYakCode("从 Nuclei Template Git 本地仓库更新", {
                         Script: loadNucleiPoCFromLocal,
-                        Params: [{Key: "local-path", Value: localNucleiPath}]
+                        Params: [{ Key: "local-path", Value: localNucleiPath }]
                     })
                 }
 
@@ -2686,11 +2680,11 @@ export const LoadYakitPluginForm = React.memo((p: {onFinished: () => any}) => {
                 label={" "}
                 colon={false}
                 data={[
-                    {text: "使用官方源", value: "official"},
-                    {text: "第三方仓库源", value: "giturl"},
-                    {text: "本地仓库", value: "local"},
-                    {text: "本地 Yaml PoC", value: "local-nuclei"},
-                    {text: "使用ID", value: "uploadId"}
+                    { text: "使用官方源", value: "official" },
+                    { text: "第三方仓库源", value: "giturl" },
+                    { text: "本地仓库", value: "local" },
+                    { text: "本地 Yaml PoC", value: "local-nuclei" },
+                    { text: "使用ID", value: "uploadId" }
                 ]}
                 value={loadMode}
                 setValue={setLoadMode}
@@ -2750,9 +2744,9 @@ export const LoadYakitPluginForm = React.memo((p: {onFinished: () => any}) => {
                 </>
             )}
             {loadMode === "local" && (
-                <div style={{position: "relative"}}>
+                <div style={{ position: "relative" }}>
                     <InputItem
-                        style={{width: "calc(100% - 20px)"}}
+                        style={{ width: "calc(100% - 20px)" }}
                         label={"本地仓库地址"}
                         value={localPath}
                         setValue={setLocalPath}
@@ -2773,15 +2767,15 @@ export const LoadYakitPluginForm = React.memo((p: {onFinished: () => any}) => {
                                         }
                                     })
                             }}
-                            style={{position: "absolute", right: 90, top: 8, cursor: "pointer"}}
+                            style={{ position: "absolute", right: 90, top: 8, cursor: "pointer" }}
                         />
                     </Tooltip>
                 </div>
             )}
             {loadMode === "local-nuclei" && (
-                <div style={{position: "relative"}}>
+                <div style={{ position: "relative" }}>
                     <InputItem
-                        style={{width: "calc(100% - 20px)"}}
+                        style={{ width: "calc(100% - 20px)" }}
                         label={"Nuclei PoC 本地路径"}
                         value={localNucleiPath}
                         setValue={setLocalNucleiPath}
@@ -2801,7 +2795,7 @@ export const LoadYakitPluginForm = React.memo((p: {onFinished: () => any}) => {
                                         }
                                     })
                             }}
-                            style={{position: "absolute", right: 90, top: 8, cursor: "pointer"}}
+                            style={{ position: "absolute", right: 90, top: 8, cursor: "pointer" }}
                         />
                     </Tooltip>
                 </div>
@@ -2837,14 +2831,14 @@ export const gitUrlIcon = (url: string | undefined, noTag?: boolean) => {
     )
 }
 
-const setPluginGroup = (obj,onRefList,onClose,msg) => {
+const setPluginGroup = (obj, onRefList, onClose, msg) => {
     NetWorkApi<PluginGroupPostProps, API.ActionSucceeded>({
         method: "post",
         url: "yakit/plugin/group",
         data: obj
     })
         .then((res) => {
-            if(res.ok){
+            if (res.ok) {
                 success(msg)
                 onRefList()
                 onClose()
@@ -2855,161 +2849,160 @@ const setPluginGroup = (obj,onRefList,onClose,msg) => {
 }
 
 const RemovePluginGroup: React.FC<SetPluginGroupProps> = (props) => {
-    const {selectedRowKeysRecordOnline,onRefList,onClose,queryOnline,isSelectAllOnline} = props
+    const { selectedRowKeysRecordOnline, onRefList, onClose, queryOnline, isSelectAllOnline } = props
 
-    const selectItemType:string[] = Array.from(new Set(selectedRowKeysRecordOnline.map((item)=>item.group?JSON.parse(item.group):[]).reduce((pre,current)=>{
-        return [...pre,...current]
-    },[])))
+    const selectItemType: string[] = Array.from(new Set(selectedRowKeysRecordOnline.map((item) => item.group ? JSON.parse(item.group) : []).reduce((pre, current) => {
+        return [...pre, ...current]
+    }, [])))
 
     const filterNonUnique = arr => arr.filter(i => arr.indexOf(i) === arr.lastIndexOf(i))
 
-    const [_,setSelectItem,getSelectItem] = useGetState<string[]>(selectItemType)
+    const [_, setSelectItem, getSelectItem] = useGetState<string[]>(selectItemType)
 
-    const typeList = ["基础扫描","深度扫描","弱口令","漏洞扫描","合规检测"]
+    const typeList = ["基础扫描", "深度扫描", "弱口令", "漏洞扫描", "合规检测"]
     const submit = () => {
-        let obj:PluginGroupPostProps = {
-            groupName:[]
+        let obj: PluginGroupPostProps = {
+            groupName: []
         }
         obj.groupName = [...getSelectItem()]
-        obj.pluginWhere = {...queryOnline,bind_me:false}
+        obj.pluginWhere = { ...queryOnline, bind_me: false }
         // 全选
-        if(!isSelectAllOnline){
-            obj.pluginUuid=selectedRowKeysRecordOnline.map((item)=>item.uuid)
+        if (!isSelectAllOnline) {
+            obj.pluginUuid = selectedRowKeysRecordOnline.map((item) => item.uuid)
         }
-        setPluginGroup(obj,onRefList,onClose,"编辑分组成功")
+        setPluginGroup(obj, onRefList, onClose, "编辑分组成功")
     }
-    return(
-<div>
-                            <div>编辑分组</div>
-                            <div style={{fontSize:12,color:"gray",marginBottom:10}}>已勾选的分组为当前所在分组</div>
-                            <div style={{display:"flex",justifyContent:"flex-start",flexWrap:"wrap"}}>
-                            {typeList.map((item)=><div style={{width:108,position:"relative",margin:"0 20px 10px 0",padding:"10px 22px",display:"inline-block",border:"1px solid rgba(0,0,0,.06)",borderRadius:"2px"}}>
-                                {item}
-                                <SelectIcon
-                    //  @ts-ignore
-                    className={`icon-select  ${
-                        getSelectItem().includes(item) && "icon-select-active"
-                    }`}
+    return (
+        <div>
+            <div>编辑分组</div>
+            <div style={{ fontSize: 12, color: "gray", marginBottom: 10 }}>已勾选的分组为当前所在分组</div>
+            <div style={{ display: "flex", justifyContent: "flex-start", flexWrap: "wrap" }}>
+                {typeList.map((item) => <div style={{ width: 108, position: "relative", margin: "0 20px 10px 0", padding: "10px 22px", display: "inline-block", border: "1px solid rgba(0,0,0,.06)", borderRadius: "2px" }}>
+                    {item}
+                    <SelectIcon
+                        //  @ts-ignore
+                        className={`icon-select  ${getSelectItem().includes(item) && "icon-select-active"
+                            }`}
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            setSelectItem(filterNonUnique([...getSelectItem(), item]))
+                        }}
+                    />
+                </div>)}
+            </div>
+            <div style={{ textAlign: "center", marginTop: 10 }}>
+                <Button
                     onClick={(e) => {
                         e.stopPropagation()
-                        setSelectItem(filterNonUnique([...getSelectItem(),item]))
+                        submit()
                     }}
-                />
-                            </div>)}
-</div>
-                            <div style={{textAlign:"center",marginTop:10}}>
-                                <Button
-                                    onClick={(e) => {
-                                        e.stopPropagation()
-                                        submit()
-                                    }}
-                                    type="primary"
-                                >
-                                    确定
-                                </Button>
-                            </div>
-                        </div>
+                    type="primary"
+                >
+                    确定
+                </Button>
+            </div>
+        </div>
     )
 }
 
-interface SetPluginGroupProps{
-    selectedRowKeysRecordOnline:API.YakitPluginDetail[]
-    isSelectAllOnline:boolean
-    queryOnline:API.GetPluginWhere
-    onClose:()=>void
-    onRefList:()=>void
+interface SetPluginGroupProps {
+    selectedRowKeysRecordOnline: API.YakitPluginDetail[]
+    isSelectAllOnline: boolean
+    queryOnline: API.GetPluginWhere
+    onClose: () => void
+    onRefList: () => void
 }
 
 const AddPluginGroup: React.FC<SetPluginGroupProps> = (props) => {
-    const {selectedRowKeysRecordOnline,isSelectAllOnline,queryOnline,onClose,onRefList} = props
-    const [_,setGroupName,getGroupName] = useGetState<string[]>([])
-    
+    const { selectedRowKeysRecordOnline, isSelectAllOnline, queryOnline, onClose, onRefList } = props
+    const [_, setGroupName, getGroupName] = useGetState<string[]>([])
+
     const submit = () => {
-        let obj:PluginGroupPostProps = {
-            groupName:[]
+        let obj: PluginGroupPostProps = {
+            groupName: []
         }
         obj.groupName = [...getGroupName()]
-        obj.pluginWhere = {...queryOnline,bind_me:false}
+        obj.pluginWhere = { ...queryOnline, bind_me: false }
         // 全选
-        if(!isSelectAllOnline){
-            obj.pluginUuid=selectedRowKeysRecordOnline.map((item)=>item.uuid)
+        if (!isSelectAllOnline) {
+            obj.pluginUuid = selectedRowKeysRecordOnline.map((item) => item.uuid)
         }
-        setPluginGroup(obj,onRefList,onClose,"加入分组成功")
+        setPluginGroup(obj, onRefList, onClose, "加入分组成功")
     }
     const onChange = (checkedValues) => {
         setGroupName(checkedValues)
     }
-    return(
-<div>
-                            <div>加入分组</div>
-                            <div style={{fontSize:12,color:"gray"}}>可选择加入多个分组</div>
-                            <Checkbox.Group style={{ width: '100%' }} onChange={onChange}>
-                                    <div style={{display:"flex",flexDirection:"row",marginTop:10}}>
-                                        <div style={{paddingRight:16}}>扫描模式</div>
-                                        <div style={{flex:1}}>
-                                          <Row>
-                                        <Col span={8}>
-                                            <Checkbox value="基础扫描">基础扫描</Checkbox>
-                                        </Col>
-                                        <Col span={8}>
-                                            <Checkbox value="深度扫描">深度扫描</Checkbox>
-                                        </Col>
-                                        </Row>  
-                                        </div>
-                                        
-                                    </div>
-                                    <div style={{display:"flex",flexDirection:"row",marginTop:10}}>
-                            <div style={{paddingRight:16}}>功能类型</div>
-                            <div style={{flex:1}}>
-                                        <Row>
-                                        <Col span={8}>
-                                            <Checkbox value="弱口令">弱口令</Checkbox>
-                                        </Col>
-                                        <Col span={8}>
-                                            <Checkbox value="漏洞扫描">漏洞扫描</Checkbox>
-                                        </Col>
-                                        <Col span={8}>
-                                            <Checkbox value="合规检测">合规检测</Checkbox>
-                                        </Col>
-                                        </Row>
-                                        </div>
-                                    </div>
-                                
-                                
-                            </Checkbox.Group>
-                            <div style={{textAlign:"center",marginTop:10}}>
-                                <Button
-                                    onClick={(e) => {
-                                        e.stopPropagation()
-                                        submit()
-                                    }}
-                                    type="primary"
-                                    disabled={getGroupName().length===0}
-                                >
-                                    确定
-                                </Button>
-                            </div>
-                            
-                        </div>
+    return (
+        <div>
+            <div>加入分组</div>
+            <div style={{ fontSize: 12, color: "gray" }}>可选择加入多个分组</div>
+            <Checkbox.Group style={{ width: '100%' }} onChange={onChange}>
+                <div style={{ display: "flex", flexDirection: "row", marginTop: 10 }}>
+                    <div style={{ paddingRight: 16 }}>扫描模式</div>
+                    <div style={{ flex: 1 }}>
+                        <Row>
+                            <Col span={8}>
+                                <Checkbox value="基础扫描">基础扫描</Checkbox>
+                            </Col>
+                            <Col span={8}>
+                                <Checkbox value="深度扫描">深度扫描</Checkbox>
+                            </Col>
+                        </Row>
+                    </div>
+
+                </div>
+                <div style={{ display: "flex", flexDirection: "row", marginTop: 10 }}>
+                    <div style={{ paddingRight: 16 }}>功能类型</div>
+                    <div style={{ flex: 1 }}>
+                        <Row>
+                            <Col span={8}>
+                                <Checkbox value="弱口令">弱口令</Checkbox>
+                            </Col>
+                            <Col span={8}>
+                                <Checkbox value="漏洞扫描">漏洞扫描</Checkbox>
+                            </Col>
+                            <Col span={8}>
+                                <Checkbox value="合规检测">合规检测</Checkbox>
+                            </Col>
+                        </Row>
+                    </div>
+                </div>
+
+
+            </Checkbox.Group>
+            <div style={{ textAlign: "center", marginTop: 10 }}>
+                <Button
+                    onClick={(e) => {
+                        e.stopPropagation()
+                        submit()
+                    }}
+                    type="primary"
+                    disabled={getGroupName().length === 0}
+                >
+                    确定
+                </Button>
+            </div>
+
+        </div>
     )
 }
 
-interface PluginGroupProps{
-    size:"small" | "middle"
-    selectedRowKeysRecordOnline:API.YakitPluginDetail[]
-    isSelectAllOnline:boolean
-    queryOnline:API.GetPluginWhere
-    onRefList:()=>void
+interface PluginGroupProps {
+    size: "small" | "middle"
+    selectedRowKeysRecordOnline: API.YakitPluginDetail[]
+    isSelectAllOnline: boolean
+    queryOnline: API.GetPluginWhere
+    onRefList: () => void
 }
 
-interface PluginGroupPostProps{
-    groupName:string[]
-    pluginUuid?:string[]
-    pluginWhere?:API.GetPluginWhere
+interface PluginGroupPostProps {
+    groupName: string[]
+    pluginUuid?: string[]
+    pluginWhere?: API.GetPluginWhere
 }
 
 export const PluginGroup: React.FC<PluginGroupProps> = (props) => {
-    const {size,selectedRowKeysRecordOnline,isSelectAllOnline,queryOnline,onRefList} = props
+    const { size, selectedRowKeysRecordOnline, isSelectAllOnline, queryOnline, onRefList } = props
 
     const menuData = [
         {
@@ -3019,7 +3012,7 @@ export const PluginGroup: React.FC<PluginGroupProps> = (props) => {
                 const m = showModal({
                     width: "40%",
                     content: (
-                        <AddPluginGroup onRefList={onRefList} onClose={() => m.destroy()} selectedRowKeysRecordOnline={selectedRowKeysRecordOnline} isSelectAllOnline={isSelectAllOnline} queryOnline={queryOnline}/>
+                        <AddPluginGroup onRefList={onRefList} onClose={() => m.destroy()} selectedRowKeysRecordOnline={selectedRowKeysRecordOnline} isSelectAllOnline={isSelectAllOnline} queryOnline={queryOnline} />
                     )
                 })
                 return m
@@ -3032,7 +3025,7 @@ export const PluginGroup: React.FC<PluginGroupProps> = (props) => {
                 const n = showModal({
                     width: "30%",
                     content: (
-                        <RemovePluginGroup onRefList={onRefList} onClose={() => n.destroy()} selectedRowKeysRecordOnline={selectedRowKeysRecordOnline} isSelectAllOnline={isSelectAllOnline} queryOnline={queryOnline}/>
+                        <RemovePluginGroup onRefList={onRefList} onClose={() => n.destroy()} selectedRowKeysRecordOnline={selectedRowKeysRecordOnline} isSelectAllOnline={isSelectAllOnline} queryOnline={queryOnline} />
                     )
                 })
                 return n
@@ -3040,56 +3033,56 @@ export const PluginGroup: React.FC<PluginGroupProps> = (props) => {
         },
     ]
 
-    return(
+    return (
         <div>
-            {size === "middle"&&<>
-            {
-                selectedRowKeysRecordOnline.length===0?<Button
-                style={{margin:"0 12px 0 0"}}
-                size='small'
-                onClick={(e) => {
-                    e.stopPropagation()
-                }}
-                disabled={true}
-            >
-                插件分组
-                <ChevronDownIcon style={{color: "#85899E"}} />
-            </Button>:
-               <Popover
-               overlayClassName={style["http-history-table-drop-down-popover"]}
-               content={
-                   <Menu className={style["http-history-table-drop-down-batch"]}>
-                       {menuData.map((m) => {
-                           return (
-                               <Menu.Item
-                                   onClick={() => {
-                                       m.onClickBatch()
-                                   }}
-                                   key={m.title}
-                               >
-                                   {m.title}
-                               </Menu.Item>
-                           )
-                       })}
-                   </Menu>
-               }
-               trigger='click'
-               placement='bottomLeft'
-           >
-                   <Button
-                       style={{margin:"0 12px 0 0"}}
-                       size='small'
-                       onClick={(e) => {
-                           e.stopPropagation()
-                       }}
-                       
-                   >
-                       插件分组
-                       <ChevronDownIcon style={{color: "#85899E"}} />
-                   </Button>
-           </Popover>
-            }</>}
-                        </div>
+            {size === "middle" && <>
+                {
+                    selectedRowKeysRecordOnline.length === 0 ? <Button
+                        style={{ margin: "0 12px 0 0" }}
+                        size='small'
+                        onClick={(e) => {
+                            e.stopPropagation()
+                        }}
+                        disabled={true}
+                    >
+                        插件分组
+                        <ChevronDownIcon style={{ color: "#85899E" }} />
+                    </Button> :
+                        <Popover
+                            overlayClassName={style["http-history-table-drop-down-popover"]}
+                            content={
+                                <Menu className={style["http-history-table-drop-down-batch"]}>
+                                    {menuData.map((m) => {
+                                        return (
+                                            <Menu.Item
+                                                onClick={() => {
+                                                    m.onClickBatch()
+                                                }}
+                                                key={m.title}
+                                            >
+                                                {m.title}
+                                            </Menu.Item>
+                                        )
+                                    })}
+                                </Menu>
+                            }
+                            trigger='click'
+                            placement='bottomLeft'
+                        >
+                            <Button
+                                style={{ margin: "0 12px 0 0" }}
+                                size='small'
+                                onClick={(e) => {
+                                    e.stopPropagation()
+                                }}
+
+                            >
+                                插件分组
+                                <ChevronDownIcon style={{ color: "#85899E" }} />
+                            </Button>
+                        </Popover>
+                }</>}
+        </div>
     )
 }
 
@@ -3123,7 +3116,7 @@ export interface DownloadOnlinePluginByTokenRequest {
 }
 
 const AddAllPlugin: React.FC<AddAllPluginProps> = (props) => {
-    const {selectedRowKeysRecord, setListLoading, user, userInfo, onFinish, oneImport, size, query, isSelectAll} = props
+    const { selectedRowKeysRecord, setListLoading, user, userInfo, onFinish, oneImport, size, query, isSelectAll } = props
     const [taskToken, setTaskToken] = useState(randomString(40))
     // 全部添加进度条
     const [addLoading, setAddLoading] = useState<boolean>(false)
@@ -3144,7 +3137,7 @@ const AddAllPlugin: React.FC<AddAllPluginProps> = (props) => {
                 ipcRenderer.invoke("change-main-menu")
             }, 500)
         })
-        ipcRenderer.on(`${taskToken}-error`, (_, e) => {})
+        ipcRenderer.on(`${taskToken}-error`, (_, e) => { })
         return () => {
             ipcRenderer.removeAllListeners(`${taskToken}-data`)
             ipcRenderer.removeAllListeners(`${taskToken}-error`)
@@ -3159,7 +3152,7 @@ const AddAllPlugin: React.FC<AddAllPluginProps> = (props) => {
         if (selectedRowKeysRecord.length === 0 || isSelectAll) {
             // 全部添加
             setAddLoading(true)
-            let addParams: DownloadOnlinePluginByTokenRequest = {isAddToken: true, BindMe: user}
+            let addParams: DownloadOnlinePluginByTokenRequest = { isAddToken: true, BindMe: user }
             // 一键导入不加条件，其他要加
             if (!oneImport) {
                 addParams = {
@@ -3176,7 +3169,7 @@ const AddAllPlugin: React.FC<AddAllPluginProps> = (props) => {
 
             ipcRenderer
                 .invoke("DownloadOnlinePluginAll", addParams, taskToken)
-                .then(() => {})
+                .then(() => { })
                 .catch((e) => {
                     failed(`添加失败:${e}`)
                 })
@@ -3250,44 +3243,44 @@ const AddAllPlugin: React.FC<AddAllPluginProps> = (props) => {
                             )}
                         </Popconfirm>
                     )) || (
-                        <>
-                            {(selectedRowKeysRecord.length === 0 && !(user && !userInfo.isLogin) && (
-                                <Popconfirm
-                                    title={
-                                        user
-                                            ? "确定将我的插件所有数据导入到本地吗"
-                                            : "确定将插件商店所有数据导入到本地吗?"
-                                    }
-                                    onConfirm={AddAllPlugin}
-                                    okText='Yes'
-                                    cancelText='No'
-                                    placement={size === "small" ? "top" : "topRight"}
-                                >
-                                    {(size === "small" && (
-                                        <Tooltip title='下载'>
-                                            <DownloadOutlined className='operation-icon ' />
-                                        </Tooltip>
-                                    )) || (
-                                        <Button type='primary' size='small'>
-                                            下载
-                                        </Button>
+                            <>
+                                {(selectedRowKeysRecord.length === 0 && !(user && !userInfo.isLogin) && (
+                                    <Popconfirm
+                                        title={
+                                            user
+                                                ? "确定将我的插件所有数据导入到本地吗"
+                                                : "确定将插件商店所有数据导入到本地吗?"
+                                        }
+                                        onConfirm={AddAllPlugin}
+                                        okText='Yes'
+                                        cancelText='No'
+                                        placement={size === "small" ? "top" : "topRight"}
+                                    >
+                                        {(size === "small" && (
+                                            <Tooltip title='下载'>
+                                                <DownloadOutlined className='operation-icon ' />
+                                            </Tooltip>
+                                        )) || (
+                                                <Button type='primary' size='small'>
+                                                    下载
+                                                </Button>
+                                            )}
+                                    </Popconfirm>
+                                )) || (
+                                        <>
+                                            {(size === "small" && (
+                                                <Tooltip title='下载'>
+                                                    <DownloadOutlined className='operation-icon ' onClick={AddAllPlugin} />
+                                                </Tooltip>
+                                            )) || (
+                                                    <Button type='primary' size='small' onClick={AddAllPlugin}>
+                                                        下载
+                                                    </Button>
+                                                )}
+                                        </>
                                     )}
-                                </Popconfirm>
-                            )) || (
-                                <>
-                                    {(size === "small" && (
-                                        <Tooltip title='下载'>
-                                            <DownloadOutlined className='operation-icon ' onClick={AddAllPlugin} />
-                                        </Tooltip>
-                                    )) || (
-                                        <Button type='primary' size='small' onClick={AddAllPlugin}>
-                                            下载
-                                        </Button>
-                                    )}
-                                </>
-                            )}
-                        </>
-                    )}
+                            </>
+                        )}
                 </>
             )}
         </>
@@ -3381,7 +3374,7 @@ export const YakModuleUser: React.FC<YakModuleUserProps> = (props) => {
             }
         },
         [publicKeyword],
-        {wait: 50}
+        { wait: 50 }
     )
     const isRefListRef = useRef(true)
     useEffect(() => {
@@ -3470,7 +3463,7 @@ export const YakModuleUser: React.FC<YakModuleUserProps> = (props) => {
                         setListLoading={setListLoading}
                         user={true}
                         userInfo={userInfo}
-                        onFinish={() => {}}
+                        onFinish={() => { }}
                     />
                 </Col>
             </Row>
@@ -3523,7 +3516,7 @@ interface YakModuleOnlineProps {
     statisticsQueryOnline: SearchPluginOnlineRequest
     isShowFilter: boolean
     searchType: "userName" | "keyword"
-    onRefList:()=>void
+    onRefList: () => void
 }
 
 export const YakModuleOnline: React.FC<YakModuleOnlineProps> = (props) => {
@@ -3674,7 +3667,7 @@ export const YakModuleOnline: React.FC<YakModuleOnlineProps> = (props) => {
                             closable
                             color='blue'
                             onClose={() => {
-                                setStatisticsQueryOnline({...statisticsQueryOnline, time_search: ""})
+                                setStatisticsQueryOnline({ ...statisticsQueryOnline, time_search: "" })
                             }}
                         >
                             {statisticsQueryOnline.time_search === "week" ? "本周新增" : "今日新增"}
@@ -3682,7 +3675,7 @@ export const YakModuleOnline: React.FC<YakModuleOnlineProps> = (props) => {
                     )}
                 </Col>
                 <Col span={8} className='col-flex-end'>
-                    {isSimpleEnterprise&&<PluginGroup onRefList={onRefList} size={size} queryOnline={queryOnline} selectedRowKeysRecordOnline={selectedRowKeysRecordOnline} isSelectAllOnline={isSelectAllOnline}/>}
+                    {isSimpleEnterprise && <PluginGroup onRefList={onRefList} size={size} queryOnline={queryOnline} selectedRowKeysRecordOnline={selectedRowKeysRecordOnline} isSelectAllOnline={isSelectAllOnline} />}
                     {isShowFilter && (
                         <PluginFilter
                             visibleQuery={visibleQuery}
@@ -3722,7 +3715,7 @@ export const YakModuleOnline: React.FC<YakModuleOnlineProps> = (props) => {
                         setListLoading={setListLoading}
                         user={false}
                         userInfo={userInfo}
-                        onFinish={() => {}}
+                        onFinish={() => { }}
                     />
                 </Col>
             </Row>
@@ -3831,7 +3824,7 @@ export const YakModuleOnlineList: React.FC<YakModuleOnlineListProps> = (props) =
         if (!updatePluginRecord) return
         const index = response.data.findIndex((ele) => ele.id === updatePluginRecord.id)
         if (index === -1) return
-        response.data[index] = {...updatePluginRecord}
+        response.data[index] = { ...updatePluginRecord }
         setResponse({
             ...response,
             data: [...response.data]
@@ -4003,7 +3996,7 @@ export const YakModuleOnlineList: React.FC<YakModuleOnlineListProps> = (props) =
         return (
             <List
                 dataSource={[]}
-                locale={{emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='未登录,请先登录' />}}
+                locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='未登录,请先登录' /> }}
             />
         )
     }
@@ -4012,7 +4005,7 @@ export const YakModuleOnlineList: React.FC<YakModuleOnlineListProps> = (props) =
         return (
             <List
                 dataSource={[]}
-                locale={{emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='未登录,请先登录' />}}
+                locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='未登录,请先登录' /> }}
             />
         )
     }
@@ -4060,7 +4053,7 @@ export const YakModuleOnlineList: React.FC<YakModuleOnlineListProps> = (props) =
     )
 }
 
-export const TagColor: {[key: string]: string} = {
+export const TagColor: { [key: string]: string } = {
     failed: "color-bgColor-red|审核不通过",
     success: "color-bgColor-green|审核通过",
     not: "color-bgColor-blue|待审核"
@@ -4117,7 +4110,7 @@ export const PluginItemOnline: React.FC<PluginListOptProps> = (props) => {
         }
     })
     // 全局登录状态
-    const {userInfo} = useStore()
+    const { userInfo } = useStore()
     const isShowAdmin =
         (isAdmin && !bind_me) || (bind_me && !info.is_private) || (userInfo.showStatusSearch && !bind_me)
     const tagsString = (tags && tags.length > 0 && tags.join(",")) || ""
@@ -4135,9 +4128,8 @@ export const PluginItemOnline: React.FC<PluginListOptProps> = (props) => {
                         <div className='text-icon'>
                             {isShowAdmin && !info.is_private && (
                                 <div
-                                    className={`text-icon-admin ${
-                                        TagColor[["not", "success", "failed"][status]].split("|")[0]
-                                    } vertical-center`}
+                                    className={`text-icon-admin ${TagColor[["not", "success", "failed"][status]].split("|")[0]
+                                        } vertical-center`}
                                 >
                                     {TagColor[["not", "success", "failed"][status]].split("|")[1]}
                                 </div>
@@ -4146,7 +4138,7 @@ export const PluginItemOnline: React.FC<PluginListOptProps> = (props) => {
                                 // @ts-ignore
                                 <OfficialYakitLogoIcon className='text-icon-style' />
                             )}
-                            {!bind_me && <>{info.is_private && <LockOutlined style={{paddingLeft: 5}} />}</>}
+                            {!bind_me && <>{info.is_private && <LockOutlined style={{ paddingLeft: 5 }} />}</>}
                             {bind_me && <>{(info.is_private && <LockOutlined />) || <OnlineCloudIcon />}</>}
                         </div>
                     </div>
@@ -4171,9 +4163,8 @@ export const PluginItemOnline: React.FC<PluginListOptProps> = (props) => {
                 </div>
                 <SelectIcon
                     //  @ts-ignore
-                    className={`icon-select  ${
-                        selectedRowKeysRecord.findIndex((ele) => ele.id === info.id) !== -1 && "icon-select-active"
-                    }`}
+                    className={`icon-select  ${selectedRowKeysRecord.findIndex((ele) => ele.id === info.id) !== -1 && "icon-select-active"
+                        }`}
                     onClick={(e) => {
                         e.stopPropagation()
                         onSelect(info)
@@ -4232,7 +4223,7 @@ interface QueryComponentOnlineProps {
 }
 
 const QueryComponentOnline: React.FC<QueryComponentOnlineProps> = (props) => {
-    const {onClose, userInfo, queryOnline, setQueryOnline, user} = props
+    const { onClose, userInfo, queryOnline, setQueryOnline, user } = props
     const [isShowStatus, setIsShowStatus] = useState<boolean>(queryOnline.is_private === "true")
     const [isAdmin, setIsAdmin] = useState(["admin", "superAdmin"].includes(userInfo.role || ""))
     const [form] = Form.useForm()
@@ -4289,7 +4280,7 @@ const QueryComponentOnline: React.FC<QueryComponentOnlineProps> = (props) => {
             status: value.status === "all" ? "" : value.status,
             plugin_type: value.plugin_type.join(",")
         }
-        setQueryOnline({...query})
+        setQueryOnline({ ...query })
     })
     const onSelect = useMemoizedFn((key) => {
         setIsShowStatus(key === "false")
@@ -4354,7 +4345,7 @@ interface QueryComponentLocalProps {
 }
 
 const QueryComponentLocal: React.FC<QueryComponentLocalProps> = (props) => {
-    const {onClose, queryLocal, setQueryLocal} = props
+    const { onClose, queryLocal, setQueryLocal } = props
     const [form] = Form.useForm()
     const refTest = useRef<any>()
     useEffect(() => {
@@ -4378,7 +4369,7 @@ const QueryComponentLocal: React.FC<QueryComponentLocalProps> = (props) => {
         }
     }
     const onReset = () => {
-        setQueryLocal({...queryLocal, Type: defQueryLocal.Type})
+        setQueryLocal({ ...queryLocal, Type: defQueryLocal.Type })
         form.setFieldsValue({
             Type: defQueryLocal.Type
         })
@@ -4389,7 +4380,7 @@ const QueryComponentLocal: React.FC<QueryComponentLocalProps> = (props) => {
             ...value,
             Type: value.Type.join(",")
         }
-        setQueryLocal({...query})
+        setQueryLocal({ ...query })
     })
     return (
         <div ref={refTest} className='query-form-body'>
@@ -4425,7 +4416,7 @@ interface PluginFilterProps {
 }
 
 const PluginFilter: React.FC<PluginFilterProps> = (props) => {
-    const {queryChildren, size, isFilter, visibleQuery, setVisibleQuery} = props
+    const { queryChildren, size, isFilter, visibleQuery, setVisibleQuery } = props
     // const [visibleQuery, setVisibleQuery] = useState<boolean>(false)
     return (
         <Popconfirm
@@ -4443,24 +4434,24 @@ const PluginFilter: React.FC<PluginFilterProps> = (props) => {
                     />
                 </Tooltip>
             )) || (
-                <div
-                    className={`full-filter  ${isFilter && "operation-icon-active"}`}
-                    onClick={() => setVisibleQuery(true)}
-                >
-                    <FilterOutlined className='filter-icon' />
-                    筛选
-                </div>
-            )}
+                    <div
+                        className={`full-filter  ${isFilter && "operation-icon-active"}`}
+                        onClick={() => setVisibleQuery(true)}
+                    >
+                        <FilterOutlined className='filter-icon' />
+                        筛选
+                    </div>
+                )}
         </Popconfirm>
     )
 }
 
-const adminUpOnline = async (params: YakScript, url: string, type: number,baseUrl:string,userInfo) => {
+const adminUpOnline = async (params: YakScript, url: string, type: number, baseUrl: string, userInfo) => {
     const onlineParams: API.SaveYakitPlugin = onLocalScriptToOnlinePlugin(params, type)
-    if(IsEnterprise&&userInfo.role==="admin"&&params.OnlineBaseUrl===baseUrl){
+    if (IsEnterprise && userInfo.role === "admin" && params.OnlineBaseUrl === baseUrl) {
         onlineParams.id = parseInt(`${params.OnlineId}`)
     }
-    if(!IsEnterprise&&params.OnlineId){
+    if (!IsEnterprise && params.OnlineId) {
         onlineParams.id = parseInt(`${params.OnlineId}`)
     }
     return new Promise((resolve) => {
@@ -4480,7 +4471,7 @@ const adminUpOnline = async (params: YakScript, url: string, type: number,baseUr
                     .then((res) => {
                         ipcRenderer
                             .invoke("delete-yak-script", params.Id)
-                            .then(() => {})
+                            .then(() => { })
                             .catch((err) => {
                                 failed("删除本地【" + params.ScriptName + "】失败:" + err)
                             })
@@ -4497,86 +4488,86 @@ const adminUpOnline = async (params: YakScript, url: string, type: number,baseUr
 }
 
 interface AdminUpOnlineBatchProps {
-    userInfo:any
-    onClose:()=>void
+    userInfo: any
+    onClose: () => void
 }
 
 export const AdminUpOnlineBatch: React.FC<AdminUpOnlineBatchProps> = (props) => {
-    const {userInfo,onClose} = props
-    const [newSrcipt,setNewSrcipt] = useState<YakScript[]>([])
-    const [loading,setLoading] = useState<boolean>(true)
+    const { userInfo, onClose } = props
+    const [newSrcipt, setNewSrcipt] = useState<YakScript[]>([])
+    const [loading, setLoading] = useState<boolean>(true)
     const [percent, setPercent, getPercent] = useGetState<number>(0)
-    const [isUpload,setIsUpload] = useState<boolean>(false)
-    const [nowPligin,setNowPligin] = useState<string>("")
-    useEffect(()=>{
+    const [isUpload, setIsUpload] = useState<boolean>(false)
+    const [nowPligin, setNowPligin] = useState<string>("")
+    useEffect(() => {
         ipcRenderer
-                                            .invoke("QueryYakScriptLocalAll", {})
-                                            .then((newSrcipt: {Data: YakScript[]}) => {
-                                                setNewSrcipt(newSrcipt.Data)
-                                                setLoading(true)
-                                            })
-                                            .catch((e) => {
-                                                failed(`查询所有插件错误:${e}`)
-                                            })
-                                            .finally(() => {
-                                                setTimeout(()=>{
-                                                    setLoading(false)
-                                                },200)
-                                            })
-    },[])
+            .invoke("QueryYakScriptLocalAll", {})
+            .then((newSrcipt: { Data: YakScript[] }) => {
+                setNewSrcipt(newSrcipt.Data)
+                setLoading(true)
+            })
+            .catch((e) => {
+                failed(`查询所有插件错误:${e}`)
+            })
+            .finally(() => {
+                setTimeout(() => {
+                    setLoading(false)
+                }, 200)
+            })
+    }, [])
 
     const submit = () => {
         setIsUpload(true)
-        getRemoteValue("httpSetting").then(async(setting) => {
-        const values = JSON.parse(setting)
-        const baseUrl: string = values.BaseUrl
-        const realSelectedRowKeysRecordLocal = [...newSrcipt]
-    const length = realSelectedRowKeysRecordLocal.length
-    const errList: any[] = []
-    setPercent(0)
-    for (let index = 0; index < length; index++) {
-        setNowPligin(realSelectedRowKeysRecordLocal[index].ScriptName)
-        const element = realSelectedRowKeysRecordLocal[index]
-        const res = await adminUpOnline(element, "yakit/plugin", 2,baseUrl,userInfo)
-        if (res) {
-            errList.push(res)
-            const p = Math.floor(index/length * 100)
-            setPercent(p)
-        }
-    }
+        getRemoteValue("httpSetting").then(async (setting) => {
+            const values = JSON.parse(setting)
+            const baseUrl: string = values.BaseUrl
+            const realSelectedRowKeysRecordLocal = [...newSrcipt]
+            const length = realSelectedRowKeysRecordLocal.length
+            const errList: any[] = []
+            setPercent(0)
+            for (let index = 0; index < length; index++) {
+                setNowPligin(realSelectedRowKeysRecordLocal[index].ScriptName)
+                const element = realSelectedRowKeysRecordLocal[index]
+                const res = await adminUpOnline(element, "yakit/plugin", 2, baseUrl, userInfo)
+                if (res) {
+                    errList.push(res)
+                    const p = Math.floor(index / length * 100)
+                    setPercent(p)
+                }
+            }
 
-    // if (errList.length > 0) {
-    //     const errString = errList
-    //         .filter((_, index) => index < 10)
-    //         .map((e) => {
-    //             return `插件名：【${e.script_name}】，失败原因：${e.err}`
-    //         })
-    //     failed("“" + errString.join(";") + `${(errList.length > 0 && "...") || ""}` + "”上传失败")
-    // } else {
-        setNowPligin("")
-        success("批量上传成功")
-    // }
-    onClose()
-    })
+            // if (errList.length > 0) {
+            //     const errString = errList
+            //         .filter((_, index) => index < 10)
+            //         .map((e) => {
+            //             return `插件名：【${e.script_name}】，失败原因：${e.err}`
+            //         })
+            //     failed("“" + errString.join(";") + `${(errList.length > 0 && "...") || ""}` + "”上传失败")
+            // } else {
+            setNowPligin("")
+            success("批量上传成功")
+            // }
+            onClose()
+        })
     }
 
     return <div>
         <div>
-        同步插件是为了初始化插件商店，将本地所有插件一键同步至云端，若是正常插件上传流程，请在插件商店-本地页进行上传
+            同步插件是为了初始化插件商店，将本地所有插件一键同步至云端，若是正常插件上传流程，请在插件商店-本地页进行上传
         </div>
-        <div style={{textAlign:"center",marginTop:10}}>
+        <div style={{ textAlign: "center", marginTop: 10 }}>
             {
-                isUpload?<Progress
-                        size='small'
-                        percent={percent}
-                    />:<Button type="primary" onClick={submit} loading={loading}>
-                        确认
-                    </Button> 
+                isUpload ? <Progress
+                    size='small'
+                    percent={percent}
+                /> : <Button type="primary" onClick={submit} loading={loading}>
+                    确认
+                </Button>
             }
-           
+
         </div>
         <div className="yakit-single-line-ellipsis">
-          {nowPligin}  
+            {nowPligin}
         </div>
     </div>
 }
