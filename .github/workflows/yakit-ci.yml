@@ -27,9 +27,6 @@ jobs:
       - name: "Download Yak Engine via wget(MacOS)"
         id: download-darwin-engine
         run: wget -O bins/yak_darwin_amd64 https://yaklang.oss-accelerate.aliyuncs.com/yak/latest/yak_darwin_amd64 && zip ./bins/yak_darwin_amd64.zip ./bins/yak_darwin_amd64 && rm ./bins/yak_darwin_amd64
-      - name: "Download Yak Engine via wget(Linux)"
-        id: download-linux-engine
-        run: wget -O bins/yak_linux_amd64 https://yaklang.oss-accelerate.aliyuncs.com/yak/latest/yak_linux_amd64 && zip ./bins/yak_linux_amd64.zip ./bins/yak_linux_amd64 && rm ./bins/yak_linux_amd64
       - name: "Download Yak Engine via wget(Windows)"
         id: download-windows-engine
         run: wget -O bins/yak_windows_amd64.exe https://yaklang.oss-accelerate.aliyuncs.com/yak/latest/yak_windows_amd64.exe && zip ./bins/yak_windows_amd64.zip ./bins/yak_windows_amd64.exe && rm ./bins/yak_windows_amd64.exe
@@ -222,10 +219,6 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: Yakit-EE-${{ steps.extract_version.outputs.version }}-darwin-arm64.dmg
-      - name: Download Yakit (Linux amd64)
-        uses: actions/download-artifact@v2
-        with:
-          name: Yakit-EE-${{ steps.extract_version.outputs.version }}-linux-amd64.AppImage
       - run: ls
         name: Ls Published Artifacts...
 
@@ -327,11 +320,6 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: Yakit-${{ steps.fetchtag_release.outputs.value }}-darwin-arm64.dmg
-      - name: Download Yakit (Linux amd64)
-        uses: actions/download-artifact@v2
-        with:
-          name: Yakit-${{ steps.fetchtag_release.outputs.value }}-linux-amd64.AppImage
-
       - run: ls
         name: Ls Published Artifacts...
 
@@ -378,16 +366,6 @@ jobs:
           asset_name: Yakit-${{ steps.fetchtag_release.outputs.value }}-darwin-arm64.dmg
           asset_content_type: application/octet-stream
 
-      - name: Upload Release Asset (Linux)
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ./Yakit-${{ steps.fetchtag_release.outputs.value }}-linux-amd64.AppImage
-          asset_name: Yakit-${{ steps.fetchtag_release.outputs.value }}-linux-amd64.AppImage
-          asset_content_type: application/octet-stream
-
       - name: Run
         run: ls
       #      - name: Upload yak to oss Latest
@@ -428,4 +406,3 @@ jobs:
             Yakit-${{ steps.fetchtag_release.outputs.value }}-windows-amd64.exe:/yak/${{ steps.fetchtag_release.outputs.value }}/Yakit-${{ steps.fetchtag_release.outputs.value }}-windows-amd64.exe
             Yakit-${{ steps.fetchtag_release.outputs.value }}-darwin-x64.dmg:/yak/${{ steps.fetchtag_release.outputs.value }}/Yakit-${{ steps.fetchtag_release.outputs.value }}-darwin-x64.dmg
             Yakit-${{ steps.fetchtag_release.outputs.value }}-darwin-arm64.dmg:/yak/${{ steps.fetchtag_release.outputs.value }}/Yakit-${{ steps.fetchtag_release.outputs.value }}-darwin-arm64.dmg
-            Yakit-${{ steps.fetchtag_release.outputs.value }}-linux-amd64.AppImage:/yak/${{ steps.fetchtag_release.outputs.value }}/Yakit-${{ steps.fetchtag_release.outputs.value }}-linux-amd64.AppImage
