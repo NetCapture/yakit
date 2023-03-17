@@ -62,15 +62,15 @@
     },
     "productName": "Yakit",
     "win": {
-      "icon": "app/assets/telecom_logo_small.png",
+      "icon": "app/assets/telecom_logo_small.ico",
       "artifactName": "${productName}-${version}-windows-amd64.${ext}"
     },
     "mac": {
-      "icon": "app/assets/telecom_logo_small.ico",
+      "icon": "app/assets/telecom_logo_small.icns",
       "artifactName": "${productName}-${version}-darwin-${arch}.${ext}"
     },
     "linux": {
-      "icon": "app/assets/telecom_logo_small.ico",
+      "icon": "app/assets/telecom_logo_small.icns",
       "artifactName": "${productName}-${version}-linux-amd64.${ext}"
     }
   }
