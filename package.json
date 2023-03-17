@@ -64,7 +64,7 @@
       "installerIcon": "app/assets/telecom_logo_small.ico",
       "uninstallerIcon": "app/assets/telecom_logo_small.ico"
     },
-    "productName": "单兵武器装备库",
+    "productName": "Yakit",
     "win": {
       "icon": "app/assets/telecom_logo_small.ico",
       "artifactName": "${productName}-${version}-windows-amd64.${ext}"

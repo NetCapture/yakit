@@ -32,7 +32,7 @@ import {Route} from "@/routes/routeSpec"
 import {UserPlatformType} from "@/pages/globalVariable"
 import SetPassword from "@/pages/SetPassword"
 import SelectUpload from "@/pages/SelectUpload"
-import {QueryGeneralResponse,YakScript} from "@/pages/invoker/schema"
+import {QueryGeneralResponse, YakScript} from "@/pages/invoker/schema"
 import {Risk} from "@/pages/risks/schema"
 import {RiskDetails, RiskTable} from "@/pages/risks/RiskTable"
 import {YakitButton} from "../yakitUI/YakitButton/YakitButton"
@@ -52,7 +52,7 @@ import {YakitInput} from "../yakitUI/YakitInput/YakitInput"
 import {ENTERPRISE_STATUS, getJuageEnvFile} from "@/utils/envfile"
 import {NetWorkApi} from "@/services/fetch"
 import {API} from "@/services/swagger/resposeType"
-import { AdminUpOnlineBatch } from "@/pages/yakitStore/YakitStorePage";
+import {AdminUpOnlineBatch} from "@/pages/yakitStore/YakitStorePage"
 
 import {isSimpleEnterprise} from "@/utils/envfile"
 import classnames from "classnames"
@@ -136,7 +136,7 @@ export const FuncDomain: React.FC<FuncDomainProp> = React.memo((props) => {
         else if (userInfo.role !== "admin" && userInfo.platform === "company") {
             let cacheMenu = [
                 {key: "user-info", title: "用户信息", render: () => SetUserInfoModule()},
-                // {key: "upload-data", title: "上传数据"},
+                {key: "upload-data", title: "上传数据"},
                 {key: "set-password", title: "修改密码"},
                 {key: "sign-out", title: "退出登录"}
             ]
@@ -234,12 +234,14 @@ export const FuncDomain: React.FC<FuncDomainProp> = React.memo((props) => {
                                         const key = Route.PlugInAdminPage
                                         openMenu(key)
                                     }
-                                    if(key === "upload-plugin"){
+                                    if (key === "upload-plugin") {
                                         const m = showModal({
                                             title: "同步本地插件",
-                                            content: <AdminUpOnlineBatch userInfo={userInfo} onClose={() => m.destroy()}/>
+                                            content: (
+                                                <AdminUpOnlineBatch userInfo={userInfo} onClose={() => m.destroy()} />
+                                            )
                                         })
-                                        return m          
+                                        return m
                                     }
                                 }}
                             >
