@@ -56,22 +56,16 @@
     },
     "nsis": {
       "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
-      "installerIcon": "app/assets/telecom_logo_small.ico",
-      "uninstallerIcon": "app/assets/telecom_logo_small.ico"
+      "allowToChangeInstallationDirectory": true
     },
     "productName": "Yakit",
     "win": {
-      "icon": "app/assets/telecom_logo_small.ico",
+      "icon": "app/assets/yakitlogo.ico",
       "artifactName": "${productName}-${version}-windows-amd64.${ext}"
     },
     "mac": {
-      "icon": "app/assets/telecom_logo_small.icns",
+      "icon": "app/assets/yakitlogo.icns",
       "artifactName": "${productName}-${version}-darwin-${arch}.${ext}"
-    },
-    "linux": {
-      "icon": "app/assets/telecom_logo_small.icns",
-      "artifactName": "${productName}-${version}-linux-amd64.${ext}"
     }
   }
 }
