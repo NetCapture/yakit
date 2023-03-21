@@ -503,15 +503,15 @@ export const YakitLoading: React.FC<YakitLoadingProp> = (props) => {
     ])
 
     /** 加载页随机宣传语 */
-    const loadingTitle = useMemo(() => LoadingTitle[Math.floor(Math.random() * (LoadingTitle.length - 0)) + 0], [])
+    // const loadingTitle = useMemo(() => LoadingTitle[Math.floor(Math.random() * (LoadingTitle.length - 0)) + 0], [])
 
     return (
         <div className={styles["yakit-loading-wrapper"]}>
             <div className={styles["yakit-loading-body"]}>
                 <div className={styles["body-content"]}>
                     <div className={styles["yakit-loading-title"]}>
-                        <div className={styles["title-style"]}>欢迎使用 Yakit</div>
-                        <div className={styles["subtitle-stlye"]}>{loadingTitle}</div>
+                        <div className={styles["title-style"]}>欢迎使用 单兵武器装备库</div>
+                        {/* <div className={styles["subtitle-stlye"]}>{loadingTitle}</div> */}
                     </div>
 
                     <div className={styles["yakit-loading-icon-wrapper"]}>

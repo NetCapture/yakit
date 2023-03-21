@@ -786,7 +786,7 @@ const UILayout: React.FC<UILayoutProp> = (props) => {
                                 ></div>
 
                                 <div className={classnames(styles["yakit-header-title"])} onDoubleClick={maxScreen}>
-                                    Yakit-{`${EngineModeVerbose(engineMode || "local")}`}
+                                    {`${EngineModeVerbose(engineMode || "local")}`}
                                 </div>
 
                                 <div className={styles["header-left"]}>
@@ -883,7 +883,7 @@ const UILayout: React.FC<UILayoutProp> = (props) => {
                                 ></div>
 
                                 <div className={classnames(styles["yakit-header-title"])} onDoubleClick={maxScreen}>
-                                    Yakit-{`${EngineModeVerbose(engineMode || "local")}`}
+                                    {`${EngineModeVerbose(engineMode || "local")}`}
                                 </div>
 
                                 <div className={styles["header-left"]}>
@@ -981,22 +981,21 @@ const UILayout: React.FC<UILayoutProp> = (props) => {
 
                     <div className={styles["ui-layout-body"]}>
                         {engineLink &&
-                            !linkDatabase &&
                             (isJudgeLicense ? (
                                 <EnterpriseJudgeLogin
                                     setJudgeLicense={setJudgeLicense}
                                     setJudgeLogin={(v: boolean) => { }}
                                 />
+                            ) : linkDatabase ? (
+                                <SoftwareSettings
+                                    engineMode={engineMode || "local"}
+                                    onEngineModeChange={changeEngineMode}
+                                    onFinish={softwareSettingFinish}
+                                />
                             ) : (
                                 props.children
                             ))}
-                        {engineLink && linkDatabase && (
-                            <SoftwareSettings
-                                engineMode={engineMode || "local"}
-                                onEngineModeChange={changeEngineMode}
-                                onFinish={softwareSettingFinish}
-                            />
-                        )}
+
                         {!engineLink && !isRemoteEngine && (
                             <YakitLoading
                                 yakitStatus={yakitStatus}
