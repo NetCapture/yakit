@@ -6,7 +6,7 @@ import {useMemoizedFn} from "ahooks"
 import {SoftwareRemoteSvgIcon} from "./icon"
 import {YaklangEngineMode} from "@/yakitGVDefine"
 import {ProjectManageProp} from "./ProjectManage"
-
+import TelecomSmallLogo from "@/assets/img/telecom_logo_small.png"
 import classnames from "classnames"
 import styles from "./SoftwareSettings.module.scss"
 
@@ -94,7 +94,8 @@ export const SoftwareSettings: React.FC<SoftwareSettingsProp> = memo((props) => 
                     })}
                 >
                     <div className={styles["navbar-logo"]}>
-                        <YakitLogoSvgIcon />
+                        <img src={TelecomSmallLogo} alt='logo' />
+                        {!showMini && "单兵武器装备库"}
                     </div>
 
                     <div className={styles["navbar-list-wrapper"]}>
