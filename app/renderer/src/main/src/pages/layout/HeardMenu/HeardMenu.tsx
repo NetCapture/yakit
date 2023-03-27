@@ -705,14 +705,17 @@ const HeardMenu: React.FC<HeardMenuProps> = React.memo((props) => {
                     )}
                 </div>
                 <div className={classNames(style["heard-menu-right"])}>
-                    <YakitButton
-                        type='text'
-                        className={style["heard-menu-theme"]}
-                        onClick={() => onImportShare()}
-                        icon={<SaveIcon />}
-                    >
-                        导入协作资源
-                    </YakitButton>
+                    {
+                        !isSimpleEnterprise &&
+                        <YakitButton
+                            type='text'
+                            className={style["heard-menu-theme"]}
+                            onClick={() => onImportShare()}
+                            icon={<SaveIcon />}
+                        >
+                            导入协作资源
+                        </YakitButton>
+                    }
                     <YakitButton
                         type='secondary2'
                         className={style["heard-menu-grey"]}
