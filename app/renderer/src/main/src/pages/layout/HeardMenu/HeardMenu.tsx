@@ -136,8 +136,14 @@ const HeardMenu: React.FC<HeardMenuProps> = React.memo((props) => {
 
     const routeKeyToLabel = useRef<Map<string, string>>(new Map<string, string>())
 
-    /** 登录用户信息 */
-    const { userInfo } = useStore()
+    useEffect(() => {
+        getRemoteValue("PatternMenu").then((patternMenu) => {
+            const menuMode = patternMenu || "expert"
+            setRemoteValue("PatternMenu", menuMode)
+            setPatternMenu(menuMode)
+            init(menuMode)
+        })
+    }, [])
     useEffect(() => {
         // 当为企业简易版
         if (isSimpleEnterprise) {
@@ -214,59 +220,60 @@ const HeardMenu: React.FC<HeardMenuProps> = React.memo((props) => {
                 ipcRenderer
                     .invoke("QueryAllMenuItem", { Mode: menuMode })
                     .then((rsp: MenuByGroupProps) => {
-                        if (rsp.Groups.length === 0) {
-                            // 获取的数据为空，先使用默认数据覆盖，然后再通过名字下载，然后保存菜单数据
-                            onInitMenuData(menuMode, oldMenuData)
-                        } else {
-                            // 默认菜单中，有新增的菜单，前提：系统内置菜单不可删除 企业简易版管理员默认展示所有菜单
-                            let currentMenuList: MenuDataProps[] = [...DefaultRouteMenuData]
-                            // 新手版菜单-novice
-                            if (menuMode == "new") {
-                                currentMenuList = [...DefaultRouteMenuData].filter((item) => item.menuPattern?.includes("novice"))
-                            }
-                            const newMenuList: MenuItem[] = [] // 用来判断是否有新增菜单
-                            const addMenuScripName: string[] = [] // 用来判断是否有新增的插件菜单
-                            for (let i = 0; i < rsp.Groups.length; i++) {
-                                const onlineMenuItem = rsp.Groups[i]
-                                const localMenuItem = currentMenuList.find((ele) => ele.label === onlineMenuItem.Group)
-                                if (localMenuItem && localMenuItem.subMenuData) {
-                                    for (let j = 0; j < localMenuItem.subMenuData.length; j++) {
-                                        const item = localMenuItem.subMenuData[j]
-                                        if (!item.key) continue
-                                        const index = onlineMenuItem.Items.findIndex((o) => o.Verbose === item.label)
-                                        if (index === -1) {
-                                            if (!item.key || item.key.includes("plugin")) {
-                                                // 新增的默认插件菜单
-                                                addMenuScripName.push(item.yakScripName || item.label)
-                                            }
-                                            const newMenuItem: MenuItem = {
-                                                Group: onlineMenuItem.Group,
-                                                GroupSort: rsp.Groups[i].Items.length + 1,
-                                                Verbose: item.label,
-                                                YakScriptId: 0,
-                                                YakScriptName: item.key ? "" : item.yakScripName
-                                            }
-                                            newMenuList.push(newMenuItem)
-                                            rsp.Groups[i].Items.push(newMenuItem)
-                                        }
-                                    }
-                                }
-                            }
-                            const routerList: MenuDataProps[] = getMenuListToLocal(rsp.Groups)
-                            if (newMenuList.length > 0) {
-                                onDownPluginByScriptNames(routerList, addMenuScripName, menuMode)
-                            }
-                            setRouteMenu(routerList)
-                            if ((updateSubMenu || !menuId) && routerList.length > 0) {
-                                let firstMenu: MenuDataProps = routerList[0] || { id: "", label: "" }
-                                if (menuId) {
-                                    firstMenu = routerList.find((i) => i.id === menuId) || { id: "", label: "" }
-                                }
-                                setSubMenuData(firstMenu.subMenuData || [])
-                                setMenuId(firstMenu.id)
-                            }
-                            setTimeout(() => setLoading(false), 300)
-                        }
+                        // 电信版本暂不需要自定义，所以屏蔽下方的自定义菜单的逻辑
+                        onInitMenuData(menuMode, oldMenuData.concat(rsp.Groups || []))
+                        // if (rsp.Groups.length === 0) {
+                        //     // 获取的数据为空，先使用默认数据覆盖，然后再通过名字下载，然后保存菜单数据
+                        //     onInitMenuData(menuMode, oldMenuData)
+                        // } else {
+                        //     // 默认菜单中，有新增的菜单，前提：系统内置菜单不可删除
+                        //     let currentMenuList: MenuDataProps[] = [...DefaultRouteMenuData]
+                        //     if (menuMode == "new") {
+                        //         currentMenuList = [...DefaultRouteMenuData].filter((item) => item.isNovice)
+                        //     }
+                        //     const newMenuList: MenuItem[] = [] // 用来判断是否有新增菜单
+                        //     const addMenuScripName: string[] = [] // 用来判断是否有新增的插件菜单
+                        //     for (let i = 0; i < rsp.Groups.length; i++) {
+                        //         const onlineMenuItem = rsp.Groups[i]
+                        //         const localMenuItem = currentMenuList.find((ele) => ele.label === onlineMenuItem.Group)
+                        //         if (localMenuItem && localMenuItem.subMenuData) {
+                        //             for (let j = 0; j < localMenuItem.subMenuData.length; j++) {
+                        //                 const item = localMenuItem.subMenuData[j]
+                        //                 if (!item.key) continue
+                        //                 const index = onlineMenuItem.Items.findIndex((o) => o.Verbose === item.label)
+                        //                 if (index === -1) {
+                        //                     if (!item.key || item.key.includes("plugin")) {
+                        //                         // 新增的默认插件菜单
+                        //                         addMenuScripName.push(item.yakScripName || item.label)
+                        //                     }
+                        //                     const newMenuItem: MenuItem = {
+                        //                         Group: onlineMenuItem.Group,
+                        //                         GroupSort: rsp.Groups[i].Items.length + 1,
+                        //                         Verbose: item.label,
+                        //                         YakScriptId: 0,
+                        //                         YakScriptName: item.key ? "" : item.yakScripName
+                        //                     }
+                        //                     newMenuList.push(newMenuItem)
+                        //                     rsp.Groups[i].Items.push(newMenuItem)
+                        //                 }
+                        //             }
+                        //         }
+                        //     }
+                        //     const routerList: MenuDataProps[] = getMenuListToLocal(rsp.Groups)
+                        //     if (newMenuList.length > 0) {
+                        //         onDownPluginByScriptNames(routerList, addMenuScripName, menuMode)
+                        //     }
+                        //     setRouteMenu(routerList)
+                        //     if ((updateSubMenu || !menuId) && routerList.length > 0) {
+                        //         let firstMenu: MenuDataProps = routerList[0] || {id: "", label: ""}
+                        //         if (menuId) {
+                        //             firstMenu = routerList.find((i) => i.id === menuId) || {id: "", label: ""}
+                        //         }
+                        //         setSubMenuData(firstMenu.subMenuData || [])
+                        //         setMenuId(firstMenu.id)
+                        //     }
+                        //     setTimeout(() => setLoading(false), 300)
+                        // }
                     })
                     .catch((err) => {
                         failed("获取菜单失败：" + err)
@@ -311,6 +318,8 @@ const HeardMenu: React.FC<HeardMenuProps> = React.memo((props) => {
         }
         onDownPluginByScriptNames(listMenu, noDownPluginScriptNames, menuMode)
     })
+    /** 登录用户信息 */
+    const { userInfo } = useStore()
     /**
      * @description: 通过名字下载插件
      */
@@ -696,98 +705,99 @@ const HeardMenu: React.FC<HeardMenuProps> = React.memo((props) => {
                     )}
                 </div>
                 <div className={classNames(style["heard-menu-right"])}>
-                    {!isSimpleEnterprise && <>
-                        <YakitButton
-                            type='text'
-                            className={style["heard-menu-theme"]}
-                            onClick={() => onImportShare()}
-                            icon={<SaveIcon />}
-                        >
-                            导入协作资源
-                        </YakitButton>
+                    <YakitButton
+                        type='text'
+                        className={style["heard-menu-theme"]}
+                        onClick={() => onImportShare()}
+                        icon={<SaveIcon />}
+                    >
+                        导入协作资源
+                    </YakitButton>
+                    <YakitButton
+                        type='secondary2'
+                        className={style["heard-menu-grey"]}
+                        onClick={() => onRouteMenuSelect(Route.PayloadManager)}
+                        icon={<MenuPayloadIcon />}
+                    >
+                        Payload
+                    </YakitButton>
+                    <YakitButton
+                        type='secondary2'
+                        className={classNames(style["heard-menu-grey"], style["heard-menu-yak-run"], {
+                            [style["margin-right-0"]]: isExpand
+                        })}
+                        onClick={() => onRouteMenuSelect(Route.YakScript)}
+                        icon={<MenuYakRunnerIcon />}
+                    >
+                        Yak Runner
+                    </YakitButton>
+                    {/* 电信版本暂不需要 自定义菜单*/}
+                    {/* <Dropdown
+                        overlayClassName={style["customize-drop-menu"]}
+                        overlay={
+                            <>
+                                {CustomizeMenuData.map((item) => (
+                                    <div
+                                        key={item.key}
+                                        className={classNames(style["customize-item"], {
+                                            [style["customize-item-select"]]: patternMenu === item.key
+                                        })}
+                                        onClick={() => onCustomizeMenuClick(item.key)}
+                                    >
+                                        <div className={style["customize-item-left"]}>
+                                            {item.itemIcon}
+                                            <span className={style["customize-item-label"]}>{item.label}</span>
+                                        </div>
+                                        {patternMenu === item.key && <CheckIcon />}
+                                    </div>
+                                ))}
+                                <Divider style={{margin: "6px 0"}} />
+                                <YakitSpin spinning={loading} tip='Loading...' size='small'>
+                                    <div
+                                        className={classNames(style["customize-item"])}
+                                        onClick={() =>
+                                            CustomizeMenuData.find((ele) => patternMenu === ele.key)?.onRestoreMenu()
+                                        }
+                                    >
+                                        {CustomizeMenuData.find((ele) => patternMenu === ele.key)?.tip}
+                                    </div>
+                                    <div
+                                        className={classNames(style["customize-item"])}
+                                        onClick={() => onGoCustomize()}
+                                    >
+                                        编辑菜单
+                                    </div>
+                                    <div
+                                        className={classNames(style["customize-item"])}
+                                        onClick={() => {
+                                            setVisibleImport(true)
+                                            setMenuDataString("")
+                                            setFileName("")
+                                            setRefreshTrigger(!refreshTrigger)
+                                        }}
+                                    >
+                                        导入 JSON 配置
+                                    </div>
+                                </YakitSpin>
+                            </>
+                        }
+                        onVisibleChange={(e) => {
+                            setCustomizeVisible(e)
+                        }}
+                    >
                         <YakitButton
                             type='secondary2'
-                            className={style["heard-menu-grey"]}
-                            onClick={() => onRouteMenuSelect(Route.PayloadManager)}
-                            icon={<MenuPayloadIcon />}
+                            className={classNames(style["heard-menu-customize"], {
+                                [style["margin-right-0"]]: isExpand,
+                                [style["heard-menu-customize-menu"]]: customizeVisible
+                            })}
+                            icon={<CursorClickIcon style={{color: "var(--yakit-body-text-color)"}} />}
                         >
-                            Payload
+                            <div className={style["heard-menu-customize-content"]}>
+                                自定义{(customizeVisible && <ChevronUpIcon />) || <ChevronDownIcon />}
+                            </div>
                         </YakitButton>
-                        <YakitButton
-                            type='secondary2'
-                            className={classNames(style["heard-menu-grey"], style["heard-menu-yak-run"])}
-                            onClick={() => onRouteMenuSelect(Route.YakScript)}
-                            icon={<MenuYakRunnerIcon />}
-                        >
-                            Yak Runner
-                        </YakitButton>
-                        <Dropdown
-                            overlayClassName={style["customize-drop-menu"]}
-                            overlay={
-                                <>
-                                    {CustomizeMenuData.map((item) => (
-                                        <div
-                                            key={item.key}
-                                            className={classNames(style["customize-item"], {
-                                                [style["customize-item-select"]]: patternMenu === item.key
-                                            })}
-                                            onClick={() => onCustomizeMenuClick(item.key)}
-                                        >
-                                            <div className={style["customize-item-left"]}>
-                                                {item.itemIcon}
-                                                <span className={style["customize-item-label"]}>{item.label}</span>
-                                            </div>
-                                            {patternMenu === item.key && <CheckIcon />}
-                                        </div>
-                                    ))}
-                                    <Divider style={{ margin: "6px 0" }} />
-                                    <YakitSpin spinning={loading} tip='Loading...' size='small'>
-                                        <div
-                                            className={classNames(style["customize-item"])}
-                                            onClick={() =>
-                                                CustomizeMenuData.find((ele) => patternMenu === ele.key)?.onRestoreMenu()
-                                            }
-                                        >
-                                            {CustomizeMenuData.find((ele) => patternMenu === ele.key)?.tip}
-                                        </div>
-                                        <div
-                                            className={classNames(style["customize-item"])}
-                                            onClick={() => onGoCustomize()}
-                                        >
-                                            编辑菜单
-                                        </div>
-                                        <div
-                                            className={classNames(style["customize-item"])}
-                                            onClick={() => {
-                                                setVisibleImport(true)
-                                                setMenuDataString("")
-                                                setFileName("")
-                                                setRefreshTrigger(!refreshTrigger)
-                                            }}
-                                        >
-                                            导入 JSON 配置
-                                        </div>
-                                    </YakitSpin>
-                                </>
-                            }
-                            onVisibleChange={(e) => {
-                                setCustomizeVisible(e)
-                            }}
-                        >
-                            <YakitButton
-                                type='secondary2'
-                                className={classNames(style["heard-menu-customize"], {
-                                    [style["margin-right-0"]]: isExpand,
-                                    [style["heard-menu-customize-menu"]]: customizeVisible
-                                })}
-                                icon={<CursorClickIcon style={{ color: "var(--yakit-body-text-color)" }} />}
-                            >
-                                <div className={style["heard-menu-customize-content"]}>
-                                    自定义{(customizeVisible && <ChevronUpIcon />) || <ChevronDownIcon />}
-                                </div>
-                            </YakitButton>
-                        </Dropdown>
-                    </>}
+                    </Dropdown> */}
                     {!isExpand && (
                         <div className={style["heard-menu-sort"]} onClick={() => onExpand()}>
                             {!isExpand && <SortDescendingIcon />}

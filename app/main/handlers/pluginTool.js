@@ -40,7 +40,11 @@ module.exports = (win, getClient) => {
                     reject(err)
                     return
                 }
-                if (params.OnlineID&&params.UUID) win.webContents.send("ref-plugin-operator", {pluginOnlineId: params.OnlineID,pluginUUID:params.UUID})
+                if (params.OnlineID && params.UUID)
+                    win.webContents.send("ref-plugin-operator", {
+                        pluginOnlineId: params.OnlineID,
+                        pluginUUID: params.UUID
+                    })
                 resolve(data)
             })
         })
@@ -143,7 +147,7 @@ module.exports = (win, getClient) => {
     ipcMain.handle("QueryYakScriptLocalAndUser", async (e, params) => {
         return await asyncQueryYakScriptLocalAndUser(params)
     })
- 
+
     const asyncQueryYakScriptByOnlineGroup = (params) => {
         return new Promise((resolve, reject) => {
             getClient().QueryYakScriptByOnlineGroup(params, (err, data) => {
@@ -176,22 +180,6 @@ module.exports = (win, getClient) => {
         return await asyncQueryYakScriptLocalAll(params)
     })
 
-    const asyncQueryYakScriptLocalAll = (params) => {
-        return new Promise((resolve, reject) => {
-            getClient().QueryYakScriptLocalAll(params, (err, data) => {
-                if (err) {
-                    reject(err)
-                    return
-                }
-                resolve(data)
-            })
-        })
-    }
-    //企业版管理员获取所有可上传插件
-    ipcMain.handle("QueryYakScriptLocalAll", async (e, params) => {
-        return await asyncQueryYakScriptLocalAll(params)
-    })
-
     const asyncGetYakScriptTagsAndType = (params) => {
         return new Promise((resolve, reject) => {
             getClient().GetYakScriptTagsAndType(params, (err, data) => {
@@ -201,13 +189,12 @@ module.exports = (win, getClient) => {
                 }
                 resolve(data)
             })
-        }) 
+        })
     }
     // 统计
     ipcMain.handle("GetYakScriptTagsAndType", async (e, params) => {
         return await asyncGetYakScriptTagsAndType(params)
     })
-
 
     const asyncDeleteLocalPluginsByWhere = (params) => {
         return new Promise((resolve, reject) => {
