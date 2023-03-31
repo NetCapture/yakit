@@ -62,6 +62,7 @@ import {BaseConsole} from "../components/baseConsole/BaseConsole"
 import CustomizeMenu from "./customizeMenu/CustomizeMenu"
 import {isSimpleEnterprise} from "@/utils/envfile"
 import { DownloadAllPlugin } from "@/pages/simpleDetect/SimpleDetect";
+import { YakitParagraph } from "@/components/yakitUI/YakitParagraph/YakitParagraph"
 const IsEnterprise: boolean = ENTERPRISE_STATUS.IS_ENTERPRISE_STATUS === getJuageEnvFile()
 
 const {ipcRenderer} = window.require("electron")
@@ -1378,6 +1379,9 @@ const Main: React.FC<MainProp> = React.memo((props) => {
                                         flexFlow: "column"
                                     }}
                                 >
+                                    <div style={{padding: 10, height: 500, width: "100%"}}>
+                                        <YakitParagraph content="" />
+                                    </div>
                                     {pageCache.length > 0 ? (
                                         <Tabs
                                             style={{display: "flex", flex: "1"}}
