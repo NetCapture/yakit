@@ -1334,7 +1334,7 @@ const UIOpNotice: React.FC<UIOpNoticeProp> = React.memo((props) => {
     const isUpdate = useMemo(() => {
         return (
             isSimpleEnterprise ? (yaklangLastVersion !== "" && yaklangLastVersion !== yaklangVersion) :
-                (yakitLastVersion !== "" && yakitLastVersion !== yakitVersion) ||
+                // (yakitLastVersion !== "" && yakitLastVersion !== yakitVersion) ||
                 (yaklangLastVersion !== "" && yaklangLastVersion !== yaklangVersion)
         )
     }, [yakitVersion, yakitLastVersion, yaklangLastVersion, yaklangVersion])
