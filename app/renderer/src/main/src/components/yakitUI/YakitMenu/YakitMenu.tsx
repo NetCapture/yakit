@@ -1,11 +1,11 @@
-import React, {ReactNode} from "react"
+import React, {ReactNode, useMemo} from "react"
 import {useMemoizedFn} from "ahooks"
 import {Menu, MenuProps, Tooltip} from "antd"
 import {ItemType} from "antd/lib/menu/hooks/useItems"
 import {ChevronRightIcon} from "@/assets/newIcon"
 import {MenuDividerType} from "rc-menu/lib/interface"
 
-import classnames from "classnames"
+import classNames from "classnames"
 import styles from "./yakitMenu.module.scss"
 
 export interface YakitMenuItemProps {
@@ -29,10 +29,26 @@ export interface YakitMenuProp extends MenuProps {
     /** 是否鼠标悬浮展示文字内容弹窗 */
     isHint?: boolean
     popupClassName?: string
+    /** @name 组件尺寸类型(默认|右键高度紧凑型) */
+    size?: "default" | "rightMenu"
 }
 
 export const YakitMenu: React.FC<YakitMenuProp> = React.memo((props) => {
-    const {data = [], width = 128, type = "primary", isHint = false, className, popupClassName, ...restMenu} = props
+    const {
+        data = [],
+        width = 128,
+        type = "primary",
+        isHint = false,
+        className,
+        popupClassName,
+        size = "default",
+        ...restMenu
+    } = props
+
+    const menuSizeClass = useMemo(() => {
+        if (size === "rightMenu") return styles["yakit-menu-right-menu-size"]
+        return styles["yakit-menu-default-size"]
+    }, [size])
 
     const generateMenuInfo = useMemoizedFn((data: YakitMenuItemType) => {
         if (typeof (data as any as YakitMenuItemDividerProps)["type"] !== "undefined") {
@@ -47,13 +63,13 @@ export const YakitMenu: React.FC<YakitMenuProp> = React.memo((props) => {
             if (info.children && info.children.length > 0) {
                 const itemInfo: ItemType = {
                     label: (
-                        <div style={{width: width}} className={classnames(styles["yakit-menu-item"])}>
+                        <div style={{width: width}} className={classNames(styles["yakit-menu-item"])}>
                             <div className={styles["yakit-submenu-item-content"]}>
                                 {info.itemIcon}
                                 {isHint && !!hintTitle ? (
                                     <Tooltip zIndex={9999} title={hintTitle} placement='leftBottom'>
                                         <div
-                                            className={classnames(
+                                            className={classNames(
                                                 styles["yakit-menu-item-title"],
                                                 "yakit-single-line-ellipsis"
                                             )}
@@ -63,7 +79,7 @@ export const YakitMenu: React.FC<YakitMenuProp> = React.memo((props) => {
                                     </Tooltip>
                                 ) : (
                                     <div
-                                        className={classnames(
+                                        className={classNames(
                                             styles["yakit-menu-item-title"],
                                             "yakit-single-line-ellipsis"
                                         )}
@@ -78,12 +94,13 @@ export const YakitMenu: React.FC<YakitMenuProp> = React.memo((props) => {
                     key: info.key,
                     disabled: info.disabled,
                     children: [],
-                    popupClassName: classnames(
+                    popupClassName: classNames(
                         {
                             [styles["yakit-menu-primary"]]: type === "primary",
                             [styles["yakit-menu-secondary"]]: type === "secondary"
                         },
                         styles["yakit-menu-submenu"],
+                        menuSizeClass,
                         popupClassName
                     )
                 }
@@ -96,13 +113,13 @@ export const YakitMenu: React.FC<YakitMenuProp> = React.memo((props) => {
             } else {
                 const itemInfo: ItemType = {
                     label: (
-                        <div style={{width: width}} className={classnames(styles["yakit-menu-item"])}>
+                        <div style={{width: width}} className={classNames(styles["yakit-menu-item"])}>
                             <div className={styles["yakit-menu-item-content"]}>
                                 {info.itemIcon}
                                 {isHint && !!hintTitle ? (
                                     <Tooltip zIndex={9999} title={hintTitle} placement='leftBottom'>
                                         <div
-                                            className={classnames(
+                                            className={classNames(
                                                 styles["yakit-menu-item-title"],
                                                 "yakit-single-line-ellipsis"
                                             )}
@@ -112,7 +129,7 @@ export const YakitMenu: React.FC<YakitMenuProp> = React.memo((props) => {
                                     </Tooltip>
                                 ) : (
                                     <div
-                                        className={classnames(
+                                        className={classNames(
                                             styles["yakit-menu-item-title"],
                                             "yakit-single-line-ellipsis"
                                         )}
@@ -136,14 +153,18 @@ export const YakitMenu: React.FC<YakitMenuProp> = React.memo((props) => {
 
     return (
         <div
-            className={classnames(styles["yakit-menu-div-wrapper"], {
-                [styles["yakit-menu-primary"]]: type === "primary",
-                [styles["yakit-menu-secondary"]]: type === "secondary"
-            })}
+            className={classNames(
+                styles["yakit-menu-div-wrapper"],
+                {
+                    [styles["yakit-menu-primary"]]: type === "primary",
+                    [styles["yakit-menu-secondary"]]: type === "secondary"
+                },
+                menuSizeClass
+            )}
         >
             <Menu
                 {...restMenu}
-                className={classnames(styles["yakit-menu-wrapper"], {[className || ""]: !!className})}
+                className={classNames(styles["yakit-menu-wrapper"], {[className || ""]: !!className})}
                 items={data && data.length > 0 ? items : restMenu.items}
             ></Menu>
         </div>

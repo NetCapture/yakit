@@ -1,53 +1,52 @@
-import React, { Suspense } from "react"
-import { YakExecutor } from "../pages/invoker/YakExecutor"
-import { AuditOutlined, CodeOutlined } from "@ant-design/icons"
+import React, {Suspense} from "react"
+import {YakExecutor} from "../pages/invoker/YakExecutor"
+import {AuditOutlined, CodeOutlined} from "@ant-design/icons"
 // import {HTTPHacker} from "../pages/hacker/httpHacker";
 // import {CodecPage} from "../pages/codec/CodecPage";
-import { ShellReceiverPage } from "../pages/shellReceiver/ShellReceiverPage"
-import { YakBatchExecutors } from "../pages/invoker/batch/YakBatchExecutors"
-import { PayloadManagerPage } from "../pages/payloadManager/PayloadManager"
-import { PortScanPage } from "../pages/portscan/PortScanPage"
-import { YakitStorePage } from "../pages/yakitStore/YakitStorePage"
+import {ShellReceiverPage} from "../pages/shellReceiver/ShellReceiverPage"
+import {YakBatchExecutors} from "../pages/invoker/batch/YakBatchExecutors"
+import {PayloadManagerPage} from "../pages/payloadManager/PayloadManager"
+import {PortScanPage} from "../pages/portscan/PortScanPage"
+import {YakitStorePage} from "../pages/yakitStore/YakitStorePage"
 
-import { PluginOperator } from "../pages/yakitStore/PluginOperator"
-import { failed } from "../utils/notification"
-import { BrutePage } from "../pages/brute/BrutePage"
-import { DataCompare } from "../pages/compare/DataCompare"
-import { HTTPHistory } from "../components/HTTPHistory"
-import { PortAssetTable } from "../pages/assetViewer/PortAssetPage"
-import { YakScriptExecResultTable } from "../components/YakScriptExecResultTable"
-import { DomainAssetPage } from "../pages/assetViewer/DomainAssetPage"
-import { RiskPage } from "../pages/risks/RiskPage"
-import { DNSLogPage } from "../pages/dnslog/DNSLogPage"
-import { HTTPFuzzerPage } from "../pages/fuzzer/HTTPFuzzerPage"
-import { fuzzerInfoProp } from "../pages/MainOperator"
-import { ICMPSizeLoggerPage } from "../pages/icmpsizelog/ICMPSizeLoggerPage"
-import { RandomPortLogPage } from "../pages/randomPortLog/RandomPortLogPage"
-import { ReportViewerPage } from "../pages/assetViewer/ReportViewerPage"
-import { BatchExecutorPageEx } from "../pages/invoker/batch/BatchExecutorPageEx"
+import {PluginOperator} from "../pages/yakitStore/PluginOperator"
+import {failed} from "../utils/notification"
+import {BrutePage} from "../pages/brute/BrutePage"
+import {DataCompare} from "../pages/compare/DataCompare"
+import {HTTPHistory} from "../components/HTTPHistory"
+import {PortAssetTable} from "../pages/assetViewer/PortAssetPage"
+import {DomainAssetPage} from "../pages/assetViewer/DomainAssetPage"
+import {RiskPage} from "../pages/risks/RiskPage"
+import {DNSLogPage} from "../pages/dnslog/DNSLogPage"
+import {HTTPFuzzerPage} from "../pages/fuzzer/HTTPFuzzerPage"
+import {fuzzerInfoProp} from "../pages/MainOperator"
+import {ICMPSizeLoggerPage} from "../pages/icmpsizelog/ICMPSizeLoggerPage"
+import {RandomPortLogPage} from "../pages/randomPortLog/RandomPortLogPage"
+import {ReportViewerPage} from "../pages/assetViewer/ReportViewerPage"
+import {BatchExecutorPageEx} from "../pages/invoker/batch/BatchExecutorPageEx"
 // import {ReverseServerPage} from "../pages/reverse/ReverseServerPage"
 // import {PayloadGeneraterPage} from "../pages/payloadGenerater/PayloadGeneraterPage"
 // import {PayloadGenerater_New} from "../pages/payloadGenerater/JavaPayloadPage"
-import { StartFacadeServerParams } from "../pages/reverseServer/ReverseServer_New"
+import {StartFacadeServerParams} from "../pages/reverseServer/ReverseServer_New"
 
 import {
     ReadOnlyBatchExecutorByMenuItem,
     ReadOnlyBatchExecutorByRecoverUid
 } from "../pages/invoker/batch/ReadOnlyBatchExecutorByMenuItem"
-import { PacketScanner } from "@/pages/packetScanner/PacketScanner"
-import { AddYakitScript } from "@/pages/yakitStore/AddYakitScript/AddYakitScript"
-import { WebsocketFuzzer } from "@/pages/websocket/WebsocketFuzzer"
-import { WebsocketFlowHistory } from "@/pages/websocket/WebsocketFlowHistory"
-import { YakitPluginJournalDetails } from "@/pages/yakitStore/YakitPluginOnlineJournal/YakitPluginJournalDetails"
-import { OnlinePluginRecycleBin } from "@/pages/yakitStore/OnlinePluginRecycleBin/OnlinePluginRecycleBin"
-import { JavaPayloadPage } from "@/pages/payloadGenerater/NewJavaPayloadPage"
-import { NewReverseServerPage } from "@/pages/reverseServer/NewReverseServerPage"
+import {PacketScanner} from "@/pages/packetScanner/PacketScanner"
+import {AddYakitScript} from "@/pages/yakitStore/AddYakitScript/AddYakitScript"
+import {WebsocketFuzzer} from "@/pages/websocket/WebsocketFuzzer"
+import {WebsocketFlowHistory} from "@/pages/websocket/WebsocketFlowHistory"
+import {YakitPluginJournalDetails} from "@/pages/yakitStore/YakitPluginOnlineJournal/YakitPluginJournalDetails"
+import {OnlinePluginRecycleBin} from "@/pages/yakitStore/OnlinePluginRecycleBin/OnlinePluginRecycleBin"
+import {JavaPayloadPage} from "@/pages/payloadGenerater/NewJavaPayloadPage"
+import {NewReverseServerPage} from "@/pages/reverseServer/NewReverseServerPage"
 import AccountAdminPage from "@/pages/loginOperationMenu/AccountAdminPage"
 import RoleAdminPage from "@/pages/loginOperationMenu/RoleAdminPage"
 import LicenseAdminPage from "@/pages/loginOperationMenu/LicenseAdminPage"
 import PlugInAdminPage from "@/pages/loginOperationMenu/PlugInAdminPage"
-import { TrustListPage } from "@/pages/loginOperationMenu/TrustListPage"
-import { SimpleDetect } from "@/pages/simpleDetect/SimpleDetect";
+import {TrustListPage} from "@/pages/loginOperationMenu/TrustListPage"
+import {SimpleDetect} from "@/pages/simpleDetect/SimpleDetect"
 import {
     MenuDomainAssetsIcon,
     MenuHTTPHistoryIcon,
@@ -78,7 +77,7 @@ import {
     MenuDefaultPluginIcon,
     MenuBatchVulnerabilityDetectionIcon
 } from "@/pages/customizeMenu/icon/menuIcon"
-import { EngineConsole } from "@/pages/engineConsole/EngineConsole"
+import {EngineConsole} from "@/pages/engineConsole/EngineConsole"
 import {
     MenuSolidBasicCrawlerIcon,
     MenuSolidBlastingAndUnauthorizedTestingIcon,
@@ -109,11 +108,16 @@ import {
     MenuSolidYsoJavaHackIcon,
     MenuSolidBatchVulnerabilityDetectionIcon
 } from "@/pages/customizeMenu/icon/solidMenuIcon"
-import { ProjectPage } from "@/pages/projects/ProjectPage"
+import {ProjectPage} from "@/pages/projects/ProjectPage"
+import {ChaosMakerPage} from "@/pages/chaosmaker/ChaosMaker"
+import {ScreenRecorderPage} from "@/pages/screenRecorder/ScreenRecorderPage"
+import {CVEViewer} from "@/pages/cve/CVEViewer"
+import {YakScriptExecResultTable} from "@/components/YakScriptExecResultTable"
 
 const HTTPHacker = React.lazy(() => import("../pages/hacker/httpHacker"))
 const CodecPage = React.lazy(() => import("../pages/codec/CodecPage"))
 const NewHome = React.lazy(() => import("@/pages/newHome/NewHome"))
+
 export enum Route {
     MITM = "mitm",
     YakScript = "yakScript",
@@ -176,11 +180,11 @@ export enum Route {
     Database = "database",
     DB_Ports = "db-ports",
     DB_HTTPHistory = "db-http-request",
+    DB_ChaosMaker = "db-chaosmaker",
     DB_Domain = "db-domains",
-    DB_ExecResults = "db-exec-results",
     DB_Report = "db-reports-results",
     DB_Risk = "db-risks",
-    DB_Projects = "db-projects",
+    DB_CVE = "cve",
 
     // Handler
     DataHandler = "data-handler", // include codec compare
@@ -217,6 +221,9 @@ export enum Route {
     // 获取标准输出流
     AttachEngineCombinedOutput = "attach-engine-combined-output",
 
+    // 录屏管理器
+    ScreenRecorderPage = "screen-recorder-page",
+
     // 首页
     NewHome = "new-home"
 }
@@ -247,6 +254,7 @@ export function RouteNameToVerboseName(r: string) {
             return r
     }
 }
+
 /**
  * @description:菜单属性
  * @param {string} id
@@ -319,7 +327,7 @@ interface ComponentParams {
     YakScriptJournalDetailsId?: number
     // facade server参数
     facadeServerParams?: StartFacadeServerParams
-    classGeneraterParams?: { [key: string]: any }
+    classGeneraterParams?: {[key: string]: any}
     classType?: string
 
     // 简易企业版 - 安全检测
@@ -382,11 +390,14 @@ export const ContentByRoute = (r: Route | string, yakScriptId?: number, params?:
         case Route.NewHome:
             return <NewHome />
         case Route.SimpleDetect:
-            return <SimpleDetect Uid={params?.recoverUid}
-                BaseProgress={params?.recoverBaseProgress}
-                YakScriptOnlineGroup={params?.recoverOnlineGroup}
-                TaskName={params?.recoverTaskName}
-            />
+            return (
+                <SimpleDetect
+                    Uid={params?.recoverUid}
+                    BaseProgress={params?.recoverBaseProgress}
+                    YakScriptOnlineGroup={params?.recoverOnlineGroup}
+                    TaskName={params?.recoverTaskName}
+                />
+            )
         case Route.WebsocketFuzzer:
             return <WebsocketFuzzer tls={params?.wsTls} request={params?.wsRequest} />
         case Route.Codec:
@@ -407,8 +418,8 @@ export const ContentByRoute = (r: Route | string, yakScriptId?: number, params?:
             return <PortAssetTable />
         case Route.DB_Domain:
             return <DomainAssetPage />
-        case Route.DB_ExecResults:
-            return <YakScriptExecResultTable />
+        // case Route.DB_ExecResults:
+        //     return <YakScriptExecResultTable/>
         // case Route.ReverseServer:
         //     return <ReverseServerPage />
         // case Route.PayloadGenerater:
@@ -466,8 +477,15 @@ export const ContentByRoute = (r: Route | string, yakScriptId?: number, params?:
             return <PlugInAdminPage />
         case Route.AttachEngineCombinedOutput:
             return <EngineConsole />
-        // case Route.DB_Projects:
-        //     return <ProjectPage />
+        case Route.DB_ChaosMaker:
+            // ChaosMaker 流量生成器
+            return <ChaosMakerPage />
+        case Route.ScreenRecorderPage:
+            return <ScreenRecorderPage />
+        case Route.AttachEngineCombinedOutput:
+            return <EngineConsole />
+        case Route.DB_CVE:
+            return <CVEViewer />
         default:
             return <div />
     }
@@ -575,9 +593,160 @@ export const DefaultRouteMenuData: MenuDataProps[] = [
                 label: "Websocket Fuzzer",
                 icon: <MenuWebsocketFuzzerIcon />,
                 hoverIcon: <MenuSolidWebsocketFuzzerIcon />
+            }
+            // {
+            //     id: "1-4",
+            //     key: Route.PayloadGenerater_New,
+            //     label: "Yso-Java Hack",
+            //     icon: <MenuYsoJavaHackIcon />,
+            //     describe: "配置序列化 Payload 或恶意类"
+            // }
+        ]
+    },
+    {
+        id: "2",
+        label: "基础工具",
+        menuPattern: ["novice", "expert"],
+        key: Route.GeneralModule,
+        subMenuData: [
+            {
+                id: "2-1",
+                key: Route.Mod_Brute,
+                label: "爆破与未授权检测",
+                icon: <MenuBlastingAndUnauthorizedTestingIcon />,
+                hoverIcon: <MenuSolidBlastingAndUnauthorizedTestingIcon />,
+                describe: "对目标的登录账号、密码等进行爆破，在爆破前会进行未授权检测"
             },
             {
-                id: "1-4",
+                id: "2-2",
+                key: undefined,
+                label: "基础爬虫",
+                yakScripName: "基础爬虫",
+                icon: <MenuBasicCrawlerIcon />,
+                hoverIcon: <MenuSolidBasicCrawlerIcon />,
+                describe: "通过爬虫可快速了解网站的整体架构"
+            },
+            {
+                id: "2-3",
+                key: undefined,
+                label: "空间引擎: Hunter",
+                yakScripName: "空间引擎: Hunter",
+                icon: <MenuSpaceEngineHunterIcon />,
+                hoverIcon: <MenuSolidSpaceEngineHunterIcon />
+            },
+            {
+                id: "2-4",
+                key: Route.Mod_ScanPort,
+                label: "端口/指纹扫描",
+                icon: <MenuPortScanningIcon />,
+                hoverIcon: <MenuSolidPortScanningIcon />,
+                describe: "对 IP、IP段、域名等端口进行 SYN、指纹检测、可编写插件进行检测、满足更个性化等需求"
+            },
+            {
+                id: "2-5",
+                key: undefined,
+                label: "子域名收集",
+                yakScripName: "子域名收集",
+                icon: <MenuSubDomainCollectionIcon />,
+                hoverIcon: <MenuSolidSubDomainCollectionIcon />
+            },
+            {
+                id: "2-6",
+                key: undefined,
+                label: "综合目录扫描与爆破",
+                yakScripName: "综合目录扫描与爆破",
+                icon: <MenuComprehensiveCatalogScanningAndBlastingIcon />,
+                hoverIcon: <MenuSolidComprehensiveCatalogScanningAndBlastingIcon />,
+                describe: "带有内置字典的综合目录扫描与爆破"
+            }
+        ]
+    },
+    {
+        id: "3",
+        label: "专项漏洞检测",
+        menuPattern: ["novice", "expert"],
+        subMenuData: [
+            {
+                id: "3-1",
+                key: Route.PoC,
+                label: "专项漏洞检测",
+                icon: <MenuSpecialVulnerabilityDetectionIcon />,
+                hoverIcon: <MenuSolidSpecialVulnerabilityDetectionIcon />,
+                describe: "通过预制漏洞源码，对特定目标进行专项漏洞检测，可以自定义新增 POC 种类"
+            }
+        ]
+    },
+    {
+        id: "4",
+        label: "插件",
+        menuPattern: ["novice", "expert"],
+        subMenuData: [
+            {
+                id: "4-1",
+                key: Route.ModManager,
+                label: "插件仓库",
+                icon: <MenuPluginWarehouseIcon />,
+                hoverIcon: <MenuSolidPluginWarehouseIcon />,
+                describe: "目前插件为 6 大类型，可根据需要灵活编写插件，支持从 GitHub 加载插件"
+            },
+            {
+                id: "4-2",
+                key: Route.BatchExecutorPage,
+                label: "插件批量执行",
+                icon: <MenuPluginBatchExecutionIcon />,
+                hoverIcon: <MenuSolidPluginBatchExecutionIcon />,
+                describe: "自由选择需要的 POC 进行批量漏洞检测"
+            }
+        ]
+    },
+    // {id: "5", key: Route.PayloadManager, label: "Payload 管理", icon: <AuditOutlined />},
+    // {id: "6", key: Route.YakScript, label: "Yak Runner", icon: <CodeOutlined />},
+    {
+        id: "7",
+        label: "反连",
+        subMenuData: [
+            {
+                id: "7-1",
+                key: Route.ShellReceiver,
+                label: "端口监听器",
+                icon: <MenuPortListenerIcon />,
+                hoverIcon: <MenuSolidPortListenerIcon />,
+                describe: "反弹 Shell 接收工具，可以在服务器上开启一个端口，进行监听，并进行交互"
+            },
+            {
+                id: "7-2",
+                key: Route.ReverseServer_New,
+                label: "反连服务器",
+                icon: <MenuReverseConnectionServerIcon />,
+                hoverIcon: <MenuSolidReverseConnectionServerIcon />,
+                describe: "使用协议端口复用技术，同时在一个端口同时实现 HTTP / RMI / HTTPS 等协议的反连"
+            },
+            {
+                id: "7-3",
+                key: Route.DNSLog,
+                label: "DNSLog",
+                icon: <MenuDNSLogIcon />,
+                hoverIcon: <MenuSolidDNSLogIcon />,
+                describe: "自动生成一个子域名，任何查询到这个子域名的 IP 被集合展示在列表中"
+            },
+            {
+                id: "7-4",
+                key: Route.ICMPSizeLog,
+                label: "ICMP-SizeLog",
+                icon: <MenuICMPSizeLogIcon />,
+                hoverIcon: <MenuSolidICMPSizeLogIcon />,
+                describe: "使用 ping 携带特定长度数据包判定 ICMP 反连"
+            },
+            {
+                id: "7-5",
+                key: Route.TCPPortLog,
+                label: "TCP-PortLog",
+                icon: <MenuTCPPortLogIcon />,
+                hoverIcon: <MenuSolidTCPPortLogIcon />,
+                describe: "使用未开放的随机端口来判定 TCP 反连"
+            },
+            {
+                id: "7-6",
                 key: Route.PayloadGenerater_New,
                 label: "Yso-Java Hack",
                 icon: <MenuYsoJavaHackIcon />,
@@ -646,7 +815,7 @@ export const DefaultRouteMenuData: MenuDataProps[] = [
                 hoverIcon: <MenuSolidDataComparisonIcon />,
                 icon: <MenuDataComparisonIcon />
             },
-            { id: "8-1", key: Route.Codec, label: "Codec", hoverIcon: <MenuSolidCodecIcon />, icon: <MenuCodecIcon /> }
+            {id: "8-1", key: Route.Codec, label: "Codec", hoverIcon: <MenuSolidCodecIcon />, icon: <MenuCodecIcon />}
         ]
     },
     {
@@ -660,13 +829,6 @@ export const DefaultRouteMenuData: MenuDataProps[] = [
                 label: "报告",
                 icon: <MenuReportIcon />,
                 hoverIcon: <MenuSolidReportIcon />
-            },
-            {
-                id: "9-2",
-                key: Route.DB_ExecResults,
-                label: "插件执行结果",
-                icon: <MenuPlugExecutionResultsIcon />,
-                hoverIcon: <MenuSolidPlugExecutionResultsIcon />
             },
             {
                 id: "9-3",
@@ -696,20 +858,13 @@ export const DefaultRouteMenuData: MenuDataProps[] = [
                 icon: <MenuHTTPHistoryIcon />,
                 hoverIcon: <MenuSolidHTTPHistoryIcon />
             },
-            // {
-            //     id: "9-7",
-            //     key: Route.AttachEngineCombinedOutput,
-            //     label: "引擎 Console",
-            //     icon: <MenuDefaultPluginIcon />,
-            //     hoverIcon: <MenuSolidDefaultPluginIcon />
-            // },
-            // {
-            //     id: "9-8",
-            //     key: Route.DB_Projects,
-            //     label: "项目管理(Beta*)",
-            //     icon: <MenuDefaultPluginIcon />,
-            //     hoverIcon: <MenuSolidDefaultPluginIcon />
-            // }
+            {
+                id: "9-8",
+                key: Route.DB_CVE,
+                label: "CVE 管理",
+                icon: <MenuHTTPHistoryIcon />,
+                hoverIcon: <MenuSolidHTTPHistoryIcon />
+            }
         ]
     }
 ]
@@ -769,8 +924,8 @@ export const HiddenMenuData: MenuDataProps[] = [
     }
 ]
 /**
-    * @description: 企业版简易版菜单
-*/
+ * @description: 企业版简易版菜单
+ */
 export const SimpleDataBaseMenu: MenuDataProps[] = [
     // {
     //     id: "2",
@@ -841,7 +996,7 @@ export const SimpleDataBaseMenu: MenuDataProps[] = [
                 icon: <MenuBatchVulnerabilityDetectionIcon />,
                 hoverIcon: <MenuSolidBatchVulnerabilityDetectionIcon />,
                 describe: ""
-            },
+            }
         ]
     },
     {
@@ -890,6 +1045,7 @@ export const SimpleDataBaseMenu: MenuDataProps[] = [
                 label: "漏洞与风险",
                 icon: <MenuVulnerabilityRiskIcon />,
                 hoverIcon: <MenuSolidVulnerabilityRiskIcon />
-            },
+            }
         ]
-    }]
+    }
+]

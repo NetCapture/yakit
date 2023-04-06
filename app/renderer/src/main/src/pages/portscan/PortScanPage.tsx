@@ -22,6 +22,7 @@ import {ReloadOutlined} from "@ant-design/icons"
 
 import "./PortScanPage.css"
 import {SimplePluginList} from "../../components/SimplePluginList"
+import {YakitCheckbox} from "@/components/yakitUI/YakitCheckbox/YakitCheckbox";
 
 const {ipcRenderer} = window.require("electron")
 const ScanPortTemplate = "scan-port-template"
@@ -219,7 +220,14 @@ export const PortScanPage: React.FC<PortScanPageProp> = (props) => {
                                         <ContentUploadInput
                                             type='textarea'
                                             beforeUpload={(f) => {
-                                                const typeArr:string[] = ["text/plain",'.csv', '.xls', '.xlsx',"application/vnd.ms-excel","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"]
+                                                const typeArr: string[] = [
+                                                    "text/plain",
+                                                    ".csv",
+                                                    ".xls",
+                                                    ".xlsx",
+                                                    "application/vnd.ms-excel",
+                                                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                                ]
                                                 if (!typeArr.includes(f.type)) {
                                                     failed(`${f.name}非txt、Excel文件，请上传txt、Excel格式文件！`)
                                                     return false
@@ -231,9 +239,9 @@ export const PortScanPage: React.FC<PortScanPageProp> = (props) => {
                                                     .then((res) => {
                                                         let Targets = res
                                                         // 处理Excel格式文件
-                                                        if(f.type!=="text/plain"){
+                                                        if (f.type !== "text/plain") {
                                                             let str = JSON.stringify(res)
-                                                            Targets = str.replace(/(\[|\]|\{|\}|\")/g, '')
+                                                            Targets = str.replace(/(\[|\]|\{|\}|\")/g, "")
                                                         }
                                                         setParams({...params, Targets})
                                                         setTimeout(() => setUploadLoading(false), 100)
@@ -456,18 +464,40 @@ export const PortScanPage: React.FC<PortScanPageProp> = (props) => {
 interface ScanPortFormProp {
     defaultParams: PortScanParams
     setParams: (p: PortScanParams) => any
-    // 是否限制显示
-    isLimitShow?:boolean
+    // 简易企业版显示
+    isSimpleDetectShow?: boolean
+    // 简易版扫描速度
+    deepLevel?:number
+    // 简易版是否已修改速度
+    isSetPort?:boolean
 }
 
 export const ScanPortForm: React.FC<ScanPortFormProp> = (props) => {
-    const isLimitShow = props.isLimitShow || false
+    const { deepLevel,isSetPort } = props
+    const isSimpleDetectShow = props.isSimpleDetectShow || false
     const [params, setParams] = useState<PortScanParams>(props.defaultParams)
-
+    const [_,setPortroupValue,getPortroupValue] = useGetState<any[]>([])
     useEffect(() => {
         if (!params) return
         props.setParams({...params})
     }, [params])
+
+    useEffect(()=>{
+        if(deepLevel&&isSetPort){
+            switch (deepLevel) {
+            case 1:
+                setPortroupValue(["top1000+"])
+            break;
+            case 2:
+                setPortroupValue(["topweb"])
+            break;
+            case 3:
+                setPortroupValue(["top100"])
+            break;
+        }
+        }
+        
+    },[deepLevel])
 
     return (
         <Form
@@ -477,30 +507,30 @@ export const ScanPortForm: React.FC<ScanPortFormProp> = (props) => {
             labelCol={{span: 5}}
             wrapperCol={{span: 14}}
         >
-            {!isLimitShow&&
-            <>
-            <SelectOne
-                label={"扫描模式"}
-                data={ScanKindKeys.map((item) => {
-                    return {value: item, text: ScanKind[item]}
-                })}
-                help={"SYN 扫描需要 yak 启动时具有root"}
-                setValue={(Mode) => setParams({...params, Mode})}
-                value={params.Mode}
-            />
-            <SelectOne
-                label={"扫描协议"}
-                data={[
-                    {text: "TCP", value: "tcp"},
-                    {text: "UDP", value: "udp", disabled: params.Mode === "syn" || params.Mode === "all"}
-                ]}
-                setValue={(i) => setParams({...params, Proto: [i]})}
-                value={(params.Proto || []).length > 0 ? params.Proto[0] : "tcp"}
-            />
-            </>
-            }
-            
-            {!isLimitShow && (params.Mode === "all" || params.Mode === "syn") && (
+            {!isSimpleDetectShow && (
+                <>
+                    <SelectOne
+                        label={"扫描模式"}
+                        data={ScanKindKeys.map((item) => {
+                            return {value: item, text: ScanKind[item]}
+                        })}
+                        help={"SYN 扫描需要 yak 启动时具有root"}
+                        setValue={(Mode) => setParams({...params, Mode})}
+                        value={params.Mode}
+                    />
+                    <SelectOne
+                        label={"扫描协议"}
+                        data={[
+                            {text: "TCP", value: "tcp"},
+                            {text: "UDP", value: "udp", disabled: params.Mode === "syn" || params.Mode === "all"}
+                        ]}
+                        setValue={(i) => setParams({...params, Proto: [i]})}
+                        value={(params.Proto || []).length > 0 ? params.Proto[0] : "tcp"}
+                    />
+                </>
+            )}
+
+            {!isSimpleDetectShow && (params.Mode === "all" || params.Mode === "syn") && (
                 <>
                     <Divider orientation={"left"}>SYN 配置</Divider>
                     <InputInteger
@@ -515,6 +545,55 @@ export const ScanPortForm: React.FC<ScanPortFormProp> = (props) => {
             {(params.Mode === "all" || params.Mode === "fingerprint") && (
                 <>
                     <Divider orientation={"left"}>指纹扫描配置</Divider>
+                    {isSimpleDetectShow && (
+                        <>
+                            <Form.Item label='预设端口' className='form-item-margin'>
+                                <Checkbox.Group
+                                    value={getPortroupValue()}
+                                    onChange={(value) => {                  
+                                        let res: string = (value || [])
+                                            .map((i) => {
+                                                // @ts-ignore
+                                                return PresetPorts[i] || ""
+                                            })
+                                            .join(",")
+                                        if (!!res) {
+                                            setParams({...params, Ports: res})
+                                        }
+                                        setPortroupValue(value)
+                                    }}
+                                >
+                                    <Checkbox value={"top100"}>常见100端口</Checkbox>
+                                    <Checkbox value={"topweb"}>常见 Web 端口</Checkbox>
+                                    <Checkbox value={"top1000+"}>常见一两千</Checkbox>
+                                    <Checkbox value={"topdb"}>常见数据库与 MQ</Checkbox>
+                                    <Checkbox value={"topudp"}>常见 UDP 端口</Checkbox>
+                                    <Checkbox value={"defect"}>常见弱点端口</Checkbox>
+                                </Checkbox.Group>
+                            </Form.Item>
+
+                            <Form.Item label='扫描端口' className='form-item-margin' style={{position: "relative"}}>
+                                <Input.TextArea
+                                    style={{width: "100%"}}
+                                    rows={2}
+                                    value={params.Ports}
+                                    onChange={(e) => setParams({...params, Ports: e.target.value})}
+                                />
+                                <Space size={"small"} style={{marginLeft: 8, position: "absolute", bottom: 0}}>
+                                    <Tooltip title={"重置为默认扫描端口"}>
+                                        <a
+                                            href={"#"}
+                                            onClick={() => {
+                                                setParams({...params, Ports: PresetPorts["top100"]})
+                                            }}
+                                        >
+                                            <ReloadOutlined />
+                                        </a>
+                                    </Tooltip>
+                                </Space>
+                            </Form.Item>
+                        </>
+                    )}
                     <InputInteger
                         label={"指纹扫描并发"}
                         // help={"推荐最多同时扫描200个端口"}
@@ -535,21 +614,25 @@ export const ScanPortForm: React.FC<ScanPortFormProp> = (props) => {
                         value={params.ProbeTimeout}
                         setValue={(ProbeTimeout) => setParams({...params, ProbeTimeout})}
                     />
-                   {!isLimitShow &&<ManyMultiSelectForString
-                        label={"TCP 代理"}
-                        help={"支持 HTTP/Sock4/Sock4a/Socks5 协议，例如 http://127.0.0.1:7890  socks5://127.0.0.1:7890"}
-                        data={[
-                            "http://127.0.0.1:7890",
-                            "http://127.0.0.1:8082",
-                            "socks5://127.0.0.1:8082",
-                            "http://127.0.0.1:8083"
-                        ].map((i) => {
-                            return {value: i, label: i}
-                        })}
-                        value={(params.Proxy || []).join(",")}
-                        mode={"tags"}
-                        setValue={(e) => setParams({...params, Proxy: (e || "").split(",").filter((i) => !!i)})}
-                    />}
+                    {!isSimpleDetectShow && (
+                        <ManyMultiSelectForString
+                            label={"TCP 代理"}
+                            help={
+                                "支持 HTTP/Sock4/Sock4a/Socks5 协议，例如 http://127.0.0.1:7890  socks5://127.0.0.1:7890"
+                            }
+                            data={[
+                                "http://127.0.0.1:7890",
+                                "http://127.0.0.1:8082",
+                                "socks5://127.0.0.1:8082",
+                                "http://127.0.0.1:8083"
+                            ].map((i) => {
+                                return {value: i, label: i}
+                            })}
+                            value={(params.Proxy || []).join(",")}
+                            mode={"tags"}
+                            setValue={(e) => setParams({...params, Proxy: (e || "").split(",").filter((i) => !!i)})}
+                        />
+                    )}
                     <SelectOne
                         label={"高级指纹选项"}
                         data={[

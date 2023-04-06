@@ -37,9 +37,9 @@ import { MainTabs } from "./MainTabs"
 import Login from "./Login"
 import SetPassword from "./SetPassword"
 // import yakitImg from "../assets/yakit.jpg"
-import { UserInfoProps, useStore } from "@/store"
-import { SimpleQueryYakScriptSchema } from "./invoker/batch/QueryYakScriptParam"
-import { UnfinishedBatchTask, SimpleDetectBatchTask } from "./invoker/batch/UnfinishedBatchTaskList"
+import {UserInfoProps, useStore} from "@/store"
+import {SimpleQueryYakScriptSchema} from "./invoker/batch/QueryYakScriptParam"
+import {UnfinishedBatchTask,UnfinishedSimpleDetectBatchTask} from "./invoker/batch/UnfinishedBatchTaskList"
 // import {LoadYakitPluginForm} from "./yakitStore/YakitStorePage"
 // import {showConfigMenuItems} from "../utils/ConfigMenuItems"
 // import {ConfigPrivateDomain} from "@/components/ConfigPrivateDomain/ConfigPrivateDomain"
@@ -82,11 +82,11 @@ const singletonRoute: Route[] = [
     // database
     Route.DB_Ports,
     Route.DB_HTTPHistory,
-    Route.DB_ExecResults,
     Route.DB_Domain,
     Route.DB_Risk,
     Route.DB_Report,
-    Route.DB_Projects,
+    Route.DB_ChaosMaker,
+    Route.DB_CVE,
 
     Route.PoC,
     Route.DNSLog,
@@ -111,7 +111,10 @@ const singletonRoute: Route[] = [
     // 获取引擎输出
     Route.AttachEngineCombinedOutput,
     // 首页
-    Route.NewHome
+    Route.NewHome,
+
+    // 录屏
+    Route.ScreenRecorderPage,
 ]
 /** 不需要首页组件安全边距的页面 */
 const noPaddingPage = [
@@ -123,7 +126,8 @@ const noPaddingPage = [
     Route.ICMPSizeLog,
     Route.TCPPortLog,
     Route.DNSLog,
-    Route.NewHome
+    Route.NewHome,
+    Route.DB_CVE
 ]
 
 export const defaultUserInfo: UserInfoProps = {
@@ -1150,7 +1154,7 @@ const Main: React.FC<MainProp> = React.memo((props) => {
         })
     })
 
-    const addSimpleBatchExecRecover = useMemoizedFn((task: SimpleDetectBatchTask) => {
+    const addSimpleBatchExecRecover = useMemoizedFn((task: UnfinishedSimpleDetectBatchTask) => {
         addTabPage(Route.SimpleDetect, {
             hideAdd: true,
             node: ContentByRoute(Route.SimpleDetect, undefined, {
@@ -1187,7 +1191,7 @@ const Main: React.FC<MainProp> = React.memo((props) => {
             if (type === "bug-test") addBugTest(1, data)
             if (type === "plugin-store") addYakRunning(data)
             if (type === "batch-exec-recover") addBatchExecRecover(data as UnfinishedBatchTask)
-            if (type === "simple-batch-exec-recover") addSimpleBatchExecRecover(data as SimpleDetectBatchTask)
+            if (type === "simple-batch-exec-recover") addSimpleBatchExecRecover(data as UnfinishedSimpleDetectBatchTask)
             if (type === "exec-packet-scan")
                 addPacketScan(data["httpFlows"], data["https"], data["httpRequest"], data["keyword"])
             if (type === "add-yakit-script") addYakScript(data)
@@ -1195,6 +1199,16 @@ const Main: React.FC<MainProp> = React.memo((props) => {
             if (type === "online-plugin-recycle-bin") addOnlinePluginRecycleBin(data)
             if (type === "facade-server") addFacadeServer(data)
             if (type === "add-yak-running") addYakRunning(data)
+            if (type === "**screen-recorder") addTabPage(Route.ScreenRecorderPage)
+            if (type === "**chaos-maker") addTabPage(Route.DB_ChaosMaker)
+            if (type === "open-plugin-store"){
+                const flag = getPageCache().filter(item => item.route === Route.ModManager).length
+                if(flag === 0 ){ addTabPage(Route.ModManager) }
+                else{
+                    removePage(Route.AddYakitScript, false) 
+                    setTimeout(() => ipcRenderer.invoke("send-local-script-list"), 50);
+                }
+            }
             console.info("send to tab: ", type)
         })
 

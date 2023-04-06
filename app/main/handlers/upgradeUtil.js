@@ -335,22 +335,35 @@ module.exports = {
                 } catch (e) {
 
                 }
-                // https://github.com/IndigoUnited/node-request-progress
-                // The options argument is optional so you can omit it
-                requestProgress(request(downloadUrl), {
-                    // throttle: 2000,                    // Throttle the progress event to 2000ms, defaults to 1000ms
-                    // delay: 1000,                       // Only start to emit after 1000ms delay, defaults to 0ms
-                    // lengthHeader: 'x-transfer-length'  // Length header to use, defaults to content-length
-                })
-                    .on('progress', function (state) {
-                        win.webContents.send("download-yakit-engine-progress", state)
-                    })
-                    .on('error', function (err) {
-                        reject(err)
-                    })
-                    .on('end', function () {
-                        resolve()
-                    }).pipe(fs.createWriteStream(dest));
+
+                request(
+                    {
+                        url: downloadUrl
+                    },
+                    function (error, response, body) {
+                        if (response.statusCode === 404) {
+                            reject("暂无最新安装包")
+                        } else {
+                            // https://github.com/IndigoUnited/node-request-progress
+                            // The options argument is optional so you can omit it
+                            requestProgress(request(downloadUrl), {
+                                // throttle: 2000,                    // Throttle the progress event to 2000ms, defaults to 1000ms
+                                // delay: 1000,                       // Only start to emit after 1000ms delay, defaults to 0ms
+                                // lengthHeader: 'x-transfer-length'  // Length header to use, defaults to content-length
+                            })
+                                .on("progress", function (state) {
+                                    win.webContents.send("download-yakit-engine-progress", state)
+                                })
+                                .on("error", function (err) {
+                                    reject(err)
+                                })
+                                .on("end", function () {
+                                    resolve()
+                                })
+                                .pipe(fs.createWriteStream(dest))
+                        }
+                    }
+                )
             })
         }
         ipcMain.handle("download-latest-yakit", async (e, version, isEnterprise) => {
@@ -527,5 +540,33 @@ module.exports = {
                 }
                 return fs.readFileSync(loadExtraFilePath(path.join("bins", "engine-version.txt"))).toString("utf8")
             })
+
+        // asyncRestoreEngineAndPlugin wrapper
+        ipcMain.handle("RestoreEngineAndPlugin", async (e, params) => {
+            const engineTarget = isWindows ? path.join(yakEngineDir, "yak.exe") : path.join(yakEngineDir, "yak")
+            const buidinEngine = path.join(yakEngineDir, "yak.build-in")
+            const cacheFlagLock = path.join(cacheDir, "flag.txt")
+            try {
+                // remove old engine
+                if (fs.existsSync(buidinEngine)) {
+                    fs.unlinkSync(buidinEngine)
+                }
+                if (isWindows && fs.existsSync(engineTarget)) {
+                    // access write will fetch delete!
+                    fs.accessSync(engineTarget, fs.constants.F_OK | fs.constants.W_OK)
+                }
+                if (fs.existsSync(engineTarget)) {
+                    fs.unlinkSync(engineTarget)
+                }
+
+                if (fs.existsSync(cacheFlagLock)) {
+                    fs.unlinkSync(cacheFlagLock)
+                }
+
+            } catch (e) {
+                throw e
+            }
+            return await asyncInitBuildInEngine({})
+        })
     },
 }
