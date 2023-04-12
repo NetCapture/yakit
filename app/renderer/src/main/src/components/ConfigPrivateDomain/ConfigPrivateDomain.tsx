@@ -10,6 +10,7 @@ import {useStore} from "@/store"
 import yakitImg from "@/assets/yakit.jpg"
 import {API} from "@/services/swagger/resposeType"
 import { Route } from "@/routes/routeSpec"
+import {isSimpleEnterprise} from "@/utils/envfile"
 const {ipcRenderer} = window.require("electron")
 
 interface OnlineProfileProps {
@@ -218,7 +219,8 @@ export const ConfigPrivateDomain: React.FC<ConfigPrivateDomainProps> = React.mem
                     <Input.Password placeholder='请输入你的密码' allowClear />
                 </Form.Item>}
                 <div className="form-item-submit">
-                    {enterpriseLogin&&skipShow&&<Button style={{width:120,marginRight:12}} onClick={()=>{
+                    {/* 企业版保持跳过 简易版移除跳过功能 */}
+                    {enterpriseLogin&&!isSimpleEnterprise&&skipShow&&<Button style={{width:120,marginRight:12}} onClick={()=>{
                         onSuccee&&onSuccee()
                     }}>
                         跳过
