@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useRef, useState} from "react"
-import {Badge, Modal, Tooltip, Form, Input, Button} from "antd"
+import {Badge, Modal, Tooltip, Form, Input, Button,Avatar} from "antd"
 import {
     BellSvgIcon,
     RiskStateSvgIcon,
@@ -25,7 +25,7 @@ import {showConfigEngineProxyForm} from "@/utils/ConfigEngineProxy"
 import {showConfigYaklangEnvironment} from "@/utils/ConfigYaklangEnvironment"
 import Login from "@/pages/Login"
 import {useStore} from "@/store"
-import {defaultUserInfo, judgeAvatar, MenuItemType, SetUserInfo} from "@/pages/MainOperator"
+import {defaultUserInfo, MenuItemType, SetUserInfo} from "@/pages/MainOperator"
 import {DropdownMenu} from "../baseTemplate/DropdownMenu"
 import {loginOut} from "@/utils/login"
 import {Route} from "@/routes/routeSpec"
@@ -58,6 +58,7 @@ import {NetWorkApi} from "@/services/fetch"
 import {API} from "@/services/swagger/resposeType"
 import {AdminUpOnlineBatch} from "@/pages/yakitStore/YakitStorePage"
 
+import { DynamicControl,SelectControlType,ControlMyself,ControlOther } from "../../pages/dynamicControl/DynamicControl";
 import classNames from "classnames"
 import styles from "./funcDomain.module.scss"
 import yakitImg from "../../assets/yakit.jpg"
@@ -65,6 +66,33 @@ import {addToTab} from "@/pages/MainTabs"
 import {DatabaseUpdateModal} from "@/pages/cve/CVETable"
 
 const {ipcRenderer} = window.require("electron")
+
+export const judgeDynamic = (userInfo,avatarColor:string,active:boolean) => {
+    const {companyHeadImg, companyName} = userInfo
+    return <div className={classNames(styles["judge-avatar"],{[styles["judge-avatar-active"]]:active})}>
+        <div>
+        {
+          companyHeadImg && !!companyHeadImg.length ? (
+            <Avatar size={20} style={{cursor: "pointer"}} src={companyHeadImg}/>
+          ) : (
+            <Avatar size={20} style={active?{}:{backgroundColor:avatarColor}} className={classNames(styles["judge-avatar-avatar"],{[styles["judge-avatar-active-avatar"]]:active})} >
+                {companyName && companyName.slice(0, 1)}
+            </Avatar>
+          )  
+        }
+        </div>
+        <div className={classNames(styles["judge-avatar-text"],{[styles["judge-avatar-active-text"]]:active})}>
+            远程中
+        </div>
+    </div>
+}
+
+/** 随机头像颜色 */
+const randomAvatarColor = ()=>{
+    const colorArr:string[] = ["#8863F7","#DA5FDD","#4A94F8","#35D8EE","#56C991","#F4736B","#FFB660","#B4BBCA"]
+    let color:string = colorArr[Math.round(Math.random()*7)]
+    return color
+}
 
 export interface FuncDomainProp {
     isEngineLink: boolean
@@ -102,9 +130,15 @@ export const FuncDomain: React.FC<FuncDomainProp> = React.memo((props) => {
     const [passwordShow, setPasswordShow] = useState<boolean>(false)
     /** 上传数据弹框 */
     const [uploadModalShow, setUploadModalShow] = useState<boolean>(false)
-
+    /** 发起远程弹框 受控端 - 控制端 */
+    const [dynamicControlModal, setDynamicControlModal] = useState<boolean>(false)
+    const [controlMyselfModal,setControlMyselfModal] = useState<boolean>(false)
+    const [controlOtherModal,setControlOtherModal] = useState<boolean>(false)
+    const [dynamicMenuOpen,setDynamicMenuOpen] = useState<boolean>(false)
+    let avatarColor = useRef<string>(randomAvatarColor())
     useEffect(() => {
-        const SetUserInfoModule = () => <SetUserInfo userInfo={userInfo} setStoreUserInfo={setStoreUserInfo} />
+        const SetUserInfoModule = () => <SetUserInfo userInfo={userInfo} avatarColor={avatarColor.current} setStoreUserInfo={setStoreUserInfo}/>
+        const LoginOutBox = () => <div className={styles["login-out-component"]}>退出登录</div>
         // 非企业管理员登录
         if (userInfo.role === "admin" && userInfo.platform !== "company") {
             setUserMenu([
@@ -115,16 +149,16 @@ export const FuncDomain: React.FC<FuncDomainProp> = React.memo((props) => {
         // 非企业超级管理员登录
         else if (userInfo.role === "superAdmin" && userInfo.platform !== "company") {
             setUserMenu([
-                {key: "trust-list", title: "用户管理",render: () => LoginTextItem("用户管理")},
-                {key: "license-admin", title: "License管理",render: () => LoginTextItem("License管理")},
-                {key: "plugIn-admin", title: "插件权限",render: () => LoginTextItem("插件权限")},
+                {key: "trust-list", title: "用户管理"},
+                {key: "license-admin", title: "License管理"},
+                {key: "plugIn-admin", title: "插件权限"},
                 {key: "sign-out", title: "退出登录",render:() => LoginOutBox()}
             ])
         }
         // 非企业license管理员
         else if (userInfo.role === "licenseAdmin" && userInfo.platform !== "company") {
             setUserMenu([
-                {key: "license-admin", title: "License管理",render: () => LoginTextItem("License管理")},
+                {key: "license-admin", title: "License管理"},
                 {key: "sign-out", title: "退出登录",render:() => LoginOutBox()}
             ])
         }
@@ -146,10 +180,12 @@ export const FuncDomain: React.FC<FuncDomainProp> = React.memo((props) => {
                     {key: "user-info", title: "用户信息", render: () => SetUserInfoModule()},
                     {key: "upload-plugin", title: "同步插件"},
                     {key: "upload-data", title: "上传数据"},
+                    {key: "dynamic-control", title: "发起远程"},
+                    {key: "control-admin", title: "远程管理"},
                     {key: "role-admin", title: "角色管理"},
                     {key: "account-admin", title: "用户管理"},
                     {key: "set-password", title: "修改密码"},
-                    {key: "sign-out", title: "退出登录"}
+                    {key: "sign-out", title: "退出登录",render:() => LoginOutBox()}
                 ]
             })()
             setUserMenu(cacheMenu)
@@ -218,82 +254,89 @@ export const FuncDomain: React.FC<FuncDomainProp> = React.memo((props) => {
                         />
                     )}
                 </div>
-                {!showProjectManage && (
-                    <>
-                        <div className={styles["divider-wrapper"]}></div>
-                        <div className={styles["user-wrapper"]}>
-                            {userInfo.isLogin ? (
-                                <div className={styles["user-info"]}>
-                                    <DropdownMenu
-                                        menu={{
-                                            data: userMenu
-                                        }}
-                                        dropdown={{
-                                            placement: "bottomCenter",
-                                            trigger: ["click"]
-                                        }}
-                                        onClick={(key) => {
-                                            if (key === "sign-out") {
-                                                setStoreUserInfo(defaultUserInfo)
-                                                loginOut(userInfo)
-                                                setTimeout(() => success("已成功退出账号"), 500)
-                                            }
-                                            if (key === "trust-list") {
-                                                const key = Route.TrustListPage
-                                                openMenu(key)
-                                            }
-                                            if (key === "set-password") setPasswordShow(true)
-                                            if (key === "upload-data") setUploadModalShow(true)
-                                            if (key === "role-admin") {
-                                                const key = Route.RoleAdminPage
-                                                openMenu(key)
-                                            }
-                                            if (key === "account-admin") {
-                                                const key = Route.AccountAdminPage
-                                                openMenu(key)
-                                            }
-                                            if (key === "license-admin") {
-                                                const key = Route.LicenseAdminPage
-                                                openMenu(key)
-                                            }
-                                            if (key === "plugIn-admin") {
-                                                const key = Route.PlugInAdminPage
-                                                openMenu(key)
-                                            }
-                                            if (key === "upload-plugin") {
-                                                const m = showModal({
-                                                    title: "同步本地插件",
-                                                    content: (
-                                                        <AdminUpOnlineBatch
-                                                            userInfo={userInfo}
-                                                            onClose={() => m.destroy()}
-                                                        />
-                                                    )
-                                                })
-                                                return m
-                                            }
-                                        }}
-                                    >
-                                        {userInfo.platform === "company" ? (
-                                            judgeAvatar(userInfo)
-                                        ) : (
-                                            <img
-                                                src={
-                                                    userInfo[UserPlatformType[userInfo.platform || ""].img] || yakitImg
-                                                }
-                                                style={{width: 24, height: 24, borderRadius: "50%"}}
-                                            />
-                                        )}
-                                    </DropdownMenu>
-                                </div>
-                            ) : (
-                                <div className={styles["user-show"]} onClick={() => setLoginShow(true)}>
-                                    <UnLoginSvgIcon />
-                                </div>
-                            )}
-                        </div>
-                    </>
-                )}
+                {!showProjectManage && <>
+                    <div className={styles["divider-wrapper"]}></div>
+                    <div className={classNames(styles["user-wrapper"],{[styles["user-wrapper-dynamic"]]:true}) }>
+                        {userInfo.isLogin ? (
+                            <div className={classNames({
+                                [styles["user-info"]]:false,
+                                [styles["user-info-dynamic"]]:true,
+                            }) }>
+                                <DropdownMenu
+                                    menu={{
+                                        data: userMenu
+                                    }}
+                                    dropdown={{
+                                        placement: "bottomCenter",
+                                        trigger: ["click"],
+                                        overlayClassName:"user-dropdown-menu-box",
+                                        onVisibleChange:(value:boolean)=>{
+                                            setDynamicMenuOpen(value)
+                                        }
+                                    }}
+                                    onClick={(key) => {
+                                        setDynamicMenuOpen(false)
+                                        if (key === "sign-out") {
+                                            setStoreUserInfo(defaultUserInfo)
+                                            loginOut(userInfo)
+                                            setTimeout(() => success("已成功退出账号"), 500)
+                                        }
+                                        if (key === "trust-list") {
+                                            const key = Route.TrustListPage
+                                            openMenu(key)
+                                        }
+                                        if (key === "set-password") setPasswordShow(true)
+                                        if (key === "upload-data") setUploadModalShow(true)
+                                        if (key === "role-admin") {
+                                            const key = Route.RoleAdminPage
+                                            openMenu(key)
+                                        }
+                                        if (key === "account-admin") {
+                                            const key = Route.AccountAdminPage
+                                            openMenu(key)
+                                        }
+                                        if (key === "license-admin") {
+                                            const key = Route.LicenseAdminPage
+                                            openMenu(key)
+                                        }
+                                        if (key === "plugIn-admin") {
+                                            const key = Route.PlugInAdminPage
+                                            openMenu(key)
+                                        }
+                                        if (key === "upload-plugin") {
+                                            const m = showModal({
+                                                title: "同步本地插件",
+                                                content: <AdminUpOnlineBatch userInfo={userInfo}
+                                                                             onClose={() => m.destroy()}/>
+                                            })
+                                            return m
+                                        }
+                                        if (key === "control-admin") {
+                                            const key = Route.ControlAdminPage
+                                            openMenu(key)
+                                        }
+                                        if (key === "dynamic-control") {
+                                            setDynamicControlModal(true)
+                                        }
+                                    }}
+                                >
+                                    {userInfo.platform === "company" ? (
+                                        judgeDynamic(userInfo,avatarColor.current,dynamicMenuOpen)
+                                    ) : (
+                                        <img
+                                            src={userInfo[UserPlatformType[userInfo.platform || ""].img] || yakitImg}
+                                            style={{width: 24, height: 24, borderRadius: "50%"}}
+                                        />
+                                    )}
+                                </DropdownMenu>
+                            </div>
+                        ) : (
+                            <div className={styles["user-show"]} onClick={() => setLoginShow(true)}>
+                                <UnLoginSvgIcon/>
+                            </div>
+                        )}
+                    </div>
+                </>}
             </div>
 
             {loginShow && <Login visible={loginShow} onCancel={() => setLoginShow(false)} />}
@@ -322,6 +365,47 @@ export const FuncDomain: React.FC<FuncDomainProp> = React.memo((props) => {
             >
                 <SelectUpload onCancel={() => setUploadModalShow(false)} />
             </Modal>
+
+            <DynamicControl
+                mainTitle={"远程控制"}
+                secondTitle={"请选择你的角色"}
+                isShow={dynamicControlModal}
+                onCancle={() => setDynamicControlModal(false)}
+                width={345}
+            >
+                <SelectControlType onControlMyself={()=>{
+                    setControlMyselfModal(true)
+                    setDynamicControlModal(false)
+                }} 
+                    onControlOther={()=>{
+                        setControlOtherModal(true)
+                        setDynamicControlModal(false)
+                    }}/>
+            </DynamicControl>
+
+            <DynamicControl
+                mainTitle={"受控端"}
+                secondTitle={"复制密钥，并分享给控制端用户"}
+                isShow={controlMyselfModal}
+                onCancle={() => setControlMyselfModal(false)}
+            >
+                <ControlMyself goBack={()=>{
+                    setDynamicControlModal(true)
+                    setControlMyselfModal(false)
+                }}/>
+            </DynamicControl>
+
+            <DynamicControl
+                mainTitle={"控制端"}
+                secondTitle={"可通过受控端分享的密钥远程控制他的 Yakit"}
+                isShow={controlOtherModal}
+                onCancle={() => setControlOtherModal(false)}
+            >
+                <ControlOther goBack={()=>{
+                    setDynamicControlModal(true)
+                    setControlOtherModal(false)
+                }}/>
+            </DynamicControl>
         </div>
     )
 })

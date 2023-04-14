@@ -39,6 +39,8 @@ import {LocalGV} from "@/yakitGV"
 import {EnterpriseLoginInfoIcon} from "@/assets/icons"
 import {BaseConsole} from "../components/baseConsole/BaseConsole"
 import CustomizeMenu from "./customizeMenu/CustomizeMenu"
+import { ControlOperation } from "@/pages/dynamicControl/DynamicControl";
+import {YakitHintModal} from "@/components/yakitUI/YakitHint/YakitHintModal"
 import {DownloadAllPlugin} from "@/pages/simpleDetect/SimpleDetect";
 
 const {ipcRenderer} = window.require("electron")
@@ -199,20 +201,23 @@ export interface MenuItemType {
     disabled?: boolean
 }
 
-export interface SetUserInfoProp {
-    userInfo: UserInfoProps
-    setStoreUserInfo: (info: any) => void
-}
 
-export const judgeAvatar = (userInfo,size:number) => {
+export const judgeAvatar = (userInfo,size:number,avatarColor:string) => {
     const {companyHeadImg, companyName} = userInfo
+
     return companyHeadImg && !!companyHeadImg.length ? (
         <Avatar size={size} style={{cursor: "pointer"}} src={companyHeadImg}/>
     ) : (
-        <Avatar size={size} style={{backgroundColor: "rgb(245, 106, 0)", cursor: "pointer"}}>
+        <Avatar size={size} style={{backgroundColor: avatarColor, cursor: "pointer"}}>
             {companyName && companyName.slice(0, 1)}
         </Avatar>
     )
+}
+
+export interface SetUserInfoProp {
+    userInfo: UserInfoProps
+    setStoreUserInfo: (info: any) => void
+    avatarColor: string
 }
 
 // 可上传文件类型
@@ -220,7 +225,7 @@ const FileType = ["image/png", "image/jpeg", "image/png"]
 
 // 用户信息
 export const SetUserInfo: React.FC<SetUserInfoProp> = React.memo((props) => {
-    const {userInfo, setStoreUserInfo} = props
+    const {userInfo, setStoreUserInfo,avatarColor} = props
 
     // OSS远程头像删除
     const deleteAvatar = useMemoizedFn((imgName) => {
@@ -299,7 +304,7 @@ export const SetUserInfo: React.FC<SetUserInfoProp> = React.memo((props) => {
                 }}
             >
                 <div className='img-box'>
-                    <div className='img-box-mask'>{judgeAvatar(userInfo,40)}</div>
+                    <div className='img-box-mask'>{judgeAvatar(userInfo,40,avatarColor)}</div>
                     <CameraOutlined className='hover-icon'/>
                 </div>
             </Upload.Dragger>
@@ -372,6 +377,9 @@ const Main: React.FC<MainProp> = React.memo((props) => {
 
     // 系统类型
     const [system, setSystem] = useState<string>("")
+
+    // 远程控制浮层
+    const [controlShow,setControlShow] = useState<boolean>(false)
 
     // 是否展示console
     const [isShowBaseConsole, setIsShowBaseConsole] = useState<boolean>(false)
@@ -1290,7 +1298,8 @@ const Main: React.FC<MainProp> = React.memo((props) => {
         menuAddPage(key as Route)
     })
     return (
-        <Layout className='yakit-main-layout'>
+        <>
+        <Layout className='yakit-main-layout' style={controlShow?{display:"none"}:{}}>
             <AutoSpin spinning={loading}>
                 {isShowCustomizeMenu && (
                     <CustomizeMenu visible={isShowCustomizeMenu} onClose={() => setIsShowCustomizeMenu(false)}/>
@@ -1514,6 +1523,22 @@ const Main: React.FC<MainProp> = React.memo((props) => {
                 <SetPassword onCancel={() => setPasswordShow(false)} userInfo={userInfo}/>
             </Modal>
         </Layout>
+        {controlShow&&<ControlOperation/>}
+        <YakitHintModal
+                visible={false}
+                title='收到远程连接请求'
+                content={
+                    <div>
+                        用户 <span style={{color: "#F28B44"}}>Alex-null</span>{" "}
+                        正在向你发起远程连接请求，是否同意对方连接？
+                    </div>
+                }
+                cancelButtonText='拒绝'
+                okButtonText='同意'
+                onOk={()=>{}}
+                onCancel={()=>{}}
+            />
+        </>
     )
 })
 
