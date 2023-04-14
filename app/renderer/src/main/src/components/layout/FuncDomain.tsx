@@ -137,6 +137,7 @@ export const FuncDomain: React.FC<FuncDomainProp> = React.memo((props) => {
                     return [
                         {key: "user-info", title: "用户信息", render: () => SetUserInfoModule()},
                         {key: "upload-plugin", title: "同步插件"},
+                        {key: "hole-collect", title: "漏洞汇总"},
                         {key: "role-admin", title: "角色管理"},
                         {key: "account-admin", title: "用户管理"},
                         {key: "set-password", title: "修改密码"},
@@ -242,6 +243,10 @@ export const FuncDomain: React.FC<FuncDomainProp> = React.memo((props) => {
                                         if (key === "upload-data") setUploadModalShow(true)
                                         if (key === "role-admin") {
                                             const key = Route.RoleAdminPage
+                                            openMenu(key)
+                                        }
+                                        if (key === "hole-collect") {
+                                            const key = Route.HoleCollectPage
                                             openMenu(key)
                                         }
                                         if (key === "account-admin") {
