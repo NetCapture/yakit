@@ -13,9 +13,10 @@ import {failed, info, success} from "@/utils/notification"
 import {CheckIcon} from "@/assets/newIcon"
 import {UpdateYakitAndYaklang} from "../layout/update/UpdateYakitAndYaklang"
 import {InstallEngine, QuestionModal} from "../layout/update/InstallEngine"
-
-import classNames from "classnames"
+import TelecomSmallLogo from "@/assets/img/telecom_logo_small.png"
+import classnames from "classnames"
 import styles from "./yakitLoading.module.scss"
+import classNames from "classnames"
 
 const {ipcRenderer} = window.require("electron")
 
@@ -503,26 +504,31 @@ export const YakitLoading: React.FC<YakitLoadingProp> = (props) => {
     ])
 
     /** 加载页随机宣传语 */
-    const loadingTitle = useMemo(() => LoadingTitle[Math.floor(Math.random() * (LoadingTitle.length - 0)) + 0], [])
+    // const loadingTitle = useMemo(() => LoadingTitle[Math.floor(Math.random() * (LoadingTitle.length - 0)) + 0], [])
 
     return (
         <div className={styles["yakit-loading-wrapper"]}>
             <div className={styles["yakit-loading-body"]}>
                 <div className={styles["body-content"]}>
                     <div className={styles["yakit-loading-title"]}>
-                        <div className={styles["title-style"]}>欢迎使用 Yakit</div>
-                        <div className={styles["subtitle-stlye"]}>{loadingTitle}</div>
+                        <div className={styles["title-style"]}>欢迎使用 单兵武器装备库</div>
+                        {/* <div className={styles["subtitle-stlye"]}>{loadingTitle}</div> */}
                     </div>
 
                     <div className={styles["yakit-loading-icon-wrapper"]}>
-                        <div className={styles["theme-icon-wrapper"]}>
+                        {/* <div className={styles["theme-icon-wrapper"]}>
                             <div className={styles["theme-icon"]}>
                                 <YakitThemeLoadingSvgIcon />
                             </div>
                         </div>
                         <div className={styles["white-icon"]}>
                             <YakitLoadingSvgIcon />
-                        </div>
+                        </div> */}
+                        <img
+                            style={{width: "100%", position: "absolute", left: 0, right: 0}}
+                            src={TelecomSmallLogo}
+                            alt='logo'
+                        />
                     </div>
 
                     <div className={styles["yakit-loading-content"]}>
