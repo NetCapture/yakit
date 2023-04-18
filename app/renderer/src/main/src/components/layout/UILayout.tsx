@@ -52,7 +52,7 @@ import {
     TransferProject
 } from "@/pages/softwareSettings/ProjectManage"
 import {YakitHint} from "../yakitUI/YakitHint/YakitHint"
-
+import TelecomSmallLogo from "@/assets/img/telecom_logo_small.png"
 import classNames from "classnames"
 import styles from "./uiLayout.module.scss"
 
@@ -174,12 +174,13 @@ const UILayout: React.FC<UILayoutProp> = (props) => {
 
         getLocalValue(LocalGV.NoAutobootLatestVersionCheck).then((val: boolean) => {
             if (!val) {
-                ipcRenderer.invoke("fetch-yakit-version").then((data: string) => {
-                    setCurrentYakit(data)
-                })
-                ipcRenderer.invoke("fetch-latest-yakit-version").then((data: string) => {
-                    isEnpriTraceAgent() ? setLatestYakit("") : setLatestYakit(data)
-                })
+                // 屏蔽 yakit 升级
+                // ipcRenderer.invoke("fetch-yakit-version").then((data: string) => {
+                //     setCurrentYakit(data)
+                // })
+                // ipcRenderer.invoke("fetch-latest-yakit-version").then((data: string) => {
+                //     setLatestYakit(data)
+                // })
 
                 ipcRenderer.invoke("get-current-yak").then((data: string) => {
                     setCurrentYaklang(data)
@@ -794,7 +795,7 @@ const UILayout: React.FC<UILayoutProp> = (props) => {
                                 ></div>
 
                                 <div className={classNames(styles["yakit-header-title"])} onDoubleClick={maxScreen}>
-                                    Yakit-{`${EngineModeVerbose(engineMode || "local")}`}
+                                    {`${EngineModeVerbose(engineMode || "local")}`}
                                 </div>
 
                                 <div className={styles["header-left"]}>
@@ -811,22 +812,17 @@ const UILayout: React.FC<UILayoutProp> = (props) => {
                                                     })}
                                                     onClick={() => changeYakitMode("soft")}
                                                 >
-                                                    <HomeSvgIcon
-                                                        className={
-                                                            yakitMode === "soft" ? styles["mode-icon-selected"] : ""
-                                                        }
-                                                    />
+                                                    {yakitMode === "soft" ? (
+                                                        <img src={TelecomSmallLogo} alt='logo' style={{width: 20}} />
+                                                    ) : (
+                                                        <img
+                                                            src={TelecomSmallLogo}
+                                                            alt='logo'
+                                                            style={{width: 20, opacity: 0.2}}
+                                                        />
+                                                    )}
                                                 </div>
                                             )}
-
-                                            {/* <div
-                                        className={classNames(styles["yakit-mode-icon"], {
-                                            [styles["yakit-mode-selected"]]: false&&yakitMode === "store"
-                                        })}
-                                        onClick={() => changeYakitMode("store")}
-                                    >
-                                        {yakitMode === "store" ? <YakitStoreThemeSvgIcon /> : <YakitStoreGraySvgIcon />}
-                                    </div> */}
 
                                             <div className={styles["divider-wrapper"]}></div>
                                             <YakitGlobalHost isEngineLink={engineLink} />
@@ -889,7 +885,7 @@ const UILayout: React.FC<UILayoutProp> = (props) => {
                                 ></div>
 
                                 <div className={classNames(styles["yakit-header-title"])} onDoubleClick={maxScreen}>
-                                    Yakit-{`${EngineModeVerbose(engineMode || "local")}`}
+                                    {`${EngineModeVerbose(engineMode || "local")}`}
                                 </div>
 
                                 <div className={styles["header-left"]}>
@@ -904,23 +900,17 @@ const UILayout: React.FC<UILayoutProp> = (props) => {
                                                     })}
                                                     onClick={() => changeYakitMode("soft")}
                                                 >
-                                                    <HomeSvgIcon
-                                                        className={
-                                                            yakitMode === "soft" ? styles["mode-icon-selected"] : ""
-                                                        }
-                                                    />
+                                                    {yakitMode === "soft" ? (
+                                                        <img src={TelecomSmallLogo} alt='logo' style={{width: 20}} />
+                                                    ) : (
+                                                        <img
+                                                            src={TelecomSmallLogo}
+                                                            alt='logo'
+                                                            style={{width: 20, opacity: 0.2}}
+                                                        />
+                                                    )}
                                                 </div>
                                             )}
-
-                                            {/* <div
-                                    className={classNames(styles["yakit-mode-icon"], {
-                                        [styles["yakit-mode-selected"]]: false&&yakitMode === "store"
-                                    })}
-                                    onClick={() => changeYakitMode("store")}
-                                >
-                                    {yakitMode === "store" ? <YakitStoreThemeSvgIcon /> : <YakitStoreGraySvgIcon />}
-                                </div> */}
-
                                             <div className={styles["divider-wrapper"]}></div>
                                             <div>
                                                 <FuncDomain
@@ -932,6 +922,18 @@ const UILayout: React.FC<UILayoutProp> = (props) => {
                                                     typeCallback={typeCallback}
                                                     showProjectManage={linkDatabase}
                                                     system={system}
+                                                />
+                                            </div>
+
+                                            <div className={styles["divider-wrapper"]}></div>
+                                            <div>
+                                                <FuncDomain
+                                                    isEngineLink={engineLink}
+                                                    isReverse={true}
+                                                    engineMode={engineMode || "remote"}
+                                                    isRemoteMode={engineMode === "remote"}
+                                                    onEngineModeChange={changeEngineMode}
+                                                    typeCallback={typeCallback}
                                                 />
                                             </div>
                                         </>

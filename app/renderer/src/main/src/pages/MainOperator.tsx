@@ -10,7 +10,7 @@ import {
     setYaklangBuildInMethodCompletion,
     setYaklangCompletions
 } from "../utils/monacoSpec/yakCompletionSchema"
-import {randomString} from "../utils/randomUtil"
+import { randomString } from "../utils/randomUtil"
 import MDEditor from "@uiw/react-md-editor"
 import {QueryYakScriptsResponse} from "./invoker/schema"
 import {useHotkeys} from "react-hotkeys-hook"
@@ -202,11 +202,11 @@ export interface SetUserInfoProp {
 }
 
 export const judgeAvatar = (userInfo) => {
-    const {companyHeadImg, companyName} = userInfo
+    const { companyHeadImg, companyName } = userInfo
     return companyHeadImg && !!companyHeadImg.length ? (
         <Avatar size={24} style={{cursor: "pointer"}} src={companyHeadImg}/>
     ) : (
-        <Avatar size={24} style={{backgroundColor: "rgb(245, 106, 0)", cursor: "pointer"}}>
+        <Avatar size={24} style={{ backgroundColor: "rgb(245, 106, 0)", cursor: "pointer" }}>
             {companyName && companyName.slice(0, 1)}
         </Avatar>
     )
@@ -217,7 +217,7 @@ const FileType = ["image/png", "image/jpeg", "image/png"]
 
 // 用户信息
 export const SetUserInfo: React.FC<SetUserInfoProp> = React.memo((props) => {
-    const {userInfo, setStoreUserInfo} = props
+    const { userInfo, setStoreUserInfo } = props
 
     // OSS远程头像删除
     const deleteAvatar = useMemoizedFn((imgName) => {
@@ -244,7 +244,7 @@ export const SetUserInfo: React.FC<SetUserInfoProp> = React.memo((props) => {
     // 修改头像
     const setAvatar = useMemoizedFn(async (file) => {
         await ipcRenderer
-            .invoke("upload-img", {path: file.path, type: file.type})
+            .invoke("upload-img", { path: file.path, type: file.type })
             .then((res) => {
                 let imgUrl: string = res.data
                 NetWorkApi<API.UpUserInfoRequest, API.ActionSucceeded>({
@@ -305,7 +305,7 @@ export const SetUserInfo: React.FC<SetUserInfoProp> = React.memo((props) => {
                 className='content-box'
                 style={
                     userInfo.role !== "admin"
-                        ? {display: "flex", justifyContent: "center", alignItems: "center", fontSize: 16}
+                        ? { display: "flex", justifyContent: "center", alignItems: "center", fontSize: 16 }
                         : {}
                 }
             >
@@ -381,7 +381,7 @@ const Main: React.FC<MainProp> = React.memo((props) => {
             const newParams = {
                 Type: "yak,mitm,codec,packet-hack,port-scan",
                 Keyword: "",
-                Pagination: {Limit: 20, Order: "desc", Page: 1, OrderBy: "updated_at"},
+                Pagination: { Limit: 20, Order: "desc", Page: 1, OrderBy: "updated_at" },
                 UserId: 0
             }
             ipcRenderer
@@ -714,8 +714,8 @@ const Main: React.FC<MainProp> = React.memo((props) => {
         // webFuzzer
         if (tabType === "httpFuzzer") {
             const currentTimeKey: string = pageCache[index].multipleNode[indexNode].time
-            const newFuzzerItem = {...fuzzerList.current.get(currentTimeKey)}
-            updateFuzzerList(currentTimeKey, {...newFuzzerItem, time: currentTimeKey, verbose})
+            const newFuzzerItem = { ...fuzzerList.current.get(currentTimeKey) }
+            updateFuzzerList(currentTimeKey, { ...newFuzzerItem, time: currentTimeKey, verbose })
         }
         setPageCache([...pageCache])
     })
@@ -819,7 +819,7 @@ const Main: React.FC<MainProp> = React.memo((props) => {
                 const cache = JSON.parse(res || "[]")
                 for (let item of cache) {
                     const time = new Date().getTime().toString()
-                    fuzzerList.current.set(time, {...item, time: time})
+                    fuzzerList.current.set(time, { ...item, time: time })
                     addTabPage(Route.HTTPFuzzer, {
                         time: time,
                         verbose: item.verbose, // webFuzzer 保存的修改后的菜单二级tab名字
@@ -840,7 +840,7 @@ const Main: React.FC<MainProp> = React.memo((props) => {
     })
 
     const addFuzzerList = (key: string, request?: string, isHttps?: boolean, verbose?: string) => {
-        fuzzerList.current.set(key, {request, isHttps, time: key, verbose})
+        fuzzerList.current.set(key, { request, isHttps, time: key, verbose })
     }
     const delFuzzerList = (type: number, key?: string) => {
         if (type === 1) fuzzerList.current.clear()
@@ -861,7 +861,7 @@ const Main: React.FC<MainProp> = React.memo((props) => {
     useEffect(() => {
         ipcRenderer.on("fetch-fuzzer-setting-data", (e, res: any) => {
             try {
-                updateFuzzerList(res.key, {...(fuzzerList.current.get(res.key) || {}), ...JSON.parse(res.param)})
+                updateFuzzerList(res.key, { ...(fuzzerList.current.get(res.key) || {}), ...JSON.parse(res.param) })
             } catch (error) {
                 failed("webFuzzer数据缓存失败：" + error)
             }
@@ -949,7 +949,7 @@ const Main: React.FC<MainProp> = React.memo((props) => {
         ipcRenderer.on("main-container-add-compare", (e, params) => {
             const newTabId = `${Route.DataCompare}-[${randomString(49)}]`
             const verboseNameRaw = routeKeyToLabel.current.get(Route.DataCompare) || `${Route.DataCompare}`
-            addTabPage(Route.DataCompare, {node: ContentByRoute(Route.DataCompare, undefined, {system: system})})
+            addTabPage(Route.DataCompare, { node: ContentByRoute(Route.DataCompare, undefined, { system: system }) })
 
             // 区分新建对比页面还是别的页面请求对比的情况
             ipcRenderer.invoke("created-data-compare")
@@ -964,7 +964,7 @@ const Main: React.FC<MainProp> = React.memo((props) => {
 
     // Global Sending Function(全局发送功能|通过发送新增功能页面)
     const addFuzzer = useMemoizedFn((res: any) => {
-        const {isHttps, request, list} = res || {}
+        const { isHttps, request, list } = res || {}
         const time = new Date().getTime().toString()
         if (request) {
             addTabPage(Route.HTTPFuzzer, {
@@ -995,7 +995,7 @@ const Main: React.FC<MainProp> = React.memo((props) => {
     })
     // websocket fuzzer 和 Fuzzer 类似
     const addWebsocketHistory = useMemoizedFn((res: any) => {
-        addTabPage(Route.WebsocketHistory, {hideAdd: false, isRecord: false, node: undefined, time: ""})
+        addTabPage(Route.WebsocketHistory, { hideAdd: false, isRecord: false, node: undefined, time: "" })
     })
 
     const addYakScript = useMemoizedFn((res: any) => {
@@ -1023,7 +1023,7 @@ const Main: React.FC<MainProp> = React.memo((props) => {
         })
     })
     const addFacadeServer = useMemoizedFn((res: any) => {
-        const {facadeParams, classParam, classType} = res || {}
+        const { facadeParams, classParam, classType } = res || {}
         if (facadeParams && classParam && classType) {
             addTabPage(Route.ReverseServer_New, {
                 node: ContentByRoute(Route.ReverseServer_New, undefined, {
@@ -1035,18 +1035,18 @@ const Main: React.FC<MainProp> = React.memo((props) => {
         }
     })
     const addScanPort = useMemoizedFn((res: any) => {
-        const {URL = ""} = res || {}
+        const { URL = "" } = res || {}
         if (URL) {
             addTabPage(Route.Mod_ScanPort, {
-                node: ContentByRoute(Route.Mod_ScanPort, undefined, {scanportParams: URL})
+                node: ContentByRoute(Route.Mod_ScanPort, undefined, { scanportParams: URL })
             })
         }
     })
     const addBrute = useMemoizedFn((res: any) => {
-        const {URL = ""} = res || {}
+        const { URL = "" } = res || {}
         if (URL) {
             addTabPage(Route.Mod_Brute, {
-                node: ContentByRoute(Route.Mod_Brute, undefined, {bruteParams: URL})
+                node: ContentByRoute(Route.Mod_Brute, undefined, { bruteParams: URL })
             })
         }
     })
@@ -1056,7 +1056,7 @@ const Main: React.FC<MainProp> = React.memo((props) => {
     const [bugTestValue, setBugTestValue] = useState<BugInfoProps[]>([])
     const [bugUrl, setBugUrl] = useState<string>("")
     const addBugTest = useMemoizedFn((type: number, res?: any) => {
-        const {URL = ""} = res || {}
+        const { URL = "" } = res || {}
         if (type === 1 && URL) {
             setBugUrl(URL)
             ipcRenderer
@@ -1073,12 +1073,12 @@ const Main: React.FC<MainProp> = React.memo((props) => {
             if (filter.length === 0) {
                 addTabPage(Route.PoC)
                 setTimeout(() => {
-                    ipcRenderer.invoke("send-to-bug-test", {type: bugTestValue, data: bugUrl})
+                    ipcRenderer.invoke("send-to-bug-test", { type: bugTestValue, data: bugUrl })
                     setBugTestValue([])
                     setBugUrl("")
                 }, 300)
             } else {
-                ipcRenderer.invoke("send-to-bug-test", {type: bugTestValue, data: bugUrl})
+                ipcRenderer.invoke("send-to-bug-test", { type: bugTestValue, data: bugUrl })
                 setCurrentTabKey(Route.PoC)
                 setBugTestValue([])
                 setBugUrl("")
@@ -1086,7 +1086,7 @@ const Main: React.FC<MainProp> = React.memo((props) => {
         }
     })
     const addYakRunning = useMemoizedFn((res: any) => {
-        const {name = "", code = ""} = res || {}
+        const { name = "", code = "" } = res || {}
         const filter = pageCache.filter((item) => item.route === Route.YakScript)
 
         if (!name || !code) return false
@@ -1094,10 +1094,10 @@ const Main: React.FC<MainProp> = React.memo((props) => {
         if ((filter || []).length === 0) {
             addTabPage(Route.YakScript)
             setTimeout(() => {
-                ipcRenderer.invoke("send-to-yak-running", {name, code})
+                ipcRenderer.invoke("send-to-yak-running", { name, code })
             }, 300)
         } else {
-            ipcRenderer.invoke("send-to-yak-running", {name, code})
+            ipcRenderer.invoke("send-to-yak-running", { name, code })
             setCurrentTabKey(Route.YakScript)
         }
     })
@@ -1141,7 +1141,7 @@ const Main: React.FC<MainProp> = React.memo((props) => {
     useEffect(() => {
         // 写成HOC是否好点呢，现在一个页面启动就是一个函数
         ipcRenderer.on("fetch-send-to-tab", (e, res: any) => {
-            const {type, data = {}} = res
+            const { type, data = {} } = res
             if (type === "fuzzer") addFuzzer(data)
             if (type === "websocket-fuzzer") addWebsocketFuzzer(data)
             if (type === "scan-port") addScanPort(data)
@@ -1177,7 +1177,7 @@ const Main: React.FC<MainProp> = React.memo((props) => {
     }, [])
     useEffect(() => {
         ipcRenderer.on("fetch-close-tab", (e, res: any) => {
-            const {router, singleNode} = res
+            const { router, singleNode } = res
             if (singleNode) {
                 removePage(router, false)
             }
@@ -1251,11 +1251,11 @@ const Main: React.FC<MainProp> = React.memo((props) => {
                         <DropdownMenu
                             menu={{
                                 data: [
-                                    {key: "all", title: "关闭所有Tabs"},
-                                    {key: "other", title: "关闭其他Tabs"}
+                                    { key: "all", title: "关闭所有Tabs" },
+                                    { key: "other", title: "关闭其他Tabs" }
                                 ]
                             }}
-                            dropdown={{trigger: ["contextMenu"]}}
+                            dropdown={{ trigger: ["contextMenu"] }}
                             onClick={(key) => {
                                 switch (key) {
                                     case "all":
@@ -1289,7 +1289,7 @@ const Main: React.FC<MainProp> = React.memo((props) => {
                 {isShowCustomizeMenu && (
                     <CustomizeMenu visible={isShowCustomizeMenu} onClose={() => setIsShowCustomizeMenu(false)}/>
                 )}
-                <div style={{display: isShowCustomizeMenu ? "none" : "flex", flexDirection: "column", height: "100%"}}>
+                <div style={{ display: isShowCustomizeMenu ? "none" : "flex", flexDirection: "column", height: "100%" }}>
                     <HeardMenu
                         onRouteMenuSelect={onRouteMenuSelect}
                         setRouteKeyToLabel={(val) => {
@@ -1307,7 +1307,7 @@ const Main: React.FC<MainProp> = React.memo((props) => {
                             // marginTop: 0
                         }}
                     >
-                        <Layout style={{height: "100%", overflow: "hidden"}}>
+                        <Layout style={{ height: "100%", overflow: "hidden" }}>
                             <Content
                                 style={{
                                     overflow: "hidden",
@@ -1329,7 +1329,7 @@ const Main: React.FC<MainProp> = React.memo((props) => {
                                 >
                                     {pageCache.length > 0 ? (
                                         <Tabs
-                                            style={{display: "flex", flex: "1"}}
+                                            style={{ display: "flex", flex: "1" }}
                                             // tabBarStyle={{marginBottom: 8}}
                                             className='main-content-tabs yakit-layout-tabs'
                                             activeKey={currentTabKey}
@@ -1469,7 +1469,7 @@ const Main: React.FC<MainProp> = React.memo((props) => {
                 <ItemSelects
                     item={{
                         label: "专项漏洞类型",
-                        style: {marginTop: 20}
+                        style: { marginTop: 20 }
                     }}
                     select={{
                         allowClear: true,
@@ -1478,7 +1478,7 @@ const Main: React.FC<MainProp> = React.memo((props) => {
                         optValue: "key",
                         value: (bugTestValue || [])[0]?.key,
                         onChange: (value, option: any) => {
-                            const {record} = option
+                            const { record } = option
                             setBugTestValue(
                                 value
                                     ? [
@@ -1500,7 +1500,7 @@ const Main: React.FC<MainProp> = React.memo((props) => {
                 title={"修改密码"}
                 destroyOnClose={true}
                 maskClosable={false}
-                bodyStyle={{padding: "10px 24px 24px 24px"}}
+                bodyStyle={{ padding: "10px 24px 24px 24px" }}
                 width={520}
                 onCancel={() => setPasswordShow(false)}
                 footer={null}
