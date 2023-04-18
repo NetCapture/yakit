@@ -38,17 +38,17 @@ import {
     MenuPayloadIcon,
     MenuYakRunnerIcon
 } from "@/pages/customizeMenu/icon/menuIcon"
-import {YakitMenu, YakitMenuItemProps} from "@/components/yakitUI/YakitMenu/YakitMenu"
-import {YakitPopover} from "@/components/yakitUI/YakitPopover/YakitPopover"
-import {YakitButton} from "@/components/yakitUI/YakitButton/YakitButton"
-import {getRemoteValue, setRemoteValue} from "@/utils/kv"
-import {YakitModal} from "@/components/yakitUI/YakitModal/YakitModal"
-import {YakCodeEditor} from "@/utils/editors"
-import {StringToUint8Array, Uint8ArrayToString} from "@/utils/str"
-import {getMenuListBySort, getMenuListToLocal} from "@/pages/customizeMenu/CustomizeMenu"
-import {InputFileNameItem} from "@/utils/inputUtil"
-import {YakitInput} from "@/components/yakitUI/YakitInput/YakitInput"
-import {YakitFormDragger} from "@/components/yakitUI/YakitForm/YakitForm"
+import { YakitMenu, YakitMenuItemProps } from "@/components/yakitUI/YakitMenu/YakitMenu"
+import { YakitPopover } from "@/components/yakitUI/YakitPopover/YakitPopover"
+import { YakitButton } from "@/components/yakitUI/YakitButton/YakitButton"
+import { getRemoteValue, setRemoteValue } from "@/utils/kv"
+import { YakitModal } from "@/components/yakitUI/YakitModal/YakitModal"
+import { YakCodeEditor } from "@/utils/editors"
+import { StringToUint8Array, Uint8ArrayToString } from "@/utils/str"
+import { getMenuListBySort, getMenuListToLocal } from "@/pages/customizeMenu/CustomizeMenu"
+import { InputFileNameItem } from "@/utils/inputUtil"
+import { YakitInput } from "@/components/yakitUI/YakitInput/YakitInput"
+import { YakitFormDragger } from "@/components/yakitUI/YakitForm/YakitForm"
 import {
     MenuSolidBasicCrawlerIcon,
     MenuSolidComprehensiveCatalogScanningAndBlastingIcon,
@@ -66,7 +66,7 @@ import {useStore} from "@/store"
 import {isEnpriTraceAgent, isCommunityEdition} from "@/utils/envfile"
 import {CodeGV} from "@/yakitGV"
 
-const {ipcRenderer} = window.require("electron")
+const { ipcRenderer } = window.require("electron")
 
 export const getScriptIcon = (name: string) => {
     switch (name) {
@@ -105,7 +105,7 @@ export const getScriptHoverIcon = (name: string) => {
  * @param {} onRouteMenuSelect 系统菜单选择事件
  */
 const HeardMenu: React.FC<HeardMenuProps> = React.memo((props) => {
-    const {onRouteMenuSelect, setRouteKeyToLabel} = props
+    const { onRouteMenuSelect, setRouteKeyToLabel } = props
     /**
      * @description: 融合系统菜单和自定义菜单
      */
@@ -172,7 +172,6 @@ const HeardMenu: React.FC<HeardMenuProps> = React.memo((props) => {
             }
         }
     }, [])
-
     useUpdateEffect(() => {
         getRouteKeyToLabel()
     }, [routeMenu])
@@ -181,7 +180,7 @@ const HeardMenu: React.FC<HeardMenuProps> = React.memo((props) => {
      */
     const getRouteKeyToLabel = useMemoizedFn(() => {
         routeMenu.forEach((k) => {
-            ;(k.subMenuData || []).forEach((subKey) => {
+            ; (k.subMenuData || []).forEach((subKey) => {
                 routeKeyToLabel.current.set(`${subKey.key}`, subKey.label)
             })
             routeKeyToLabel.current.set(`${k.key}`, k.label)
@@ -204,86 +203,62 @@ const HeardMenu: React.FC<HeardMenuProps> = React.memo((props) => {
                 oldMenuData = data.Groups
                 //获取模式菜单 如果获取的菜单数据为空，则新增默认菜单数据
                 ipcRenderer
-                    .invoke("QueryAllMenuItem", {Mode: menuMode})
+                    .invoke("QueryAllMenuItem", { Mode: menuMode })
                     .then((rsp: MenuByGroupProps) => {
-                        // 存放开发者已经废弃的页面菜单项(但这些菜单项在用户数据中存在)
-                        const invalidMenuItem: string[] = []
-
-                        if (rsp.Groups.length === 0) {
-                            // 获取的数据为空，先使用默认数据覆盖，然后再通过名字下载，然后保存菜单数据
-                            onInitMenuData(menuMode, oldMenuData)
-                        } else {
-                            // 默认菜单中，有新增的菜单，前提：系统内置菜单不可删除 企业简易版管理员默认展示所有菜单
-                            let currentMenuList: MenuDataProps[] = [...DefaultRouteMenuData]
-                            // 新手版菜单-novice
-                            if (menuMode == "new") {
-                                currentMenuList = [...DefaultRouteMenuData].filter((item) => item.menuPattern?.includes("novice"))
-                            }
-                            const newMenuList: MenuItem[] = [] // 用来判断是否有新增菜单
-                            const addMenuScripName: string[] = [] // 用来判断是否有新增的插件菜单
-                            for (let i = 0; i < rsp.Groups.length; i++) {
-                                // 对用户菜单项数据进行过滤(过滤开发者已经废弃的页面菜单项)
-                                const filterChild: MenuItem[] = (rsp.Groups[i].Items || []).filter(item => {
-                                    const flag = CodeGV.InvalidPageMenuItem.indexOf(item.Verbose) > -1
-                                    if (flag) invalidMenuItem.push(item.Verbose)
-                                    return !flag
-                                })
-                                rsp.Groups[i].Items = filterChild
-
-                                const onlineMenuItem = rsp.Groups[i]
-                                const localMenuItem = currentMenuList.find((ele) => ele.label === onlineMenuItem.Group)
-                                if (localMenuItem && localMenuItem.subMenuData) {
-                                    for (let j = 0; j < localMenuItem.subMenuData.length; j++) {
-                                        const item = localMenuItem.subMenuData[j]
-                                        if (!item.key) continue
-                                        const index = onlineMenuItem.Items.findIndex((o) => o.Verbose === item.label)
-                                        if (index === -1) {
-                                            if (!item.key || item.key.includes("plugin")) {
-                                                // 新增的默认插件菜单
-                                                addMenuScripName.push(item.yakScripName || item.label)
-                                            }
-                                            const newMenuItem: MenuItem = {
-                                                Group: onlineMenuItem.Group,
-                                                GroupSort: rsp.Groups[i].Items.length + 1,
-                                                Verbose: item.label,
-                                                YakScriptId: 0,
-                                                YakScriptName: item.key ? "" : item.yakScripName
-                                            }
-                                            newMenuList.push(newMenuItem)
-                                            rsp.Groups[i].Items.push(newMenuItem)
-                                        }
-                                    }
-                                }
-                            }
-                            const routerList: MenuDataProps[] = getMenuListToLocal(rsp.Groups)
-                            if (newMenuList.length > 0) {
-                                onDownPluginByScriptNames(routerList, addMenuScripName, menuMode)
-                            }
-                            setRouteMenu(routerList)
-                            if ((updateSubMenu || !menuId) && routerList.length > 0) {
-                                let firstMenu: MenuDataProps = routerList[0] || {id: "", label: ""}
-                                if (menuId) {
-                                    firstMenu = routerList.find((i) => i.id === menuId) || {id: "", label: ""}
-                                }
-                                setSubMenuData(firstMenu.subMenuData || [])
-                                setMenuId(firstMenu.id)
-                            }
-
-                            // 开始清除用户数据中的无效页面菜单项
-                            if (invalidMenuItem.length > 0) {
-                                const invalidMenus = Array.from(new Set(invalidMenuItem))
-                                for (let menuName of invalidMenus) {
-                                    ipcRenderer
-                                        .invoke("DeleteAllMenu", {Verbose: menuName})
-                                        .then(() => {
-                                        })
-                                        .catch((e: any) => {
-                                        })
-                                }
-                            }
-
-                            setTimeout(() => setLoading(false), 300)
-                        }
+                        // 电信版本暂不需要自定义，所以屏蔽下方的自定义菜单的逻辑
+                        onInitMenuData(menuMode, oldMenuData.concat(rsp.Groups || []))
+                        // if (rsp.Groups.length === 0) {
+                        //     // 获取的数据为空，先使用默认数据覆盖，然后再通过名字下载，然后保存菜单数据
+                        //     onInitMenuData(menuMode, oldMenuData)
+                        // } else {
+                        //     // 默认菜单中，有新增的菜单，前提：系统内置菜单不可删除
+                        //     let currentMenuList: MenuDataProps[] = [...DefaultRouteMenuData]
+                        //     if (menuMode == "new") {
+                        //         currentMenuList = [...DefaultRouteMenuData].filter((item) => item.isNovice)
+                        //     }
+                        //     const newMenuList: MenuItem[] = [] // 用来判断是否有新增菜单
+                        //     const addMenuScripName: string[] = [] // 用来判断是否有新增的插件菜单
+                        //     for (let i = 0; i < rsp.Groups.length; i++) {
+                        //         const onlineMenuItem = rsp.Groups[i]
+                        //         const localMenuItem = currentMenuList.find((ele) => ele.label === onlineMenuItem.Group)
+                        //         if (localMenuItem && localMenuItem.subMenuData) {
+                        //             for (let j = 0; j < localMenuItem.subMenuData.length; j++) {
+                        //                 const item = localMenuItem.subMenuData[j]
+                        //                 if (!item.key) continue
+                        //                 const index = onlineMenuItem.Items.findIndex((o) => o.Verbose === item.label)
+                        //                 if (index === -1) {
+                        //                     if (!item.key || item.key.includes("plugin")) {
+                        //                         // 新增的默认插件菜单
+                        //                         addMenuScripName.push(item.yakScripName || item.label)
+                        //                     }
+                        //                     const newMenuItem: MenuItem = {
+                        //                         Group: onlineMenuItem.Group,
+                        //                         GroupSort: rsp.Groups[i].Items.length + 1,
+                        //                         Verbose: item.label,
+                        //                         YakScriptId: 0,
+                        //                         YakScriptName: item.key ? "" : item.yakScripName
+                        //                     }
+                        //                     newMenuList.push(newMenuItem)
+                        //                     rsp.Groups[i].Items.push(newMenuItem)
+                        //                 }
+                        //             }
+                        //         }
+                        //     }
+                        //     const routerList: MenuDataProps[] = getMenuListToLocal(rsp.Groups)
+                        //     if (newMenuList.length > 0) {
+                        //         onDownPluginByScriptNames(routerList, addMenuScripName, menuMode)
+                        //     }
+                        //     setRouteMenu(routerList)
+                        //     if ((updateSubMenu || !menuId) && routerList.length > 0) {
+                        //         let firstMenu: MenuDataProps = routerList[0] || {id: "", label: ""}
+                        //         if (menuId) {
+                        //             firstMenu = routerList.find((i) => i.id === menuId) || {id: "", label: ""}
+                        //         }
+                        //         setSubMenuData(firstMenu.subMenuData || [])
+                        //         setMenuId(firstMenu.id)
+                        //     }
+                        //     setTimeout(() => setLoading(false), 300)
+                        // }
                     })
                     .catch((err) => {
                         failed("获取菜单失败：" + err)
@@ -300,7 +275,7 @@ const HeardMenu: React.FC<HeardMenuProps> = React.memo((props) => {
         let menuList: MenuDataProps[] = [...DefaultRouteMenuData]
         if (oldMenuData.length > 0) {
             menuList = [...oldMenuDataLocal, ...menuList].map((item, index) => {
-                item.subMenuData?.map((subItem, subIndex) => ({...subItem, id: `${index + 1}-${subIndex + 1}`}))
+                item.subMenuData?.map((subItem, subIndex) => ({ ...subItem, id: `${index + 1}-${subIndex + 1}` }))
                 item.id = `${index + 1}`
                 return item
             })
@@ -361,7 +336,7 @@ const HeardMenu: React.FC<HeardMenuProps> = React.memo((props) => {
                                     firstMenuList.push(subItem)
                                 })
                             }
-                            newMenuData.push({...item, subMenuData: firstMenuList})
+                            newMenuData.push({ ...item, subMenuData: firstMenuList })
                         })
                         onAddMenus(newMenuData, menuMode, callBack)
                     } else {
@@ -381,7 +356,7 @@ const HeardMenu: React.FC<HeardMenuProps> = React.memo((props) => {
      */
     const onRemoveEmpty = useMemoizedFn(() => {
         ipcRenderer
-            .invoke("DeleteAllMenu", {Mode: ""})
+            .invoke("DeleteAllMenu", { Mode: "" })
             .then(() => {
                 // 更新菜单
                 // ipcRenderer.invoke("change-main-menu")
@@ -394,26 +369,34 @@ const HeardMenu: React.FC<HeardMenuProps> = React.memo((props) => {
      * @description: 保存最新的菜单数据
      */
     const onAddMenus = useMemoizedFn((data: MenuDataProps[], menuMode: string, callBack?: () => void) => {
-        const menuLists = getMenuListBySort(data, menuMode)
-        ipcRenderer
-            .invoke("AddMenus", {Data: menuLists})
-            .then((rsp) => {
-                setRouteMenu(data)
-                if (!menuId && data.length > 0) {
-                    setSubMenuData(data[0].subMenuData || [])
-                    setMenuId(data[0].id)
-                }
-                onRemoveEmpty()
-                if (callBack) callBack()
-            })
-            .catch((err) => {
-                failed("保存菜单失败：" + err)
-            })
-            .finally(() => {
-                setTimeout(() => {
-                    setLoading(false)
-                }, 300)
-            })
+        // 电信版本暂不支持自定义菜单，所以注释下方保存自定义菜单的逻辑
+        setRouteMenu(data)
+        if (!menuId && data.length > 0) {
+            setSubMenuData(data[0].subMenuData || [])
+            setMenuId(data[0].id)
+        }
+        ipcRenderer.invoke("send-new-home-refsh")
+        if (callBack) callBack()
+        // const menuLists = getMenuListBySort(data, menuMode)
+        // ipcRenderer
+        //     .invoke("AddMenus", {Data: menuLists})
+        //     .then((rsp) => {
+        //         setRouteMenu(data)
+        //         if (!menuId && data.length > 0) {
+        //             setSubMenuData(data[0].subMenuData || [])
+        //             setMenuId(data[0].id)
+        //         }
+        //         onRemoveEmpty()
+        //         if (callBack) callBack()
+        //     })
+        //     .catch((err) => {
+        //         failed("保存菜单失败：" + err)
+        //     })
+        //     .finally(() => {
+        //         setTimeout(() => {
+        //             setLoading(false)
+        //         }, 300)
+        //     })
     })
 
     useEffect(() => {
@@ -487,7 +470,7 @@ const HeardMenu: React.FC<HeardMenuProps> = React.memo((props) => {
     const onCheckPlugin = useMemoizedFn((name: string, newKey: string) => {
         // 先验证菜单的插件id和本地最新的插件id是不是一致的
         ipcRenderer
-            .invoke("GetYakScriptByName", {Name: name})
+            .invoke("GetYakScriptByName", { Name: name })
             .then((i: YakScript) => {
                 const lastPluginID = `plugin:${i.Id}`
                 onRouteMenuSelect(`${lastPluginID}` as Route)
@@ -554,7 +537,7 @@ const HeardMenu: React.FC<HeardMenuProps> = React.memo((props) => {
      */
     const onRestoreMenu = useMemoizedFn(() => {
         ipcRenderer
-            .invoke("DeleteAllMenu", {Mode: patternMenu})
+            .invoke("DeleteAllMenu", { Mode: patternMenu })
             .then(() => {
                 // 更新菜单
                 ipcRenderer.invoke("change-main-menu")
@@ -586,13 +569,13 @@ const HeardMenu: React.FC<HeardMenuProps> = React.memo((props) => {
             return
         }
         try {
-            const menuLists: MenuItemGroup = JSON.parse(menuDataString).map((ele) => ({...ele, Mode: patternMenu}))
+            const menuLists: MenuItemGroup = JSON.parse(menuDataString).map((ele) => ({ ...ele, Mode: patternMenu }))
             setImportLoading(true)
             ipcRenderer
-                .invoke("DeleteAllMenu", {Mode: patternMenu})
+                .invoke("DeleteAllMenu", { Mode: patternMenu })
                 .then(() => {
                     ipcRenderer
-                        .invoke("AddMenus", {Data: menuLists})
+                        .invoke("AddMenus", { Data: menuLists })
                         .then(() => {
                             setVisibleImport(false)
                             ipcRenderer.invoke("change-main-menu")
@@ -880,7 +863,7 @@ const HeardMenu: React.FC<HeardMenuProps> = React.memo((props) => {
                                             {(!isDisable && (
                                                 <div
                                                     className={style["sub-menu-expand-item"]}
-                                                    style={{paddingLeft: index === 0 ? 0 : ""}}
+                                                    style={{ paddingLeft: index === 0 ? 0 : "" }}
                                                 >
                                                     <div className={style["sub-menu-expand-item-icon"]}>
                                                         <span className={style["item-icon"]}>{item.icon}</span>
@@ -900,29 +883,29 @@ const HeardMenu: React.FC<HeardMenuProps> = React.memo((props) => {
                                                     </Tooltip>
                                                 </div>
                                             )) || (
-                                                <div
-                                                    className={classNames(style["sub-menu-expand-item"], {
-                                                        [style["sub-menu-expand-item-disable"]]: isDisable
-                                                    })}
-                                                    style={{paddingLeft: index === 0 ? 0 : ""}}
-                                                    onClick={(e) => {
-                                                        e.stopPropagation()
-                                                        if (loading) return
-                                                        onOpenDownModal(item)
-                                                    }}
-                                                >
-                                                    <div className={style["sub-menu-expand-item-icon"]}>
-                                                        <span className={style["item-icon"]}>
-                                                            {(loading && <LoadingOutlined/>) || item.icon}
-                                                        </span>
+                                                    <div
+                                                        className={classNames(style["sub-menu-expand-item"], {
+                                                            [style["sub-menu-expand-item-disable"]]: isDisable
+                                                        })}
+                                                        style={{ paddingLeft: index === 0 ? 0 : "" }}
+                                                        onClick={(e) => {
+                                                            e.stopPropagation()
+                                                            if (loading) return
+                                                            onOpenDownModal(item)
+                                                        }}
+                                                    >
+                                                        <div className={style["sub-menu-expand-item-icon"]}>
+                                                            <span className={style["item-icon"]}>
+                                                                {(loading && <LoadingOutlined />) || item.icon}
+                                                            </span>
+                                                        </div>
+                                                        {(loading && nodeLabel) || (
+                                                            <Tooltip title='插件丢失，点击下载' placement='bottom'>
+                                                                {nodeLabel}
+                                                            </Tooltip>
+                                                        )}
                                                     </div>
-                                                    {(loading && nodeLabel) || (
-                                                        <Tooltip title='插件丢失，点击下载' placement='bottom'>
-                                                            {nodeLabel}
-                                                        </Tooltip>
-                                                    )}
-                                                </div>
-                                            )}
+                                                )}
                                             {index !== subMenuData.length - 1 && (
                                                 <div className={style["sub-menu-expand-item-line"]}/>
                                             )}
@@ -958,7 +941,7 @@ const HeardMenu: React.FC<HeardMenuProps> = React.memo((props) => {
                         fileName={fileName}
                     />
                     <Form.Item label='配置 JSON'>
-                        <div style={{height: 400}}>
+                        <div style={{ height: 400 }}>
                             <YakCodeEditor
                                 refreshTrigger={refreshTrigger}
                                 originValue={StringToUint8Array(menuDataString, "utf8")}
@@ -976,7 +959,7 @@ const HeardMenu: React.FC<HeardMenuProps> = React.memo((props) => {
 export default HeardMenu
 
 const RouteMenuDataItem: React.FC<RouteMenuDataItemProps> = React.memo((props) => {
-    const {menuItem, isShow, onSelect, isExpand, setSubMenuData, activeMenuId, onOpenDownModal} = props
+    const { menuItem, isShow, onSelect, isExpand, setSubMenuData, activeMenuId, onOpenDownModal } = props
     const [visible, setVisible] = useState<boolean>(false)
     const onOpenSecondMenu = useMemoizedFn(() => {
         if (!isExpand) return
@@ -1012,7 +995,7 @@ const RouteMenuDataItem: React.FC<RouteMenuDataItemProps> = React.memo((props) =
                     [style["popover-content"]]: menuItem.subMenuData && menuItem.subMenuData.length <= 1
                 })}
                 onVisibleChange={setVisible}
-                // visible={menuItem.id === "2"}
+            // visible={menuItem.id === "2"}
             >
                 {popoverContent}
             </YakitPopover>
@@ -1021,7 +1004,7 @@ const RouteMenuDataItem: React.FC<RouteMenuDataItemProps> = React.memo((props) =
 })
 
 const SubMenu: React.FC<SubMenuProps> = (props) => {
-    const {subMenuData, onSelect, onOpenDownModal} = props
+    const { subMenuData, onSelect, onOpenDownModal } = props
     return (
         <div className={style["heard-sub-menu"]}>
             {subMenuData.map((subMenuItem) => (
@@ -1047,12 +1030,12 @@ const SubMenu: React.FC<SubMenuProps> = (props) => {
                             {subMenuItem.label === "UserDefined" ? "社区插件" : subMenuItem.label}
                         </div>
                     )) || (
-                        <Tooltip title='插件丢失，点击下载' placement='bottom' zIndex={9999}>
-                            <div className={style["heard-sub-menu-label"]}>
-                                {subMenuItem.label === "UserDefined" ? "社区插件" : subMenuItem.label}
-                            </div>
-                        </Tooltip>
-                    )}
+                            <Tooltip title='插件丢失，点击下载' placement='bottom' zIndex={9999}>
+                                <div className={style["heard-sub-menu-label"]}>
+                                    {subMenuItem.label === "UserDefined" ? "社区插件" : subMenuItem.label}
+                                </div>
+                            </Tooltip>
+                        )}
                 </div>
             ))}
         </div>
@@ -1060,7 +1043,7 @@ const SubMenu: React.FC<SubMenuProps> = (props) => {
 }
 
 const CollapseMenu: React.FC<CollapseMenuProp> = React.memo((props) => {
-    const {menuData, moreLeft, isExpand, onMenuSelect} = props
+    const { menuData, moreLeft, isExpand, onMenuSelect } = props
 
     const [show, setShow] = useState<boolean>(false)
 
@@ -1081,12 +1064,12 @@ const CollapseMenu: React.FC<CollapseMenuProp> = React.memo((props) => {
             isHint={true}
             data={newMenuData}
             width={136}
-            onSelect={({key}) => onMenuSelect(key)}
+            onSelect={({ key }) => onMenuSelect(key)}
         ></YakitMenu>
     )
 
     return (
-        <div className={style["heard-menu-more"]} style={{left: moreLeft}}>
+        <div className={style["heard-menu-more"]} style={{ left: moreLeft }}>
             <YakitPopover
                 placement={"bottomLeft"}
                 arrowPointAtCenter={true}
