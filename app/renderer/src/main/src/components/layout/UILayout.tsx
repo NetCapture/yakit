@@ -920,18 +920,6 @@ const UILayout: React.FC<UILayoutProp> = (props) => {
                                                     showProjectManage={linkDatabase}
                                                 />
                                             </div>
-
-                                            <div className={styles["divider-wrapper"]}></div>
-                                            <div>
-                                                <FuncDomain
-                                                    isEngineLink={engineLink}
-                                                    isReverse={true}
-                                                    engineMode={engineMode || "remote"}
-                                                    isRemoteMode={engineMode === "remote"}
-                                                    onEngineModeChange={changeEngineMode}
-                                                    typeCallback={typeCallback}
-                                                />
-                                            </div>
                                         </>
                                     )}
 
