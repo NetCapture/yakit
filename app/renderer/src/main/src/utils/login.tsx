@@ -2,7 +2,7 @@ import {UserInfoProps} from "@/store"
 import {NetWorkApi} from "@/services/fetch"
 import {API} from "@/services/swagger/resposeType"
 import {getRemoteValue,setRemoteValue} from "./kv"
-import {GetReleaseEdition, isCommunityEdition, globalUserLogout,isEnpriTraceAgent} from "@/utils/envfile"
+import {GetReleaseEdition, isEnpriTrace, globalUserLogout,isEnpriTraceAgent} from "@/utils/envfile"
 import {RemoteGV} from "@/yakitGV";
 const {ipcRenderer} = window.require("electron")
 
@@ -50,7 +50,7 @@ export const refreshToken = (userInfo: UserInfoProps) => {
 
 //企业简易版 登录/退出登录前时调用同步
 export const aboutLoginUpload = (Token:string) => {
-    if (!isEnpriTraceAgent()) return
+    if (!isEnpriTraceAgent()&&!isEnpriTrace()) return
     return new Promise((resolve, reject) => {
         ipcRenderer.invoke("upload-risk-to-online", {Token}).then((res)=>{
         // console.log("登录/退出登录前时调用同步",res);
