@@ -173,7 +173,7 @@ export const FuncDomain: React.FC<FuncDomainProp> = React.memo((props) => {
                         {key: "role-admin", title: "角色管理"},
                         {key: "account-admin", title: "用户管理"},
                         {key: "set-password", title: "修改密码"},
-                        {key: "sign-out", title: "退出登录"}
+                        {key: "sign-out", title: "退出登录",render:() => LoginOutBox()}
                     ]
                 }
                 return [
