@@ -1294,7 +1294,7 @@ const UIOpNotice: React.FC<UIOpNoticeProp> = React.memo((props) => {
                     {type === "update" && (
                         <div className={styles["notice-version-wrapper"]}>
                             <div className={styles["version-wrapper"]}>
-                                {userInfo.role === "superAdmin" && !isEnpriTraceAgent() && (
+                                {/* {userInfo.role === "superAdmin" && !isEnpriTraceAgent() && (
                                     <UIOpUpdateYakit
                                         version={yakitVersion}
                                         lastVersion={yakitLastVersion}
@@ -1318,7 +1318,7 @@ const UIOpNotice: React.FC<UIOpNoticeProp> = React.memo((props) => {
                                         updateContent={isEnterpriseEdition() ? companyYakit : communityYakit}
                                         onUpdateEdit={UpdateContentEdit}
                                     />
-                                )}
+                                )} */}
                                 <UIOpUpdateYaklang
                                     version={yaklangVersion}
                                     lastVersion={yaklangLastVersion}

@@ -593,7 +593,7 @@ const UILayout: React.FC<UILayoutProp> = (props) => {
     useEffect(() => {
         ipcRenderer.on("activate-download-yaklang-or-yakit", (e: any, type: "yaklang" | "yakit") => {
             if (getYaklangDownload() || getYakitDownload()) return
-            if (type === "yakit") setYakitDownload(true)
+            // if (type === "yakit") setYakitDownload(true)
             if (type === "yaklang") setYaklangDownload(true)
         })
 
