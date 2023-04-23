@@ -17,7 +17,6 @@ import TelecomSmallLogo from "@/assets/img/telecom_logo_small.png"
 import classnames from "classnames"
 import styles from "./yakitLoading.module.scss"
 import classNames from "classnames"
-import styles from "./yakitLoading.module.scss"
 import {isCommunityEdition} from "@/utils/envfile"
 
 const {ipcRenderer} = window.require("electron")
