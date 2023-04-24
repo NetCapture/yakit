@@ -150,6 +150,7 @@ export const FuncDomain: React.FC<FuncDomainProp> = React.memo((props) => {
                 return [
                     {key: "user-info", title: "用户信息", render: () => SetUserInfoModule()},
                     {key: "upload-plugin", title: "同步插件"},
+                    {key: "hole-collect", title: "漏洞汇总"},
                     {key: "upload-data", title: "上传数据"},
                     {key: "role-admin", title: "角色管理"},
                     {key: "account-admin", title: "用户管理"},
@@ -225,82 +226,78 @@ export const FuncDomain: React.FC<FuncDomainProp> = React.memo((props) => {
                         />
                     )}
                 </div>
-                {!showProjectManage && (
-                    <>
-                        <div className={styles["divider-wrapper"]}></div>
-                        <div className={styles["user-wrapper"]}>
-                            {userInfo.isLogin ? (
-                                <div className={styles["user-info"]}>
-                                    <DropdownMenu
-                                        menu={{
-                                            data: userMenu
-                                        }}
-                                        dropdown={{
-                                            placement: "bottomCenter",
-                                            trigger: ["click"]
-                                        }}
-                                        onClick={(key) => {
-                                            if (key === "sign-out") {
-                                                setStoreUserInfo(defaultUserInfo)
-                                                loginOut(userInfo)
-                                                setTimeout(() => success("已成功退出账号"), 500)
-                                            }
-                                            if (key === "trust-list") {
-                                                const key = Route.TrustListPage
-                                                openMenu(key)
-                                            }
-                                            if (key === "set-password") setPasswordShow(true)
-                                            if (key === "upload-data") setUploadModalShow(true)
-                                            if (key === "role-admin") {
-                                                const key = Route.RoleAdminPage
-                                                openMenu(key)
-                                            }
-                                            if (key === "account-admin") {
-                                                const key = Route.AccountAdminPage
-                                                openMenu(key)
-                                            }
-                                            if (key === "license-admin") {
-                                                const key = Route.LicenseAdminPage
-                                                openMenu(key)
-                                            }
-                                            if (key === "plugIn-admin") {
-                                                const key = Route.PlugInAdminPage
-                                                openMenu(key)
-                                            }
-                                            if (key === "upload-plugin") {
-                                                const m = showModal({
-                                                    title: "同步本地插件",
-                                                    content: (
-                                                        <AdminUpOnlineBatch
-                                                            userInfo={userInfo}
-                                                            onClose={() => m.destroy()}
-                                                        />
-                                                    )
-                                                })
-                                                return m
-                                            }
-                                        }}
-                                    >
-                                        {userInfo.platform === "company" ? (
-                                            judgeAvatar(userInfo)
-                                        ) : (
-                                            <img
-                                                src={
-                                                    userInfo[UserPlatformType[userInfo.platform || ""].img] || yakitImg
-                                                }
-                                                style={{width: 24, height: 24, borderRadius: "50%"}}
-                                            />
-                                        )}
-                                    </DropdownMenu>
-                                </div>
-                            ) : (
-                                <div className={styles["user-show"]} onClick={() => setLoginShow(true)}>
-                                    <UnLoginSvgIcon />
-                                </div>
-                            )}
-                        </div>
-                    </>
-                )}
+                {!showProjectManage && <>
+                    <div className={styles["divider-wrapper"]}></div>
+                    <div className={styles["user-wrapper"]}>
+                        {userInfo.isLogin ? (
+                            <div className={styles["user-info"]}>
+                                <DropdownMenu
+                                    menu={{
+                                        data: userMenu
+                                    }}
+                                    dropdown={{
+                                        placement: "bottomCenter",
+                                        trigger: ["click"]
+                                    }}
+                                    onClick={(key) => {
+                                        if (key === "sign-out") {
+                                            setStoreUserInfo(defaultUserInfo)
+                                            loginOut(userInfo)
+                                            setTimeout(() => success("已成功退出账号"), 500)
+                                        }
+                                        if (key === "trust-list") {
+                                            const key = Route.TrustListPage
+                                            openMenu(key)
+                                        }
+                                        if (key === "set-password") setPasswordShow(true)
+                                        if (key === "upload-data") setUploadModalShow(true)
+                                        if (key === "role-admin") {
+                                            const key = Route.RoleAdminPage
+                                            openMenu(key)
+                                        }
+                                        if (key === "hole-collect") {
+                                            const key = Route.HoleCollectPage
+                                            openMenu(key)
+                                        }
+                                        if (key === "account-admin") {
+                                            const key = Route.AccountAdminPage
+                                            openMenu(key)
+                                        }
+                                        if (key === "license-admin") {
+                                            const key = Route.LicenseAdminPage
+                                            openMenu(key)
+                                        }
+                                        if (key === "plugIn-admin") {
+                                            const key = Route.PlugInAdminPage
+                                            openMenu(key)
+                                        }
+                                        if (key === "upload-plugin") {
+                                            const m = showModal({
+                                                title: "同步本地插件",
+                                                content: <AdminUpOnlineBatch userInfo={userInfo}
+                                                                             onClose={() => m.destroy()}/>
+                                            })
+                                            return m
+                                        }
+                                    }}
+                                >
+                                    {userInfo.platform === "company" ? (
+                                        judgeAvatar(userInfo)
+                                    ) : (
+                                        <img
+                                            src={userInfo[UserPlatformType[userInfo.platform || ""].img] || yakitImg}
+                                            style={{width: 24, height: 24, borderRadius: "50%"}}
+                                        />
+                                    )}
+                                </DropdownMenu>
+                            </div>
+                        ) : (
+                            <div className={styles["user-show"]} onClick={() => setLoginShow(true)}>
+                                <UnLoginSvgIcon/>
+                            </div>
+                        )}
+                    </div>
+                </>}
             </div>
 
             {loginShow && <Login visible={loginShow} onCancel={() => setLoginShow(false)} />}
@@ -1302,7 +1299,7 @@ const UIOpNotice: React.FC<UIOpNoticeProp> = React.memo((props) => {
                     {type === "update" && (
                         <div className={styles["notice-version-wrapper"]}>
                             <div className={styles["version-wrapper"]}>
-                                {userInfo.role === "superAdmin" && !isEnpriTraceAgent() && (
+                                {/* {userInfo.role === "superAdmin" && !isEnpriTraceAgent() && (
                                     <UIOpUpdateYakit
                                         version={yakitVersion}
                                         lastVersion={yakitLastVersion}
@@ -1326,7 +1323,7 @@ const UIOpNotice: React.FC<UIOpNoticeProp> = React.memo((props) => {
                                         updateContent={isEnterpriseEdition() ? companyYakit : communityYakit}
                                         onUpdateEdit={UpdateContentEdit}
                                     />
-                                )}
+                                )} */}
                                 <UIOpUpdateYaklang
                                     version={yaklangVersion}
                                     lastVersion={yaklangLastVersion}
