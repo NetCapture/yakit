@@ -727,7 +727,7 @@ export const HTTPFuzzerPage: React.FC<HTTPFuzzerPageProp> = (props) => {
                 TotalDurationMs: data.TotalDurationMs,
             } as FuzzerResponse
 
-            alert(JSON.stringify([r.Proxy, r.RemoteAddr, r.DNSDurationMs, r.TotalDurationMs, r.FirstByteDurationMs]))
+            // alert(JSON.stringify([r.Proxy, r.RemoteAddr, r.DNSDurationMs, r.TotalDurationMs, r.FirstByteDurationMs]))
 
             // 设置第一个 response
             if (getFirstResponse().RequestRaw.length === 0) {

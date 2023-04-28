@@ -39,6 +39,9 @@ import {LocalGV} from "@/yakitGV"
 import {BaseConsole} from "../components/baseConsole/BaseConsole"
 import CustomizeMenu from "./customizeMenu/CustomizeMenu"
 import {DownloadAllPlugin} from "@/pages/simpleDetect/SimpleDetect";
+import { YakitEditor } from "@/components/yakitUI/YakitEditor/YakitEditor"
+import { HTTPPacketYakitEditor } from "@/components/yakitUI/YakitEditor/extraYakitEditor"
+import { StringToUint8Array } from "@/utils/str"
 
 const {ipcRenderer} = window.require("electron")
 const {Content} = Layout
@@ -1318,7 +1321,19 @@ const Main: React.FC<MainProp> = React.memo((props) => {
                                     marginLeft: 0
                                 }}
                             >
-                                <div
+                                {true&&<div
+                                    style={{
+                                        padding: 0,
+                                        overflow: "hidden",
+                                        flex: "1",
+                                        display: "flex",
+                                        flexFlow: "column"
+                                    }}
+                                >
+                                    {/* <HTTPPacketYakitEditor system="Darwin" type="http" originValue={StringToUint8Array('123')} ></HTTPPacketYakitEditor> */}
+                                    {/* <YakitEditor type="yak" menuType={["pretty"]}></YakitEditor> */}
+                                    </div>}
+                                {false&&<div
                                     style={{
                                         padding: 0,
                                         overflow: "hidden",
@@ -1440,7 +1455,7 @@ const Main: React.FC<MainProp> = React.memo((props) => {
                                             directionBaseConsole={directionBaseConsole}
                                         />
                                     )}
-                                </div>
+                                </div>}
                             </Content>
                         </Layout>
                     </Content>
